@@ -99,6 +99,9 @@ dependencies {
     implementation(libs.hilt.work)
     ksp(libs.hilt.work.compiler)
 
+    // Splash screen
+    implementation(libs.splashscreen)
+
     // Image loading
     implementation(libs.coil.compose)
 }
