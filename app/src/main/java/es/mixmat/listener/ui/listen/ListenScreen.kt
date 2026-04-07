@@ -7,7 +7,9 @@ import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Mic
@@ -17,6 +19,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -205,20 +209,37 @@ fun ListenScreen(
                         Spacer(modifier = Modifier.height(16.dp))
                     }
 
-                    LargeFloatingActionButton(
-                        onClick = {
-                            if (uiState.hasAudioPermission) {
-                                viewModel.startListening()
-                            } else {
-                                permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
-                            }
-                        },
+                    Box(
+                        modifier = Modifier
+                            .size(96.dp)
+                            .background(
+                                brush = Brush.horizontalGradient(
+                                    colors = listOf(
+                                        Color(0xFF1DB954),
+                                        Color(0xFF2CCCD3),
+                                    ),
+                                ),
+                                shape = CircleShape,
+                            ),
+                        contentAlignment = Alignment.Center,
                     ) {
-                        Icon(
-                            Icons.Default.Mic,
-                            contentDescription = "Start listening",
-                            modifier = Modifier.size(36.dp),
-                        )
+                        IconButton(
+                            onClick = {
+                                if (uiState.hasAudioPermission) {
+                                    viewModel.startListening()
+                                } else {
+                                    permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+                                }
+                            },
+                            modifier = Modifier.size(96.dp),
+                        ) {
+                            Icon(
+                                Icons.Default.Mic,
+                                contentDescription = "Start listening",
+                                tint = Color.White,
+                                modifier = Modifier.size(36.dp),
+                            )
+                        }
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
