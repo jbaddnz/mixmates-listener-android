@@ -15,7 +15,7 @@ The app works. Distribution is how it reaches people. Play Store removes the sid
 - [ ] Submit for review in Play Console
 - [ ] Link from MixMates install page once live
 
-## Claude
+## Implementation
 
 - [ ] App icon — convert MML brand mark (mml-square.svg) to adaptive icon format
 - [ ] Generate upload keystore and configure release signing in build files

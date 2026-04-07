@@ -6,7 +6,7 @@ Get the app ready for the first external tester on a real device.
 
 First impressions matter. The app works but has a placeholder icon and hasn't been tested on a real phone. Fix the obvious rough edges before handing it to someone.
 
-## Claude — done
+## Implementation — done
 
 - [x] App icon — MML adaptive icon with green-to-cyan gradient
 - [x] Verify duplicate status code path is correct
