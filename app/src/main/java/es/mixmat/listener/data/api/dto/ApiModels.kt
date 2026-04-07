@@ -56,7 +56,7 @@ data class UserInfo(
 data class RateLimitInfo(
     val limit: Int,
     val remaining: Int,
-    @SerialName("reset_at") val resetAt: String,
+    @SerialName("reset_at") val resetAt: Long,
 )
 
 // -- Recognition --
@@ -145,6 +145,11 @@ data class ShareData(
 // -- Groups --
 
 @Serializable
+data class GroupListData(
+    val items: List<GroupDto>,
+)
+
+@Serializable
 data class GroupDto(
     val id: String,
     val name: String,
@@ -152,6 +157,11 @@ data class GroupDto(
 )
 
 // -- Recordings --
+
+@Serializable
+data class RecordingListData(
+    val items: List<RecordingDto>,
+)
 
 @Serializable
 data class RecordingDto(
