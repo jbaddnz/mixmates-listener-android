@@ -41,10 +41,10 @@ interface ListenerApi {
     ): ApiResponse<ShareData>
 
     @GET("groups")
-    suspend fun groups(): ApiResponse<List<GroupDto>>
+    suspend fun groups(): ApiResponse<GroupListData>
 
     @GET("recordings")
-    suspend fun recordings(): ApiResponse<List<RecordingDto>>
+    suspend fun recordings(): ApiResponse<RecordingListData>
 
     @DELETE("recordings")
     suspend fun deleteRecordings(): ApiResponse<DeletedCountData>

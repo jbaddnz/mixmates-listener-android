@@ -86,7 +86,8 @@ fun HistoryScreen(
             else -> {
                 LazyColumn(
                     state = listState,
-                    modifier = Modifier.fillMaxSize().padding(padding),
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = padding,
                 ) {
                     items(uiState.items, key = { it.id }) { item ->
                         HistoryListItem(

@@ -61,7 +61,7 @@ data class UserProfile(
 data class RateLimit(
     val limit: Int,
     val remaining: Int,
-    val resetAt: String,
+    val resetAt: Long,
 )
 
 data class RecognitionResult(
