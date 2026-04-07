@@ -60,7 +60,7 @@ fun TrackCard(
             if (status == "duplicate") {
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "Already in your queue",
+                    text = "Already in your queue!",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.tertiary,
                 )

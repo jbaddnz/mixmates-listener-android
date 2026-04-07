@@ -1,13 +1,18 @@
 package es.mixmat.listener.ui.settings
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -17,6 +22,8 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     var showConfirmation by remember { mutableStateOf(false) }
+    val isDarkMode by viewModel.isDarkMode.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -36,6 +43,20 @@ fun SettingsScreen(
                 .padding(padding)
                 .padding(16.dp),
         ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text("Dark mode", style = MaterialTheme.typography.bodyLarge)
+                Switch(
+                    checked = isDarkMode,
+                    onCheckedChange = viewModel::setDarkMode,
+                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
             OutlinedButton(
                 onClick = { showConfirmation = true },
                 colors = ButtonDefaults.outlinedButtonColors(
@@ -44,6 +65,39 @@ fun SettingsScreen(
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Text("Remove Listen Key")
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Text(
+                    text = "MixMates Listener",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                TextButton(
+                    onClick = {
+                        context.startActivity(
+                            Intent(Intent.ACTION_VIEW, Uri.parse("https://mixmat.es")),
+                        )
+                    },
+                ) {
+                    Text(
+                        text = "mixmat.es",
+                        style = MaterialTheme.typography.labelMedium,
+                    )
+                }
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "MixMat Ltd",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
+                )
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }
