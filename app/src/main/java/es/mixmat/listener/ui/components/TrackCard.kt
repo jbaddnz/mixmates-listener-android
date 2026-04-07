@@ -5,12 +5,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import es.mixmat.listener.domain.model.Platforms
+import es.mixmat.listener.ui.theme.MixMatesListenerTheme
 
 @Composable
 fun TrackCard(
@@ -93,5 +95,41 @@ fun TrackCard(
                 }
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun TrackCardPreview() {
+    MixMatesListenerTheme {
+        TrackCard(
+            title = "Evergreen",
+            artist = "Richy Mitch & The Coal Miners",
+            thumbnail = null,
+            platforms = Platforms(
+                spotify = "https://open.spotify.com/track/123",
+                tidal = "https://tidal.com/track/456",
+                appleMusic = null,
+            ),
+            shareUrl = "https://mixmat.es/aBcDeF12",
+            status = null,
+            onPlatformClick = {},
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun TrackCardDuplicatePreview() {
+    MixMatesListenerTheme {
+        TrackCard(
+            title = "Evergreen",
+            artist = "Richy Mitch & The Coal Miners",
+            thumbnail = null,
+            platforms = Platforms(spotify = "https://open.spotify.com/track/123", tidal = null, appleMusic = null),
+            shareUrl = null,
+            status = "duplicate",
+            onPlatformClick = {},
+        )
     }
 }
