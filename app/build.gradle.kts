@@ -97,6 +97,7 @@ dependencies {
     // WorkManager
     implementation(libs.work.runtime.ktx)
     implementation(libs.hilt.work)
+    ksp(libs.hilt.work.compiler)
 
     // Image loading
     implementation(libs.coil.compose)
