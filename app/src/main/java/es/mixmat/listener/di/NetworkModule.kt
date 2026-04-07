@@ -6,6 +6,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import es.mixmat.listener.data.api.AuthInterceptor
 import es.mixmat.listener.data.api.ListenerApi
+import es.mixmat.listener.data.api.RateLimitInterceptor
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -30,12 +31,16 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(authInterceptor: AuthInterceptor): OkHttpClient =
+    fun provideOkHttpClient(
+        authInterceptor: AuthInterceptor,
+        rateLimitInterceptor: RateLimitInterceptor,
+    ): OkHttpClient =
         OkHttpClient.Builder()
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(60, TimeUnit.SECONDS)
             .addInterceptor(authInterceptor)
+            .addInterceptor(rateLimitInterceptor)
             .addInterceptor(
                 HttpLoggingInterceptor().apply {
                     level = if (es.mixmat.listener.BuildConfig.DEBUG) {

@@ -7,6 +7,7 @@ import javax.inject.Inject
 
 class AuthInterceptor @Inject constructor(
     private val tokenManager: TokenManager,
+    private val authEvent: AuthEvent,
 ) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -21,6 +22,13 @@ class AuthInterceptor @Inject constructor(
             .header("Authorization", "Bearer $token")
             .build()
 
-        return chain.proceed(authenticatedRequest)
+        val response = chain.proceed(authenticatedRequest)
+
+        if (response.code == 401) {
+            tokenManager.clearToken()
+            authEvent.emitTokenExpired()
+        }
+
+        return response
     }
 }

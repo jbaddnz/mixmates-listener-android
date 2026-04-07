@@ -3,6 +3,7 @@ package es.mixmat.listener.ui.listen
 import android.Manifest
 import android.content.Intent
 import android.net.Uri
+import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.animateFloatAsState
@@ -34,12 +35,18 @@ fun ListenScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     var hasAudioPermission by remember { mutableStateOf(false) }
+    var permissionDenied by remember { mutableStateOf(false) }
 
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission(),
     ) { granted ->
         hasAudioPermission = granted
-        if (granted) viewModel.startListening()
+        if (granted) {
+            permissionDenied = false
+            viewModel.startListening()
+        } else {
+            permissionDenied = true
+        }
     }
 
     Scaffold(
@@ -178,6 +185,27 @@ fun ListenScreen(
                             color = MaterialTheme.colorScheme.tertiary,
                             style = MaterialTheme.typography.bodyMedium,
                         )
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
+
+                    if (permissionDenied) {
+                        Text(
+                            text = "Microphone access is needed to identify music",
+                            style = MaterialTheme.typography.bodyMedium,
+                            textAlign = TextAlign.Center,
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+                        FilledTonalButton(
+                            onClick = {
+                                context.startActivity(
+                                    Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                                        data = Uri.fromParts("package", context.packageName, null)
+                                    },
+                                )
+                            },
+                        ) {
+                            Text("Open settings")
+                        }
                         Spacer(modifier = Modifier.height(16.dp))
                     }
 
