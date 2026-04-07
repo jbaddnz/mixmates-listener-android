@@ -8,12 +8,14 @@ import es.mixmat.listener.ui.auth.TokenEntryScreen
 import es.mixmat.listener.ui.history.HistoryDetailScreen
 import es.mixmat.listener.ui.history.HistoryScreen
 import es.mixmat.listener.ui.listen.ListenScreen
+import es.mixmat.listener.ui.settings.SettingsScreen
 
 object Routes {
     const val TOKEN_ENTRY = "token_entry"
     const val LISTEN = "listen"
     const val HISTORY = "history"
     const val HISTORY_DETAIL = "history/{id}"
+    const val SETTINGS = "settings"
 
     fun historyDetail(id: String) = "history/$id"
 }
@@ -37,6 +39,18 @@ fun MixMatesNavGraph(
         composable(Routes.LISTEN) {
             ListenScreen(
                 onNavigateToHistory = { navController.navigate(Routes.HISTORY) },
+                onNavigateToSettings = { navController.navigate(Routes.SETTINGS) },
+            )
+        }
+
+        composable(Routes.SETTINGS) {
+            SettingsScreen(
+                onBack = { navController.popBackStack() },
+                onTokenCleared = {
+                    navController.navigate(Routes.TOKEN_ENTRY) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                },
             )
         }
 

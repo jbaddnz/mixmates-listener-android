@@ -1,34 +1,42 @@
 # MixMates Listener for Android
 
-An Android app that identifies music playing around you and finds it on every streaming platform. Built for the [MixMates](https://mixmat.es) music sharing service.
+An open-source reference implementation of a music recognition app for Android, built on the [MixMates Listener API](https://github.com/jbaddnz/mixmates-listener-api).
 
-Hold your phone up to a song, and MixMates Listener records a short clip, identifies the track, and gives you one-tap links to open it on Spotify, Tidal, or Apple Music. Recognised tracks are saved to your MixMates listen queue, where you can share discoveries with your groups.
+Hold your phone up to a song, and it records a short clip, identifies the track, and gives you one-tap links to open it on Spotify, Tidal, or Apple Music. Think of it as an open, cross-platform Shazam — with the full source code in your hands.
 
-If you're offline, recordings are queued locally and submitted automatically when you're back online.
+This is a working app, but it's also a starting point. Fork it, restyle it, add features, build something better. The API is documented, the code is MIT-licensed, and the architecture is intentionally straightforward.
 
-## Features
+## What it does
 
-- **Audio recognition** — 11-second recording, automatic identification
+- **Audio recognition** — 11-second recording, automatic identification via the MixMates API
 - **Cross-platform links** — Spotify, Tidal, and Apple Music deep links for every match
 - **Listen queue** — browse and manage your recognition history
 - **Group sharing** — share tracks to your MixMates groups
 - **Offline support** — queued recordings sync when connectivity returns
-- **Share sheet** — send mixmat.es share links to friends via any app
+- **Share sheet** — send share links to friends via any app
 
-## Requirements
+## Make it your own
+
+This reference implementation covers the core flows — record, recognise, browse, share. There's plenty of room to build on top of it:
+
+- Design your own UI and branding
+- Add a Quick Settings tile or home screen widget for one-tap recognition
+- Build a Wear OS companion
+- Add local history, analytics, or playlist integrations
+- Implement notifications for background recognition results
+
+See the [roadmap](docs/plans/) for ideas, or take it in a completely different direction.
+
+## Getting started
+
+### Requirements
 
 - Android 8.0 (API 26) or higher
+- [Android Studio](https://developer.android.com/studio) (latest stable) and JDK 17
 - A [MixMates](https://mixmat.es) account with Listen enabled
 - A Listen Key (generated in MixMates Settings > Listening)
 
-## Building
-
-### Prerequisites
-
-- [Android Studio](https://developer.android.com/studio) (latest stable)
-- JDK 17
-
-### Steps
+### Build and run
 
 1. Clone the repository:
    ```
@@ -37,14 +45,12 @@ If you're offline, recordings are queued locally and submitted automatically whe
 
 2. Open the project in Android Studio
 
-3. Sync Gradle and build:
-   - Android Studio will prompt to sync — accept
-   - Click **Run** (green play button) to build and deploy to a device or emulator
+3. Sync Gradle and run — Android Studio will prompt to sync, then click **Run** to deploy to a device or emulator
 
-### Running on emulator
+### Emulator tips
 
 - Create a virtual device via **Tools > Device Manager**
-- Enable host microphone access in the emulator's **Extended Controls > Microphone** settings for audio recognition to work
+- Enable host microphone access in **Extended Controls > Microphone** for audio recognition to work
 
 ## Architecture
 
@@ -59,8 +65,12 @@ If you're offline, recordings are queued locally and submitted automatically whe
 
 ## API
 
-This app integrates with the [MixMates Listener API v1](https://github.com/jbaddnz/mixmates-listener-api). A copy of the OpenAPI spec is included at [`docs/listener-v1-openapi.yaml`](docs/listener-v1-openapi.yaml).
+This app integrates with the [MixMates Listener API v1](https://github.com/jbaddnz/mixmates-listener-api). The API handles audio recognition, listen queue management, group sharing, and cross-platform link resolution. A copy of the OpenAPI spec is included at [`docs/listener-v1-openapi.yaml`](docs/listener-v1-openapi.yaml).
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). Bug reports, feature ideas, and pull requests are all welcome.
 
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE) — use it however you like.
