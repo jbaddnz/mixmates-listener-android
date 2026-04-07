@@ -21,6 +21,7 @@ fun TrackCard(
     shareUrl: String?,
     status: String?,
     onPlatformClick: (String) -> Unit,
+    onShareClick: ((String) -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -87,7 +88,7 @@ fun TrackCard(
 
             shareUrl?.let { url ->
                 Spacer(modifier = Modifier.height(8.dp))
-                TextButton(onClick = { onPlatformClick(url) }) {
+                TextButton(onClick = { onShareClick?.invoke(url) ?: onPlatformClick(url) }) {
                     Text("Share link")
                 }
             }

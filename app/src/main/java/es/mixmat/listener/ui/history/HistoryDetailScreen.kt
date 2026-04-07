@@ -77,6 +77,13 @@ fun HistoryDetailScreen(
                         onPlatformClick = { url ->
                             context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
                         },
+                        onShareClick = { url ->
+                            val sendIntent = Intent(Intent.ACTION_SEND).apply {
+                                putExtra(Intent.EXTRA_TEXT, "${detail.artist} - ${detail.title}\n$url")
+                                type = "text/plain"
+                            }
+                            context.startActivity(Intent.createChooser(sendIntent, null))
+                        },
                     )
 
                     if (detail.sharedTo.isNotEmpty()) {

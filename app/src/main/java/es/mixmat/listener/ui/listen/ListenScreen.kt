@@ -100,6 +100,13 @@ fun ListenScreen(
                                             Intent(Intent.ACTION_VIEW, Uri.parse(url)),
                                         )
                                     },
+                                    onShareClick = { url ->
+                                        val sendIntent = Intent(Intent.ACTION_SEND).apply {
+                                            putExtra(Intent.EXTRA_TEXT, "${track.artist} - ${track.title}\n$url")
+                                            type = "text/plain"
+                                        }
+                                        context.startActivity(Intent.createChooser(sendIntent, null))
+                                    },
                                 )
                             }
                         }
