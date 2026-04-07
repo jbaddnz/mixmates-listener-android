@@ -11,10 +11,12 @@ import es.mixmat.listener.data.repository.AuthRepository
 import es.mixmat.listener.data.repository.RecognitionRepository
 import es.mixmat.listener.domain.model.RecognitionResult
 import es.mixmat.listener.domain.model.UserProfile
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 data class ListenUiState(
@@ -68,14 +70,16 @@ class ListenViewModel @Inject constructor(
             recordingProgress = 0f,
         )
 
-        try {
-            audioRecorder.start()
-        } catch (e: Exception) {
-            _uiState.value = _uiState.value.copy(error = "Could not access microphone")
-            return
-        }
-
         viewModelScope.launch {
+            try {
+                withContext(Dispatchers.IO) {
+                    audioRecorder.start()
+                }
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(error = "Could not access microphone")
+                return@launch
+            }
+
             val startTime = System.currentTimeMillis()
             while (audioRecorder.state.value == RecorderState.RECORDING) {
                 val elapsed = System.currentTimeMillis() - startTime
