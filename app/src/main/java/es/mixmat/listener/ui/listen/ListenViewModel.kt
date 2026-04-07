@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import es.mixmat.listener.audio.AudioRecorder
 import es.mixmat.listener.audio.RecorderState
+import es.mixmat.listener.data.api.RateLimitException
 import es.mixmat.listener.data.repository.AuthRepository
 import es.mixmat.listener.data.repository.RecognitionRepository
 import es.mixmat.listener.domain.model.RecognitionResult
@@ -117,6 +118,12 @@ class ListenViewModel @Inject constructor(
                 _uiState.value = _uiState.value.copy(
                     isSubmitting = false,
                     result = result,
+                )
+                file.delete()
+            } catch (e: RateLimitException) {
+                _uiState.value = _uiState.value.copy(
+                    isSubmitting = false,
+                    error = "Rate limit reached. Try again in ${e.retryAfterSeconds} seconds.",
                 )
                 file.delete()
             } catch (e: Exception) {
