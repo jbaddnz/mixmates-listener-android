@@ -143,8 +143,13 @@ fun HistoryDetailScreen(
                             Spacer(modifier = Modifier.height(8.dp))
                             results.forEach { (groupId, status) ->
                                 val groupName = uiState.groups.find { it.id == groupId }?.name ?: groupId
+                                val displayStatus = when (status) {
+                                    "duplicate" -> "Already in $groupName!"
+                                    "shared" -> "Shared to $groupName"
+                                    else -> "$groupName: $status"
+                                }
                                 Text(
-                                    text = "$groupName: $status",
+                                    text = displayStatus,
                                     style = MaterialTheme.typography.bodySmall,
                                 )
                             }
