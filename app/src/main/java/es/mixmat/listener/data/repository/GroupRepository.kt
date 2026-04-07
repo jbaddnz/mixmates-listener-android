@@ -11,5 +11,5 @@ class GroupRepository @Inject constructor(
     private val api: ListenerApi,
 ) {
     suspend fun getGroups(): List<Group> =
-        api.groups().data.map { it.toDomain() }
+        api.groups().data.items.map { it.toDomain() }
 }

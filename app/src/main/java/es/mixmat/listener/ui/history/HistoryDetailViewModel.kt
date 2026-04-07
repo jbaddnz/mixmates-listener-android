@@ -1,5 +1,6 @@
 package es.mixmat.listener.ui.history
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -44,9 +45,10 @@ class HistoryDetailViewModel @Inject constructor(
                     isLoading = false,
                 )
             } catch (e: Exception) {
+                Log.e("HistoryDetail", "Failed to load details", e)
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    error = "Failed to load details",
+                    error = "Failed to load details: ${e.message}",
                 )
             }
         }
