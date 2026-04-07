@@ -3,6 +3,7 @@ package es.mixmat.listener.ui.history
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
@@ -84,25 +85,30 @@ fun HistoryScreen(
                 }
             }
             else -> {
-                LazyColumn(
-                    state = listState,
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = padding,
+                PullToRefreshBox(
+                    isRefreshing = uiState.isLoading,
+                    onRefresh = viewModel::loadHistory,
+                    modifier = Modifier.fillMaxSize().padding(padding),
                 ) {
-                    items(uiState.items, key = { it.id }) { item ->
-                        HistoryListItem(
-                            item = item,
-                            onClick = { onItemClick(item.id) },
-                            onDelete = { viewModel.deleteItem(item.id) },
-                        )
-                    }
-                    if (uiState.isLoadingMore) {
-                        item {
-                            Box(
-                                modifier = Modifier.fillMaxWidth().padding(16.dp),
-                                contentAlignment = Alignment.Center,
-                            ) {
-                                CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                    LazyColumn(
+                        state = listState,
+                        modifier = Modifier.fillMaxSize(),
+                    ) {
+                        items(uiState.items, key = { it.id }) { item ->
+                            HistoryListItem(
+                                item = item,
+                                onClick = { onItemClick(item.id) },
+                                onDelete = { viewModel.deleteItem(item.id) },
+                            )
+                        }
+                        if (uiState.isLoadingMore) {
+                            item {
+                                Box(
+                                    modifier = Modifier.fillMaxWidth().padding(16.dp),
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                                }
                             }
                         }
                     }
