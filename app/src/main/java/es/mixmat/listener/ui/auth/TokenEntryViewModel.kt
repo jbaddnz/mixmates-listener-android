@@ -1,5 +1,6 @@
 package es.mixmat.listener.ui.auth
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -41,6 +42,8 @@ class TokenEntryViewModel @Inject constructor(
 
         _uiState.value = _uiState.value.copy(isValidating = true, error = null)
 
+        // Store token temporarily so the auth interceptor can use it for validation.
+        // Cleared immediately if validation fails.
         authRepository.saveToken(token)
 
         viewModelScope.launch {
@@ -54,12 +57,14 @@ class TokenEntryViewModel @Inject constructor(
                     )
                     return@launch
                 }
+                // Token validated — keep it stored
                 _uiState.value = _uiState.value.copy(
                     isValidating = false,
                     isValid = true,
                     profile = profile,
                 )
             } catch (e: Exception) {
+                Log.e("TokenEntry", "Token validation failed", e)
                 authRepository.clearToken()
                 _uiState.value = _uiState.value.copy(
                     isValidating = false,

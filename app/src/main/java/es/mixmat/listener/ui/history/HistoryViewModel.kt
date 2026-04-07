@@ -1,5 +1,6 @@
 package es.mixmat.listener.ui.history
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -65,6 +66,7 @@ class HistoryViewModel @Inject constructor(
                     isLoadingMore = false,
                 )
             } catch (e: Exception) {
+                Log.e("History", "Failed to load more", e)
                 _uiState.value = _uiState.value.copy(isLoadingMore = false)
             }
         }
@@ -77,7 +79,16 @@ class HistoryViewModel @Inject constructor(
                 _uiState.value = _uiState.value.copy(
                     items = _uiState.value.items.filter { it.id != id },
                 )
-            } catch (_: Exception) { }
+            } catch (e: Exception) {
+                Log.e("History", "Failed to delete item", e)
+                _uiState.value = _uiState.value.copy(
+                    error = "Couldn't remove — try again",
+                )
+            }
         }
+    }
+
+    fun clearError() {
+        _uiState.value = _uiState.value.copy(error = null)
     }
 }

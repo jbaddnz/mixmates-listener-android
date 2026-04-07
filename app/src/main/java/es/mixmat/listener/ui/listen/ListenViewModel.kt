@@ -1,5 +1,6 @@
 package es.mixmat.listener.ui.listen
 
+import android.util.Log
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import androidx.lifecycle.ViewModel
@@ -28,6 +29,8 @@ data class ListenUiState(
     val result: RecognitionResult? = null,
     val error: String? = null,
     val queuedOffline: Boolean = false,
+    val hasAudioPermission: Boolean = false,
+    val permissionDenied: Boolean = false,
 )
 
 @HiltViewModel
@@ -56,6 +59,7 @@ class ListenViewModel @Inject constructor(
                 val profile = authRepository.getProfile()
                 _uiState.value = _uiState.value.copy(profile = profile)
             } catch (e: Exception) {
+                Log.e("Listen", "Failed to load profile", e)
                 _uiState.value = _uiState.value.copy(
                     error = "Could not verify your account. Check your connection.",
                 )
@@ -121,12 +125,14 @@ class ListenViewModel @Inject constructor(
                 )
                 file.delete()
             } catch (e: RateLimitException) {
+                Log.w("Listen", "Rate limited, retry after ${e.retryAfterSeconds}s")
                 _uiState.value = _uiState.value.copy(
                     isSubmitting = false,
                     error = "Rate limit reached. Try again in ${e.retryAfterSeconds} seconds.",
                 )
                 file.delete()
             } catch (e: Exception) {
+                Log.e("Listen", "Recognition failed, queuing for retry", e)
                 recognitionRepository.queueForLater(file.absolutePath, AudioRecorder.MIME_TYPE)
                 _uiState.value = _uiState.value.copy(
                     isSubmitting = false,
@@ -139,7 +145,18 @@ class ListenViewModel @Inject constructor(
 
     fun dismiss() {
         audioRecorder.reset()
-        _uiState.value = ListenUiState(profile = _uiState.value.profile)
+        _uiState.value = ListenUiState(
+            profile = _uiState.value.profile,
+            hasAudioPermission = _uiState.value.hasAudioPermission,
+        )
+    }
+
+    fun onPermissionResult(granted: Boolean) {
+        _uiState.value = _uiState.value.copy(
+            hasAudioPermission = granted,
+            permissionDenied = !granted,
+        )
+        if (granted) startListening()
     }
 
     private fun isOnline(): Boolean {

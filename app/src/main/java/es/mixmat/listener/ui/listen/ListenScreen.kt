@@ -34,19 +34,11 @@ fun ListenScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    var hasAudioPermission by remember { mutableStateOf(false) }
-    var permissionDenied by remember { mutableStateOf(false) }
 
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission(),
     ) { granted ->
-        hasAudioPermission = granted
-        if (granted) {
-            permissionDenied = false
-            viewModel.startListening()
-        } else {
-            permissionDenied = true
-        }
+        viewModel.onPermissionResult(granted)
     }
 
     Scaffold(
@@ -192,7 +184,7 @@ fun ListenScreen(
                         Spacer(modifier = Modifier.height(16.dp))
                     }
 
-                    if (permissionDenied) {
+                    if (uiState.permissionDenied) {
                         Text(
                             text = "Microphone access is needed to identify music",
                             style = MaterialTheme.typography.bodyMedium,
@@ -215,7 +207,7 @@ fun ListenScreen(
 
                     LargeFloatingActionButton(
                         onClick = {
-                            if (hasAudioPermission) {
+                            if (uiState.hasAudioPermission) {
                                 viewModel.startListening()
                             } else {
                                 permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)

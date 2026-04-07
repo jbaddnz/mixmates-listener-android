@@ -20,7 +20,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    private const val BASE_URL = "https://mixmat.es/api/v1/listener/"
+    private val BASE_URL = es.mixmat.listener.BuildConfig.API_BASE_URL
 
     @Provides
     @Singleton
