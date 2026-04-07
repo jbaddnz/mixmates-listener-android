@@ -67,6 +67,14 @@ See the [roadmap](docs/plans/) for ideas, or take it in a completely different d
 
 This app integrates with the [MixMates Listener API v1](https://github.com/jbaddnz/mixmates-listener-api). The API handles audio recognition, listen queue management, group sharing, and cross-platform link resolution. A copy of the OpenAPI spec is included at [`docs/listener-v1-openapi.yaml`](docs/listener-v1-openapi.yaml).
 
+## On openness
+
+This is an open-source client for a commercial API. The code is MIT-licensed and entirely yours to read, fork, and modify. The service behind the API is not — it runs on infrastructure that costs money to operate because we're serious about providing a good base for musical expression.
+
+What we can do is make everything around it open: the client code, the API specification, the documentation. You can see exactly what data leaves your device (an audio clip and a bearer token), exactly where it goes (mixmat.es), and exactly what comes back. There's no tracking, no analytics, no third-party SDKs in this app.
+
+We think that's an honest trade-off, and we'd rather be upfront about it than pretend it isn't there.
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). Bug reports, feature ideas, and pull requests are all welcome.
