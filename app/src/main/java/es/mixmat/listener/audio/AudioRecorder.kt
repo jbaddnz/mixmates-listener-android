@@ -16,7 +16,7 @@ enum class RecorderState {
 
 @Singleton
 class AudioRecorder @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
 ) {
     private var recorder: MediaRecorder? = null
     private var outputFile: File? = null

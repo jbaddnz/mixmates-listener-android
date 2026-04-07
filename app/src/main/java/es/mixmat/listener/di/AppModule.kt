@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKeys
+import androidx.security.crypto.MasterKey
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,11 +24,13 @@ object AppModule {
     @Provides
     @Singleton
     fun provideEncryptedSharedPreferences(@ApplicationContext context: Context): SharedPreferences {
-        val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+        val masterKey = MasterKey.Builder(context)
+            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+            .build()
         return EncryptedSharedPreferences.create(
-            "mixmates_secure_prefs",
-            masterKeyAlias,
             context,
+            "mixmates_secure_prefs",
+            masterKey,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM,
         )
