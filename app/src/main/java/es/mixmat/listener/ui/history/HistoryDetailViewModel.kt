@@ -75,9 +75,10 @@ class HistoryDetailViewModel @Inject constructor(
                     shareResult = results,
                 )
             } catch (e: Exception) {
+                Log.e("HistoryDetail", "Failed to share", e)
                 _uiState.value = _uiState.value.copy(
                     isSharing = false,
-                    error = "Failed to share",
+                    error = "Failed to share: ${e.message}",
                 )
             }
         }

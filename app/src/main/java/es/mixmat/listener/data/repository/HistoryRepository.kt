@@ -36,4 +36,5 @@ class HistoryRepository @Inject constructor(
 
     suspend fun share(id: String, groupIds: List<String>): Map<String, String> =
         api.historyShare(id, ShareRequest(groupIds)).data.results
+            .associate { it.groupId to it.status }
 }
