@@ -8,4 +8,3 @@ Advanced integrations and distribution.
 - [ ] Auto-stop on silence — end recording early if no audio detected
 - [ ] Share intent — receive audio shared from other apps for recognition
 - [ ] Google Play Store distribution — signing, store listing, screenshots, privacy policy
-- [ ] F-Droid — reproducible builds for open-source distribution
