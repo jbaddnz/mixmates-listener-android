@@ -143,7 +143,32 @@ fun ListenScreen(
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Button(
+                        onClick = {
+                            context.startActivity(
+                                Intent(Intent.ACTION_VIEW, Uri.parse("https://mixmat.es/?listen=1")),
+                            )
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Transparent,
+                            contentColor = Color.White,
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(
+                                brush = Brush.horizontalGradient(
+                                    colors = listOf(
+                                        Color(0xFF1DB954),
+                                        Color(0xFF2CCCD3),
+                                    ),
+                                ),
+                                shape = MaterialTheme.shapes.extraLarge,
+                            ),
+                    ) {
+                        Text("Open in MixMates")
+                    }
+                    Spacer(modifier = Modifier.height(12.dp))
                     OutlinedButton(onClick = viewModel::dismiss) {
                         Text("Listen again")
                     }
