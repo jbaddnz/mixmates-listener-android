@@ -2,6 +2,7 @@ package es.mixmat.listener.ui.history
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -11,6 +12,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -85,6 +88,32 @@ fun HistoryDetailScreen(
                             context.startActivity(Intent.createChooser(sendIntent, null))
                         },
                     )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Button(
+                        onClick = {
+                            context.startActivity(
+                                Intent(Intent.ACTION_VIEW, Uri.parse("https://mixmat.es/?listen=1")),
+                            )
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Transparent,
+                            contentColor = Color.White,
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(
+                                brush = Brush.horizontalGradient(
+                                    colors = listOf(
+                                        Color(0xFF1DB954),
+                                        Color(0xFF2CCCD3),
+                                    ),
+                                ),
+                                shape = MaterialTheme.shapes.extraLarge,
+                            ),
+                    ) {
+                        Text("Open in MixMates")
+                    }
 
                     if (detail.sharedTo.isNotEmpty()) {
                         Spacer(modifier = Modifier.height(16.dp))
