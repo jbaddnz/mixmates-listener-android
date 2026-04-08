@@ -97,6 +97,12 @@ fun SettingsScreen(
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
                 )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "v${context.packageManager.getPackageInfo(context.packageName, 0).versionName}",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
+                )
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
