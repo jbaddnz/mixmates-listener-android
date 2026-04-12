@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import es.mixmat.listener.ui.auth.TokenEntryScreen
 import es.mixmat.listener.ui.history.HistoryDetailScreen
 import es.mixmat.listener.ui.history.HistoryScreen
+import es.mixmat.listener.ui.legal.LegalScreen
 import es.mixmat.listener.ui.listen.ListenScreen
 import es.mixmat.listener.ui.settings.SettingsScreen
 
@@ -16,6 +17,7 @@ object Routes {
     const val HISTORY = "history"
     const val HISTORY_DETAIL = "history/{id}"
     const val SETTINGS = "settings"
+    const val LEGAL = "legal"
 
     fun historyDetail(id: String) = "history/$id"
 }
@@ -46,11 +48,18 @@ fun MixMatesNavGraph(
         composable(Routes.SETTINGS) {
             SettingsScreen(
                 onBack = { navController.popBackStack() },
+                onNavigateToLegal = { navController.navigate(Routes.LEGAL) },
                 onTokenCleared = {
                     navController.navigate(Routes.TOKEN_ENTRY) {
                         popUpTo(0) { inclusive = true }
                     }
                 },
+            )
+        }
+
+        composable(Routes.LEGAL) {
+            LegalScreen(
+                onBack = { navController.popBackStack() },
             )
         }
 

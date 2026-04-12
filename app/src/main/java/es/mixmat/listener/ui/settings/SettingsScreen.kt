@@ -18,6 +18,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 @Composable
 fun SettingsScreen(
     onBack: () -> Unit,
+    onNavigateToLegal: () -> Unit,
     onTokenCleared: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
@@ -58,6 +59,19 @@ fun SettingsScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             OutlinedButton(
+                onClick = {
+                    context.startActivity(
+                        Intent(Intent.ACTION_VIEW, Uri.parse("https://mixmat.es/account/delete")),
+                    )
+                },
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text("Delete account")
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            OutlinedButton(
                 onClick = { showConfirmation = true },
                 colors = ButtonDefaults.outlinedButtonColors(
                     contentColor = MaterialTheme.colorScheme.error,
@@ -65,6 +79,15 @@ fun SettingsScreen(
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Text("Remove Listen Key")
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            OutlinedButton(
+                onClick = onNavigateToLegal,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text("Legal")
             }
 
             Spacer(modifier = Modifier.weight(1f))
