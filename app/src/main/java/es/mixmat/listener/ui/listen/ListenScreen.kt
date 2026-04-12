@@ -38,6 +38,7 @@ fun ListenScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    var showMicDisclosure by remember { mutableStateOf(false) }
 
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission(),
@@ -253,7 +254,7 @@ fun ListenScreen(
                                 if (uiState.hasAudioPermission) {
                                     viewModel.startListening()
                                 } else {
-                                    permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+                                    showMicDisclosure = true
                                 }
                             },
                             modifier = Modifier.size(96.dp),
@@ -283,5 +284,34 @@ fun ListenScreen(
                     .padding(bottom = 16.dp),
             )
         }
+    }
+
+    if (showMicDisclosure) {
+        AlertDialog(
+            onDismissRequest = { showMicDisclosure = false },
+            title = { Text("Microphone access") },
+            text = {
+                Text(
+                    "MixMates Listener uses your microphone to capture a short audio clip " +
+                        "of music playing nearby. The clip is sent to a recognition service to " +
+                        "identify the song, then discarded. No audio is stored permanently.",
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showMicDisclosure = false
+                        permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+                    },
+                ) {
+                    Text("Allow")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showMicDisclosure = false }) {
+                    Text("Not now")
+                }
+            },
+        )
     }
 }
