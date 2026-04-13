@@ -1,5 +1,7 @@
 # MixMates Listener for Android
 
+[![CI](https://github.com/jbaddnz/mixmates-listener-android/actions/workflows/ci.yml/badge.svg)](https://github.com/jbaddnz/mixmates-listener-android/actions/workflows/ci.yml)
+
 An open-source reference implementation of a music recognition app for Android, built on the [MixMates Listener API](https://github.com/jbaddnz/mixmates-listener-api).
 
 Hold your phone up to a song, and it records a short clip, identifies the track, and gives you one-tap links to open it on Spotify, Tidal, or Apple Music. Think of it as an open, cross-platform Shazam — with the full source code in your hands.
@@ -10,22 +12,30 @@ This is a working app, but it's also a starting point. Fork it, restyle it, add 
 
 - **Audio recognition** — 11-second recording, automatic identification via the MixMates API
 - **Cross-platform links** — Spotify, Tidal, and Apple Music deep links for every match
-- **Listen queue** — browse and manage your recognition history
+- **Listen queue** — browse your recognition history with swipe-to-delete
 - **Group sharing** — share tracks to your MixMates groups
 - **Offline support** — queued recordings sync when connectivity returns
 - **Share sheet** — send share links to friends via any app
+- **Permission-aware UI** — microphone disclosure and clear handling of permission states
 
 ## Make it your own
 
 This reference implementation covers the core flows — record, recognise, browse, share. There's plenty of room to build on top of it:
 
-- Design your own UI and branding
+**System integrations**
+
 - Add a Quick Settings tile or home screen widget for one-tap recognition
 - Build a Wear OS companion
-- Add local history, analytics, or playlist integrations
 - Implement notifications for background recognition results
 
-See the [roadmap](docs/plans/) for ideas, or take it in a completely different direction.
+**UI and experience**
+
+- Design your own UI and branding
+- Add local history search and filtering
+- Audio waveform visualisation during the recording countdown
+- Playlist integrations
+
+Or take it in a completely different direction.
 
 ## Getting started
 
@@ -62,6 +72,7 @@ See the [roadmap](docs/plans/) for ideas, or take it in a completely different d
 - **Local storage**: Room (offline queue), EncryptedSharedPreferences (token)
 - **Background sync**: WorkManager
 - **Image loading**: Coil
+- **Testing**: JUnit + MockK + Turbine
 
 ## API
 
@@ -71,7 +82,7 @@ This app integrates with the [MixMates Listener API v1](https://github.com/jbadd
 
 This is an open-source client for a commercial API. The code is MIT-licensed and entirely yours to read, fork, and modify. The service behind the API is not — it runs on infrastructure that costs money to operate because we're serious about providing a good base for musical expression.
 
-What we can do is make everything around it open: the client code, the API specification, the documentation. You can see exactly what data leaves your device (an audio clip and a bearer token), exactly where it goes (mixmat.es), and exactly what comes back. There's no tracking, no analytics, no third-party SDKs in this app.
+What we can do is make everything around it open: the client code, the API specification, the documentation. You can see exactly what data leaves your device (an audio clip and a bearer token), exactly where it goes (mixmat.es), and exactly what comes back. There are no analytics, no tracking, no telemetry of any kind in this app.
 
 We think that's an honest trade-off, and we'd rather be upfront about it than pretend it isn't there.
 
@@ -82,3 +93,4 @@ See [CONTRIBUTING.md](CONTRIBUTING.md). Bug reports, feature ideas, and pull req
 ## License
 
 [MIT](LICENSE) — use it however you like.
+
