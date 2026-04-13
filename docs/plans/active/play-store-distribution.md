@@ -17,15 +17,21 @@ The app works. Distribution is how it reaches people. Play Store removes the sid
 
 ## Implementation
 
-- [ ] App icon — convert MML brand mark (mml-square.svg) to adaptive icon format
+- [x] App icon — MML adaptive icon with green-to-cyan gradient
+- [x] Splash screen — mmL wordmark + Listener text
 - [ ] Generate upload keystore and configure release signing in build files
-- [ ] Build signed AAB (Android App Bundle)
-- [ ] Test release build on emulator
-- [ ] Review and tighten proguard rules for release
+- [x] Build signed AAB (Android App Bundle) — CI builds release bundle
+- [ ] Test release build on device
+- [x] Review and tighten proguard rules for release
 - [ ] Write store listing copy — title, short description (80 chars), full description
-- [ ] Prepare data safety form answers
-- [ ] Update README with Play Store badge/link after launch
-- [ ] Verify targetSdk meets current Play Store requirements
+- [x] Prepare data safety form answers — documented below
+- [x] Update README with CI badge and current features
+- [x] Verify targetSdk meets current Play Store requirements (35, bump to 36 by Aug 2026)
+- [x] Mic disclosure dialog — prominent disclosure before RECORD_AUDIO
+- [x] Legal screen — in-app privacy policy, terms, source link
+- [x] Account deletion — settings row opens mixmat.es/account/delete
+- [x] CI/CD — GitHub Actions (build + release bundle + tests)
+- [x] Unit tests — 20 ViewModel tests
 
 ## Privacy policy
 
@@ -53,5 +59,6 @@ Match the MixMates voice — personal, direct, grounded. Not a tech product pitc
 
 ## Brand assets
 
-- App icon: MML mark from /assets/mml-square.svg — green (#1DB954) to cyan (#2CCCD3) gradient
-- Colour palette: dark background, Spotify green, Tidal cyan (per existing MixMates design)
+- App icon: MML mark — green (#1DB954) to cyan (#2CCCD3) gradient adaptive icon
+- Splash: mmL wordmark (MuseoModerno Bold 700) + "Listener" (HelveticaNeue, white 80%)
+- Colour palette: dark background (#1A1A2E), Spotify green, Tidal cyan
