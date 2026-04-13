@@ -23,5 +23,8 @@ jobs:
       - name: Build debug
         run: ./gradlew assembleDebug
 
+      - name: Build release bundle
+        run: ./gradlew bundleRelease
+
       - name: Run tests
         run: ./gradlew test
