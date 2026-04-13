@@ -17,7 +17,7 @@ The app works. Distribution is how it reaches people. Play Store removes the sid
 
 ## Implementation
 
-- [x] App icon — MML adaptive icon with green-to-cyan gradient
+- [x] App icon — MuseoModerno mmL adaptive icon (Inkscape-outlined paths, gradient)
 - [x] Splash screen — mmL wordmark + Listener text
 - [ ] Generate upload keystore and configure release signing in build files
 - [x] Build signed AAB (Android App Bundle) — CI builds release bundle
@@ -59,6 +59,6 @@ Match the MixMates voice — personal, direct, grounded. Not a tech product pitc
 
 ## Brand assets
 
-- App icon: MML mark — green (#1DB954) to cyan (#2CCCD3) gradient adaptive icon
+- App icon: MuseoModerno mmL — green (#1DB954) to cyan (#2CCCD3) gradient, Inkscape-outlined paths
 - Splash: mmL wordmark (MuseoModerno Bold 700) + "Listener" (HelveticaNeue, white 80%)
 - Colour palette: dark background (#1A1A2E), Spotify green, Tidal cyan
