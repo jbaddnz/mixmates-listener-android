@@ -18,6 +18,9 @@ serialization-json = "1.7.1"
 coil = "2.7.0"
 hilt-ext = "1.2.0"
 splashscreen = "1.0.1"
+coroutines = "1.9.0"
+mockk = "1.13.16"
+turbine = "1.2.0"
 
 [libraries]
 # AndroidX Core
@@ -74,6 +77,11 @@ splashscreen = { group = "androidx.core", name = "core-splashscreen", version.re
 
 # Image loading
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
+
+# Testing
+coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

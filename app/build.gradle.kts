@@ -97,4 +97,10 @@ dependencies {
 
     // Image loading
     implementation(libs.coil.compose)
+
+    // Testing
+    testImplementation("junit:junit:4.13.2")
+    testImplementation(libs.coroutines.test)
+    testImplementation(libs.mockk)
+    testImplementation(libs.turbine)
 }
