@@ -1,5 +1,6 @@
 package es.mixmat.listener.ui.history
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -104,7 +105,7 @@ fun HistoryScreen(
                         modifier = Modifier.fillMaxSize(),
                     ) {
                         items(uiState.items, key = { it.id }) { item ->
-                            HistoryListItem(
+                            SwipeToDismissHistoryItem(
                                 item = item,
                                 onClick = { onItemClick(item.id) },
                                 onDelete = { viewModel.deleteItem(item.id) },
@@ -127,36 +128,63 @@ fun HistoryScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun HistoryListItem(
+private fun SwipeToDismissHistoryItem(
     item: HistoryItem,
     onClick: () -> Unit,
     onDelete: () -> Unit,
 ) {
-    ListItem(
-        modifier = Modifier.clickable(onClick = onClick),
-        headlineContent = {
-            Text(item.title, maxLines = 1, overflow = TextOverflow.Ellipsis)
-        },
-        supportingContent = {
-            Text(item.artist, maxLines = 1, overflow = TextOverflow.Ellipsis)
-        },
-        leadingContent = {
-            if (item.thumbnail != null) {
-                AsyncImage(
-                    model = item.thumbnail,
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clip(MaterialTheme.shapes.small),
-                )
-            }
-        },
-        trailingContent = {
-            IconButton(onClick = onDelete) {
-                Icon(Icons.Default.Delete, contentDescription = "Remove")
+    val dismissState = rememberSwipeToDismissBoxState(
+        confirmValueChange = { value ->
+            if (value == SwipeToDismissBoxValue.EndToStart) {
+                onDelete()
+                true
+            } else {
+                false
             }
         },
     )
+
+    SwipeToDismissBox(
+        state = dismissState,
+        backgroundContent = {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.errorContainer),
+                contentAlignment = Alignment.CenterEnd,
+            ) {
+                Icon(
+                    Icons.Default.Delete,
+                    contentDescription = "Delete",
+                    tint = MaterialTheme.colorScheme.onErrorContainer,
+                    modifier = Modifier.padding(end = 16.dp),
+                )
+            }
+        },
+        enableDismissFromStartToEnd = false,
+    ) {
+        ListItem(
+            modifier = Modifier.clickable(onClick = onClick),
+            headlineContent = {
+                Text(item.title, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            },
+            supportingContent = {
+                Text(item.artist, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            },
+            leadingContent = {
+                if (item.thumbnail != null) {
+                    AsyncImage(
+                        model = item.thumbnail,
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(48.dp)
+                            .clip(MaterialTheme.shapes.small),
+                    )
+                }
+            },
+        )
+    }
 }
