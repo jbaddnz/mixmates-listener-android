@@ -22,3 +22,6 @@
 
 # Room
 -keep class * extends androidx.room.RoomDatabase
+
+# Google Tink (used by androidx.security:security-crypto)
+-dontwarn com.google.errorprone.annotations.**
