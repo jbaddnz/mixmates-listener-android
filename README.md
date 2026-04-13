@@ -86,6 +86,10 @@ What we can do is make everything around it open: the client code, the API speci
 
 We think that's an honest trade-off, and we'd rather be upfront about it than pretend it isn't there.
 
+## See also
+
+- [MixMates Listener for iOS](https://github.com/jbaddnz/mixmates-listener-ios) — the iOS sibling of this app
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). Bug reports, feature ideas, and pull requests are all welcome.
