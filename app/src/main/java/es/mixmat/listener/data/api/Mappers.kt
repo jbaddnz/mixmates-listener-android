@@ -55,6 +55,7 @@ fun GroupDto.toDomain() = Group(
 fun RecognizeData.toDomain() = RecognitionResult(
     status = status,
     source = source,
+    historyId = historyId,
     track = track?.toDomain(),
 )
 
