@@ -67,6 +67,7 @@ data class RateLimit(
 data class RecognitionResult(
     val status: String,
     val source: String?,
+    val historyId: String?,
     val track: Track?,
 )
 

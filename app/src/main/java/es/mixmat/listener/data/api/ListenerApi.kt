@@ -40,6 +40,12 @@ interface ListenerApi {
         @Body request: ShareRequest,
     ): ApiResponse<ShareData>
 
+    @POST("history/{id}/report")
+    suspend fun historyReport(
+        @Path("id") id: String,
+        @Body request: ReportRequest,
+    ): ApiResponse<ReportData>
+
     @GET("groups")
     suspend fun groups(): ApiResponse<GroupListData>
 

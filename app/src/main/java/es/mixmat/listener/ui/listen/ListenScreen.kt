@@ -144,6 +144,24 @@ fun ListenScreen(
                         }
                     }
 
+                    if (result.historyId != null && result.status in listOf("saved", "duplicate")) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        if (uiState.reported) {
+                            Text(
+                                text = "Reported — thanks!",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.tertiary,
+                            )
+                        } else {
+                            TextButton(
+                                onClick = viewModel::reportWrongMatch,
+                                enabled = !uiState.isReporting,
+                            ) {
+                                Text(if (uiState.isReporting) "Reporting…" else "Wrong match?")
+                            }
+                        }
+                    }
+
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(
                         onClick = {

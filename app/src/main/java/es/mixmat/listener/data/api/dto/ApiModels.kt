@@ -65,6 +65,7 @@ data class RateLimitInfo(
 data class RecognizeData(
     val status: String = "",
     val source: String? = null,
+    @SerialName("history_id") val historyId: String? = null,
     val track: TrackDto? = null,
 )
 
@@ -182,4 +183,16 @@ data class RecordingDto(
 @Serializable
 data class DeletedCountData(
     val deleted: Int = 0,
+)
+
+// -- Report --
+
+@Serializable
+data class ReportRequest(
+    val reason: String? = null,
+)
+
+@Serializable
+data class ReportData(
+    val reported: Boolean = false,
 )

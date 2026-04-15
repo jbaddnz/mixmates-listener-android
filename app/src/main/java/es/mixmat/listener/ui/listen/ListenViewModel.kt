@@ -10,6 +10,7 @@ import es.mixmat.listener.audio.AudioRecorder
 import es.mixmat.listener.audio.RecorderState
 import es.mixmat.listener.data.api.RateLimitException
 import es.mixmat.listener.data.repository.AuthRepository
+import es.mixmat.listener.data.repository.HistoryRepository
 import es.mixmat.listener.data.repository.RecognitionRepository
 import es.mixmat.listener.domain.model.RecognitionResult
 import es.mixmat.listener.domain.model.UserProfile
@@ -31,6 +32,8 @@ data class ListenUiState(
     val queuedOffline: Boolean = false,
     val hasAudioPermission: Boolean = false,
     val permissionDenied: Boolean = false,
+    val reported: Boolean = false,
+    val isReporting: Boolean = false,
 )
 
 @HiltViewModel
@@ -38,6 +41,7 @@ class ListenViewModel @Inject constructor(
     private val audioRecorder: AudioRecorder,
     private val recognitionRepository: RecognitionRepository,
     private val authRepository: AuthRepository,
+    private val historyRepository: HistoryRepository,
     private val connectivityManager: ConnectivityManager,
 ) : ViewModel() {
 
@@ -138,6 +142,26 @@ class ListenViewModel @Inject constructor(
                     isSubmitting = false,
                     error = "Recognition failed. Queued for retry.",
                     queuedOffline = true,
+                )
+            }
+        }
+    }
+
+    fun reportWrongMatch() {
+        val historyId = _uiState.value.result?.historyId ?: return
+        _uiState.value = _uiState.value.copy(isReporting = true)
+        viewModelScope.launch {
+            try {
+                historyRepository.report(historyId)
+                _uiState.value = _uiState.value.copy(
+                    isReporting = false,
+                    reported = true,
+                )
+            } catch (e: Exception) {
+                Log.e("Listen", "Report failed", e)
+                _uiState.value = _uiState.value.copy(
+                    isReporting = false,
+                    error = "Could not submit report. Try again.",
                 )
             }
         }

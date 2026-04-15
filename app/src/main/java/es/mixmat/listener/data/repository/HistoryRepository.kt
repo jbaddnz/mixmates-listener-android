@@ -1,6 +1,7 @@
 package es.mixmat.listener.data.repository
 
 import es.mixmat.listener.data.api.ListenerApi
+import es.mixmat.listener.data.api.dto.ReportRequest
 import es.mixmat.listener.data.api.dto.ShareRequest
 import es.mixmat.listener.data.api.toDomain
 import es.mixmat.listener.domain.model.HistoryDetail
@@ -37,4 +38,8 @@ class HistoryRepository @Inject constructor(
     suspend fun share(id: String, groupIds: List<String>): Map<String, String> =
         api.historyShare(id, ShareRequest(groupIds)).data.results
             .associate { it.groupId to it.status }
+
+    suspend fun report(id: String, reason: String? = null) {
+        api.historyReport(id, ReportRequest(reason))
+    }
 }
