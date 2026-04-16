@@ -14,8 +14,8 @@ android {
         applicationId = "es.mixmat.listener"
         minSdk = 26
         targetSdk = 35
-        versionCode = 4
-        versionName = "0.2.1"
+        versionCode = 5
+        versionName = "0.2.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -80,9 +80,6 @@ dependencies {
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
-
-    // DataStore
-    implementation(libs.datastore.preferences)
 
     // Security
     implementation(libs.security.crypto)
