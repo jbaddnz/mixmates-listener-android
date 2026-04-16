@@ -70,20 +70,36 @@ fun TrackCard(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                val buttonPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp)
                 platforms.spotify?.let { url ->
-                    FilledTonalButton(onClick = { onPlatformClick(url) }) {
-                        Text("Spotify")
+                    FilledTonalButton(
+                        onClick = { onPlatformClick(url) },
+                        modifier = Modifier.weight(1f),
+                        contentPadding = buttonPadding,
+                    ) {
+                        Text("Spotify", maxLines = 1, overflow = TextOverflow.Ellipsis)
                     }
                 }
                 platforms.appleMusic?.let { url ->
-                    FilledTonalButton(onClick = { onPlatformClick(url) }) {
-                        Text("Apple Music")
+                    FilledTonalButton(
+                        onClick = { onPlatformClick(url) },
+                        modifier = Modifier.weight(1f),
+                        contentPadding = buttonPadding,
+                    ) {
+                        Text("Apple Music", maxLines = 1, overflow = TextOverflow.Ellipsis)
                     }
                 }
                 platforms.tidal?.let { url ->
-                    FilledTonalButton(onClick = { onPlatformClick(url) }) {
-                        Text("Tidal")
+                    FilledTonalButton(
+                        onClick = { onPlatformClick(url) },
+                        modifier = Modifier.weight(1f),
+                        contentPadding = buttonPadding,
+                    ) {
+                        Text("Tidal", maxLines = 1, overflow = TextOverflow.Ellipsis)
                     }
                 }
             }
