@@ -24,7 +24,7 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun MixMatesListenerTheme(
-    darkTheme: Boolean = true,
+    darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit,
 ) {

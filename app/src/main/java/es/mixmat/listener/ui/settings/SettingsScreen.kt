@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -23,7 +22,6 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     var showConfirmation by remember { mutableStateOf(false) }
-    val isDarkMode by viewModel.isDarkMode.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
     Scaffold(
@@ -44,20 +42,6 @@ fun SettingsScreen(
                 .padding(padding)
                 .padding(16.dp),
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text("Dark mode", style = MaterialTheme.typography.bodyLarge)
-                Switch(
-                    checked = isDarkMode,
-                    onCheckedChange = viewModel::setDarkMode,
-                )
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
             OutlinedButton(
                 onClick = {
                     context.startActivity(
