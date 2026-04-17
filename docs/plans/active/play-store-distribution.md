@@ -102,6 +102,7 @@ Record a short clip, and the app identifies the track - then gives you one-tap l
 Features:
 - 11-second audio recognition - hold your phone up and tap record
 - Cross-platform links - Spotify, Tidal, and Apple Music, one tap each
+- Share target - share a Spotify, Tidal, or Apple Music link from any app to get cross-platform links
 - Recognition history - browse everything you've identified
 - Group sharing - share recognised tracks to your MixMates groups
 - Offline queue - recordings sync when you're back online
