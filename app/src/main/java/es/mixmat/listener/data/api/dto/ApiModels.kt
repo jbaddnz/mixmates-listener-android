@@ -185,6 +185,14 @@ data class DeletedCountData(
     val deleted: Int = 0,
 )
 
+// -- Resolve --
+
+@Serializable
+data class ResolveRequest(
+    val url: String,
+    @SerialName("group_id") val groupId: String? = null,
+)
+
 // -- Report --
 
 @Serializable

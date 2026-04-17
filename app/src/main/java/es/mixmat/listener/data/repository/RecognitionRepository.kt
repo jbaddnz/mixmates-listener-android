@@ -1,6 +1,7 @@
 package es.mixmat.listener.data.repository
 
 import es.mixmat.listener.data.api.ListenerApi
+import es.mixmat.listener.data.api.dto.ResolveRequest
 import es.mixmat.listener.data.api.toDomain
 import es.mixmat.listener.data.local.dao.PendingRecognitionDao
 import es.mixmat.listener.data.local.entity.PendingRecognition
@@ -17,6 +18,9 @@ class RecognitionRepository @Inject constructor(
     private val api: ListenerApi,
     private val pendingDao: PendingRecognitionDao,
 ) {
+    suspend fun resolve(url: String, groupId: String? = null): RecognitionResult =
+        api.resolve(ResolveRequest(url = url, groupId = groupId)).data.toDomain()
+
     suspend fun recognize(audioFile: File, mimeType: String): RecognitionResult {
         val requestBody = audioFile.asRequestBody(mimeType.toMediaType())
         val part = MultipartBody.Part.createFormData("audio", audioFile.name, requestBody)
