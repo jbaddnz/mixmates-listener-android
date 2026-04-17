@@ -46,6 +46,11 @@ interface ListenerApi {
         @Body request: ReportRequest,
     ): ApiResponse<ReportData>
 
+    @POST("resolve")
+    suspend fun resolve(
+        @Body request: ResolveRequest,
+    ): ApiResponse<RecognizeData>
+
     @GET("groups")
     suspend fun groups(): ApiResponse<GroupListData>
 
