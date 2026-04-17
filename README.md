@@ -15,6 +15,7 @@ This is a working app, but it's also a starting point. Fork it, restyle it, add 
 - **Listen queue** — browse your recognition history with swipe-to-delete
 - **Group sharing** — share tracks to your MixMates groups
 - **Offline support** — queued recordings sync when connectivity returns
+- **Share target** — share Spotify, Tidal, or Apple Music links from any app to resolve them into cross-platform links
 - **Share sheet** — send share links to friends via any app
 - **Permission-aware UI** — microphone disclosure and clear handling of permission states
 
