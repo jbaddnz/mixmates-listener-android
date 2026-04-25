@@ -10,6 +10,7 @@ This is a working app, but it's also a starting point. Fork it, restyle it, add 
 
 ## What it does
 
+- **Sign in with Google** — one-tap authentication via Google Credential Manager
 - **Audio recognition** — 11-second recording, automatic identification via the MixMates API
 - **Cross-platform links** — Spotify, Tidal, and Apple Music deep links for every match
 - **Listen queue** — browse your recognition history with swipe-to-delete
@@ -45,7 +46,6 @@ Or take it in a completely different direction.
 - Android 8.0 (API 26) or higher
 - [Android Studio](https://developer.android.com/studio) (latest stable) and JDK 17
 - A [MixMates](https://mixmat.es) account with Listen enabled
-- A Listen Key (generated in MixMates Settings > Listening)
 
 ### Build and run
 
@@ -56,12 +56,19 @@ Or take it in a completely different direction.
 
 2. Open the project in Android Studio
 
-3. Sync Gradle and run — Android Studio will prompt to sync, then click **Run** to deploy to a device or emulator
+3. Add your Google Web Client ID to `local.properties`:
+   ```
+   GOOGLE_WEB_CLIENT_ID=your-client-id.apps.googleusercontent.com
+   ```
+   This is the OAuth web client ID from your Google Cloud Console project. You'll also need an Android OAuth client registered with your app's package name and signing certificate SHA-1. Without this, Google sign-in won't work — but the Listen Key paste flow will still function.
+
+4. Sync Gradle and run — Android Studio will prompt to sync, then click **Run** to deploy to a device or emulator
 
 ### Emulator tips
 
 - Create a virtual device via **Tools > Device Manager**
 - Enable host microphone access in **Extended Controls > Microphone** for audio recognition to work
+- Sign into a Google account on the emulator (**Settings > Accounts > Add account**) for Google sign-in to work
 
 ## Architecture
 
