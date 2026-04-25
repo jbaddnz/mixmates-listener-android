@@ -25,3 +25,7 @@
 
 # Google Tink (used by androidx.security:security-crypto)
 -dontwarn com.google.errorprone.annotations.**
+
+# Google Credential Manager / Identity
+-keep class com.google.android.libraries.identity.googleid.** { *; }
+-keep class androidx.credentials.** { *; }

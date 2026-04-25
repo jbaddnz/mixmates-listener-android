@@ -12,6 +12,11 @@ interface ListenerApi {
     @GET("auth/me")
     suspend fun me(): ApiResponse<UserData>
 
+    @POST("auth/google")
+    suspend fun signInWithGoogle(
+        @Body request: GoogleSignInRequest,
+    ): ApiResponse<GoogleSignInData>
+
     @Multipart
     @POST("recognize")
     suspend fun recognize(

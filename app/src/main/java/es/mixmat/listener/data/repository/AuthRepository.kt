@@ -1,6 +1,8 @@
 package es.mixmat.listener.data.repository
 
 import es.mixmat.listener.data.api.ListenerApi
+import es.mixmat.listener.data.api.dto.GoogleSignInData
+import es.mixmat.listener.data.api.dto.GoogleSignInRequest
 import es.mixmat.listener.data.api.toDomain
 import es.mixmat.listener.data.auth.TokenManager
 import es.mixmat.listener.domain.model.UserProfile
@@ -20,4 +22,7 @@ class AuthRepository @Inject constructor(
 
     suspend fun getProfile(): UserProfile =
         api.me().data.toDomain()
+
+    suspend fun signInWithGoogle(idToken: String, nonce: String, name: String?): GoogleSignInData =
+        api.signInWithGoogle(GoogleSignInRequest(idToken = idToken, nonce = nonce, name = name)).data
 }

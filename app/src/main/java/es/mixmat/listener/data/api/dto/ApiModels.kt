@@ -204,3 +204,19 @@ data class ReportRequest(
 data class ReportData(
     val reported: Boolean = false,
 )
+
+// -- Google Sign-In --
+
+@Serializable
+data class GoogleSignInRequest(
+    @SerialName("id_token") val idToken: String,
+    val nonce: String,
+    val name: String? = null,
+)
+
+@Serializable
+data class GoogleSignInData(
+    val token: String,
+    @SerialName("is_new_account") val isNewAccount: Boolean,
+    @SerialName("listen_enabled") val listenEnabled: Boolean,
+)

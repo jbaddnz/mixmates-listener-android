@@ -1,9 +1,13 @@
 package es.mixmat.listener.ui.auth
 
+import android.util.Log
+import androidx.credentials.exceptions.GetCredentialCancellationException
+import es.mixmat.listener.data.api.dto.GoogleSignInData
+import es.mixmat.listener.data.auth.GoogleSignInHelper
+import es.mixmat.listener.data.auth.GoogleSignInResult
 import es.mixmat.listener.data.repository.AuthRepository
 import es.mixmat.listener.domain.model.RateLimit
 import es.mixmat.listener.domain.model.UserProfile
-import android.util.Log
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -29,6 +33,7 @@ class TokenEntryViewModelTest {
 
     private val testDispatcher = StandardTestDispatcher()
     private lateinit var authRepository: AuthRepository
+    private lateinit var googleHelper: GoogleSignInHelper
 
     private val validProfile = UserProfile(
         id = "u1",
@@ -39,6 +44,23 @@ class TokenEntryViewModelTest {
         rateLimit = RateLimit(limit = 20, remaining = 15, resetAt = 0),
     )
 
+    private val googleSignInResult = GoogleSignInResult(
+        idToken = "google-id-token",
+        displayName = "Jamie",
+    )
+
+    private val googleSignInDataEnabled = GoogleSignInData(
+        token = "bearer-token",
+        isNewAccount = false,
+        listenEnabled = true,
+    )
+
+    private val googleSignInDataDisabled = GoogleSignInData(
+        token = "bearer-token",
+        isNewAccount = true,
+        listenEnabled = false,
+    )
+
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
@@ -46,12 +68,15 @@ class TokenEntryViewModelTest {
         every { Log.e(any(), any(), any()) } returns 0
         every { Log.e(any(), any()) } returns 0
         authRepository = mockk(relaxed = true)
+        googleHelper = mockk()
     }
 
     @After
     fun tearDown() {
         Dispatchers.resetMain()
     }
+
+    // -- Paste flow tests --
 
     @Test
     fun `onTokenChange updates token`() {
@@ -125,5 +150,81 @@ class TokenEntryViewModelTest {
         assertFalse(state.isValid)
         assertTrue(state.error!!.contains("not enabled"))
         verify { authRepository.clearToken() }
+    }
+
+    // -- Google sign-in tests --
+
+    @Test
+    fun `signInWithGoogle success`() = runTest {
+        coEvery { googleHelper.signIn(any()) } returns googleSignInResult
+        coEvery { authRepository.signInWithGoogle(any(), any(), any()) } returns googleSignInDataEnabled
+
+        val viewModel = TokenEntryViewModel(authRepository)
+        viewModel.signInWithGoogle(googleHelper)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertTrue(state.isValid)
+        assertFalse(state.isGoogleSigningIn)
+        assertNull(state.error)
+        verify { authRepository.saveToken("bearer-token") }
+    }
+
+    @Test
+    fun `signInWithGoogle listen not enabled`() = runTest {
+        coEvery { googleHelper.signIn(any()) } returns googleSignInResult
+        coEvery { authRepository.signInWithGoogle(any(), any(), any()) } returns googleSignInDataDisabled
+
+        val viewModel = TokenEntryViewModel(authRepository)
+        viewModel.signInWithGoogle(googleHelper)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertFalse(state.isValid)
+        assertFalse(state.isGoogleSigningIn)
+        assertNotNull(state.error)
+        assertTrue(state.error!!.contains("not enabled"))
+        verify(exactly = 0) { authRepository.saveToken(any()) }
+    }
+
+    @Test
+    fun `signInWithGoogle server error`() = runTest {
+        coEvery { googleHelper.signIn(any()) } returns googleSignInResult
+        coEvery { authRepository.signInWithGoogle(any(), any(), any()) } throws RuntimeException("Server error")
+
+        val viewModel = TokenEntryViewModel(authRepository)
+        viewModel.signInWithGoogle(googleHelper)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertFalse(state.isValid)
+        assertFalse(state.isGoogleSigningIn)
+        assertNotNull(state.error)
+        assertTrue(state.error!!.contains("failed"))
+    }
+
+    @Test
+    fun `signInWithGoogle user cancels`() = runTest {
+        coEvery { googleHelper.signIn(any()) } throws GetCredentialCancellationException()
+
+        val viewModel = TokenEntryViewModel(authRepository)
+        viewModel.signInWithGoogle(googleHelper)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertFalse(state.isValid)
+        assertFalse(state.isGoogleSigningIn)
+        assertNull(state.error)
+    }
+
+    @Test
+    fun `signInWithGoogle sets isGoogleSigningIn during processing`() {
+        coEvery { googleHelper.signIn(any()) } returns googleSignInResult
+        coEvery { authRepository.signInWithGoogle(any(), any(), any()) } returns googleSignInDataEnabled
+
+        val viewModel = TokenEntryViewModel(authRepository)
+        viewModel.signInWithGoogle(googleHelper)
+
+        assertTrue(viewModel.uiState.value.isGoogleSigningIn)
     }
 }
