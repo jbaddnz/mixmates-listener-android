@@ -62,7 +62,7 @@ fun SettingsScreen(
                 ),
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text("Remove Listen Key")
+                Text("Sign out")
             }
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -118,8 +118,8 @@ fun SettingsScreen(
     if (showConfirmation) {
         AlertDialog(
             onDismissRequest = { showConfirmation = false },
-            title = { Text("Remove Listen Key?") },
-            text = { Text("You'll need to enter it again to use the app.") },
+            title = { Text("Sign out?") },
+            text = { Text("You'll need to sign in again to use the app.") },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -128,7 +128,7 @@ fun SettingsScreen(
                         onTokenCleared()
                     },
                 ) {
-                    Text("Remove", color = MaterialTheme.colorScheme.error)
+                    Text("Sign out", color = MaterialTheme.colorScheme.error)
                 }
             },
             dismissButton = {

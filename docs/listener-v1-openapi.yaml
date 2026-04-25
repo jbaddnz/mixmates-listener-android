@@ -30,7 +30,17 @@ info:
 
     ## Getting started
 
-    1. Sign up at [mixmat.es](https://mixmat.es) via Spotify, Tidal, or Apple Music
+    **For native apps (recommended):**
+
+    1. Use Sign in with Apple (iOS) or Sign in with Google (Android) via
+       `POST /auth/apple` or `POST /auth/google`
+    2. The endpoint returns a Bearer token — store it securely
+    3. If `listen_enabled` is false, guide the user to upgrade at mixmat.es
+    4. Start building
+
+    **For web or manual setup:**
+
+    1. Sign up at [mixmat.es](https://mixmat.es)
     2. Upgrade to a paid plan (from $5/mo) to unlock audio recognition
     3. Enable Listen in Settings
     4. Generate a Listen key (Bearer token) in your Listen group settings
@@ -38,14 +48,17 @@ info:
 
     ## Authentication
 
-    All endpoints (except `/health`) require a Bearer token:
+    Most endpoints require a Bearer token:
 
     ```
     Authorization: Bearer <token>
     ```
 
-    Generate a token in MixMates Settings or via `POST /auth/token` (session auth).
-    Tokens require a paid MixMates account with Listen enabled.
+    **Unauthenticated endpoints:** `/health`, `/auth/apple`, `/auth/google`
+
+    Obtain a token via native sign-in (`POST /auth/apple` or `POST /auth/google`),
+    from MixMates Settings on the web, or via `POST /auth/token` (session auth).
+    Recognition and history endpoints require a paid MixMates account with Listen enabled.
 
     ## Rate Limits
 
@@ -163,6 +176,75 @@ paths:
           $ref: "#/components/responses/RateLimited"
         "502":
           description: Recognition service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /resolve:
+    post:
+      operationId: resolveUrl
+      summary: Resolve a music URL
+      description: |
+        Takes a Spotify, Tidal, or Apple Music track URL and returns
+        cross-platform links. The track is saved to the specified group
+        (or your listen group by default).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [url]
+              properties:
+                url:
+                  type: string
+                  format: uri
+                  description: Spotify, Tidal, or Apple Music track URL
+                  example: "https://open.spotify.com/track/4uLU6hMCjMI75M1A2tKUQC"
+                group_id:
+                  type: ["string", "null"]
+                  description: Target group ID. Defaults to listen group if omitted.
+                  example: "abc123"
+      responses:
+        "200":
+          description: Track resolved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        enum: [saved, duplicate, no_links]
+                      source:
+                        type: string
+                        enum: [link]
+                      history_id:
+                        type: ["string", "null"]
+                        description: History entry ID. Present for saved and duplicate, null for no_links.
+                      track:
+                        $ref: "#/components/schemas/Track"
+                  meta:
+                    $ref: "#/components/schemas/Meta"
+          headers:
+            X-RateLimit-Limit:
+              $ref: "#/components/headers/X-RateLimit-Limit"
+            X-RateLimit-Remaining:
+              $ref: "#/components/headers/X-RateLimit-Remaining"
+            X-RateLimit-Reset:
+              $ref: "#/components/headers/X-RateLimit-Reset"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        "502":
+          description: Conversion pipeline failed
           content:
             application/json:
               schema:
@@ -433,6 +515,184 @@ paths:
                 format: binary
         "404":
           $ref: "#/components/responses/NotFound"
+
+  /push/register:
+    post:
+      operationId: registerPush
+      summary: Register for push notifications
+      description: |
+        Register an APNs device token to receive push notifications for
+        group track adds and notes. Call on every app launch (tokens can
+        change). Upserts — same token re-registers without error.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [device_token]
+              properties:
+                device_token:
+                  type: string
+                  description: APNs device token (hex-encoded)
+                  example: "a1b2c3d4e5f6..."
+      responses:
+        "200":
+          description: Token registered
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      registered:
+                        type: boolean
+                  meta:
+                    $ref: "#/components/schemas/Meta"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+    delete:
+      operationId: deregisterPush
+      summary: Deregister from push notifications
+      description: |
+        Remove all APNs device tokens for the authenticated user.
+        Call on sign-out.
+      responses:
+        "200":
+          description: Tokens removed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      deregistered:
+                        type: boolean
+                  meta:
+                    $ref: "#/components/schemas/Meta"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /auth/apple:
+    post:
+      operationId: signInWithApple
+      summary: Sign in with Apple
+      description: |
+        Authenticate using an Apple identity token from Sign in with Apple (native iOS).
+        Returns a Bearer token for all subsequent API calls. Unauthenticated — this IS the sign-in.
+
+        The `user` object (name, email) is only provided by Apple on first sign-in.
+        Always send it when available. The `nonce` is required for replay protection.
+      security: []
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [identity_token, nonce]
+              properties:
+                identity_token:
+                  type: string
+                  description: JWT identity token from Apple Sign in
+                nonce:
+                  type: string
+                  description: Random nonce for replay protection. SHA256-hash it for the Apple request, send the raw string here
+                user:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    email:
+                      type: string
+      responses:
+        "200":
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                        description: Bearer token for API calls
+                      is_new_account:
+                        type: boolean
+                        description: True if a new MixMates account was created
+                      listen_enabled:
+                        type: boolean
+                        description: True if the account has Listen enabled (paid tier)
+        "400":
+          description: Missing or invalid parameters (missing_token, missing_nonce, nonce_reused)
+        "401":
+          description: Token signature verification failed (token_invalid)
+        "429":
+          description: Rate limited (5/min per IP)
+
+  /auth/google:
+    post:
+      operationId: signInWithGoogle
+      summary: Sign in with Google
+      description: |
+        Authenticate using a Google ID token from Credential Manager (native Android).
+        Returns a Bearer token for all subsequent API calls. Unauthenticated — this IS the sign-in.
+
+        Use the MixMates web client ID with Credential Manager. Set the nonce via `setNonce()`.
+      security: []
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [id_token, nonce]
+              properties:
+                id_token:
+                  type: string
+                  description: JWT ID token from Google Sign-In
+                nonce:
+                  type: string
+                  description: Random nonce for replay protection. Set via setNonce() on Credential Manager request
+                name:
+                  type: string
+                  description: User's display name (from Google profile)
+      responses:
+        "200":
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                        description: Bearer token for API calls
+                      is_new_account:
+                        type: boolean
+                        description: True if a new MixMates account was created
+                      listen_enabled:
+                        type: boolean
+                        description: True if the account has Listen enabled (paid tier)
+        "400":
+          description: Missing or invalid parameters (missing_token, missing_nonce, nonce_reused)
+        "401":
+          description: Token signature verification failed (token_invalid)
+        "429":
+          description: Rate limited (5/min per IP)
 
   /auth/token:
     post:
@@ -716,3 +976,4 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/ErrorResponse"
+
