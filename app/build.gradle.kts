@@ -13,6 +13,11 @@ val localProperties = Properties().apply {
     if (file.exists()) load(file.inputStream())
 }
 
+val keystoreProperties = Properties().apply {
+    val file = rootProject.file("norepo/keystore.properties")
+    if (file.exists()) load(file.inputStream())
+}
+
 android {
     namespace = "es.mixmat.listener"
     compileSdk = 35
@@ -21,8 +26,8 @@ android {
         applicationId = "es.mixmat.listener"
         minSdk = 26
         targetSdk = 35
-        versionCode = 8
-        versionName = "0.4.0"
+        versionCode = 9
+        versionName = "0.4.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -33,6 +38,18 @@ android {
         )
     }
 
+    signingConfigs {
+        create("release") {
+            val storeFilePath = keystoreProperties.getProperty("storeFile")
+            if (storeFilePath != null) {
+                storeFile = rootProject.file(storeFilePath)
+                storePassword = keystoreProperties.getProperty("storePassword")
+                keyAlias = keystoreProperties.getProperty("keyAlias")
+                keyPassword = keystoreProperties.getProperty("keyPassword")
+            }
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = true
@@ -41,6 +58,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 
