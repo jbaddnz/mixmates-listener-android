@@ -41,6 +41,9 @@ class HistoryDetailViewModelTest {
         shareUrl = "https://mixmat.es/abc",
         platforms = Platforms(spotify = "https://spotify.com", tidal = null, appleMusic = null),
         createdAt = "2026-01-01T00:00:00Z",
+        bpm = null,
+        musicalKey = null,
+        keyScale = null,
         sharedTo = listOf(SharedGroup(groupId = "g1", groupName = "Group 1")),
     )
 

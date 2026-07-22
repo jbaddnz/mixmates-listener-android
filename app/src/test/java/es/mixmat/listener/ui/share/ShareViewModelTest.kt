@@ -54,6 +54,9 @@ class ShareViewModelTest {
             tidal = "https://tidal.com/track/456",
             appleMusic = "https://music.apple.com/track/789",
         ),
+        bpm = null,
+        musicalKey = null,
+        keyScale = null,
     )
 
     private val testResult = RecognitionResult(

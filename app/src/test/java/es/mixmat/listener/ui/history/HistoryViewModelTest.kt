@@ -54,6 +54,9 @@ class HistoryViewModelTest {
         shareUrl = null,
         platforms = Platforms(spotify = null, tidal = null, appleMusic = null),
         createdAt = "2026-01-01T00:00:00Z",
+        bpm = null,
+        musicalKey = null,
+        keyScale = null,
     )
 
     @Test
