@@ -110,6 +110,9 @@ fun ListenScreen(
                                     platforms = track.platforms,
                                     shareUrl = track.shareUrl,
                                     status = result.status,
+                                    bpm = track.bpm,
+                                    musicalKey = track.musicalKey,
+                                    keyScale = track.keyScale,
                                     onPlatformClick = { url ->
                                         context.startActivity(
                                             Intent(Intent.ACTION_VIEW, Uri.parse(url)),

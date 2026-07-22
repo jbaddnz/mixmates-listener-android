@@ -64,4 +64,7 @@ interface ListenerApi {
 
     @DELETE("recordings")
     suspend fun deleteRecordings(): ApiResponse<DeletedCountData>
+
+    @DELETE("account")
+    suspend fun deleteAccount(): ApiResponse<DeletedData>
 }

@@ -54,7 +54,7 @@ class TokenEntryViewModel @Inject constructor(
                 if (!response.listenEnabled) {
                     _uiState.value = _uiState.value.copy(
                         isGoogleSigningIn = false,
-                        error = "Listen is not enabled on your account. Upgrade at mixmat.es to use Listener.",
+                        error = "Listen isn't enabled on your account. Contact support if you think this is a mistake.",
                     )
                     return@launch
                 }

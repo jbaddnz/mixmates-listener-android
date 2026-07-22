@@ -2,22 +2,21 @@ package es.mixmat.listener.ui.share
 
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import es.mixmat.listener.ui.components.GradientButton
 import es.mixmat.listener.ui.components.TrackCard
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -96,6 +95,9 @@ fun ShareScreen(
                                         platforms = track.platforms,
                                         shareUrl = track.shareUrl,
                                         status = result.status,
+                                        bpm = track.bpm,
+                                        musicalKey = track.musicalKey,
+                                        keyScale = track.keyScale,
                                         onPlatformClick = { url ->
                                             context.startActivity(
                                                 Intent(Intent.ACTION_VIEW, Uri.parse(url)),
@@ -126,7 +128,7 @@ fun ShareScreen(
                         }
 
                         Spacer(modifier = Modifier.height(16.dp))
-                        Button(
+                        OutlinedButton(
                             onClick = {
                                 context.startActivity(
                                     Intent(
@@ -135,24 +137,17 @@ fun ShareScreen(
                                     ),
                                 )
                             },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color.Transparent,
-                                contentColor = Color.White,
-                            ),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(
-                                    brush = Brush.horizontalGradient(
-                                        colors = listOf(
-                                            Color(0xFF1DB954),
-                                            Color(0xFF2CCCD3),
-                                        ),
-                                    ),
-                                    shape = MaterialTheme.shapes.extraLarge,
-                                ),
+                            modifier = Modifier.fillMaxWidth(),
                         ) {
+                            Icon(
+                                Icons.AutoMirrored.Filled.OpenInNew,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp),
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
                             Text("Open in MixMates")
                         }
+
 
                         if (uiState.groups.isNotEmpty()) {
                             Spacer(modifier = Modifier.height(24.dp))
@@ -177,20 +172,12 @@ fun ShareScreen(
 
                             Spacer(modifier = Modifier.height(12.dp))
 
-                            Button(
+                            GradientButton(
+                                text = "Share",
                                 onClick = viewModel::share,
-                                enabled = !uiState.isSharing && uiState.selectedGroupIds.isNotEmpty(),
-                                modifier = Modifier.fillMaxWidth(),
-                            ) {
-                                if (uiState.isSharing) {
-                                    CircularProgressIndicator(
-                                        modifier = Modifier.size(20.dp),
-                                        strokeWidth = 2.dp,
-                                    )
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                }
-                                Text("Share")
-                            }
+                                enabled = uiState.selectedGroupIds.isNotEmpty(),
+                                loading = uiState.isSharing,
+                            )
 
                             uiState.shareResult?.let { results ->
                                 Spacer(modifier = Modifier.height(8.dp))

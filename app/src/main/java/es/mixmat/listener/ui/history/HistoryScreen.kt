@@ -22,6 +22,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import es.mixmat.listener.domain.model.HistoryItem
+import es.mixmat.listener.ui.components.trackMetaLabel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -171,7 +172,16 @@ private fun SwipeToDismissHistoryItem(
                 Text(item.title, maxLines = 1, overflow = TextOverflow.Ellipsis)
             },
             supportingContent = {
-                Text(item.artist, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Column {
+                    Text(item.artist, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    trackMetaLabel(item.bpm, item.musicalKey, item.keyScale)?.let { meta ->
+                        Text(
+                            text = meta,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.tertiary,
+                        )
+                    }
+                }
             },
             leadingContent = {
                 if (item.thumbnail != null) {

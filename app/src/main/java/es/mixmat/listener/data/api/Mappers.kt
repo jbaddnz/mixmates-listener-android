@@ -10,6 +10,9 @@ fun TrackDto.toDomain() = Track(
     shortcode = shortcode,
     shareUrl = shareUrl,
     platforms = platforms.toDomain(),
+    bpm = bpm,
+    musicalKey = musicalKey,
+    keyScale = keyScale,
 )
 
 fun PlatformsDto.toDomain() = Platforms(
@@ -26,6 +29,9 @@ fun HistoryItemDto.toDomain() = HistoryItem(
     shortcode = shortcode,
     shareUrl = shareUrl,
     platforms = platforms.toDomain(),
+    bpm = bpm,
+    musicalKey = musicalKey,
+    keyScale = keyScale,
     createdAt = createdAt,
 )
 
@@ -37,6 +43,9 @@ fun HistoryDetailData.toDomain() = HistoryDetail(
     shortcode = shortcode,
     shareUrl = shareUrl,
     platforms = platforms.toDomain(),
+    bpm = bpm,
+    musicalKey = musicalKey,
+    keyScale = keyScale,
     createdAt = createdAt,
     sharedTo = sharedTo.map { it.toDomain() },
 )

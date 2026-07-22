@@ -7,6 +7,9 @@ data class Track(
     val shortcode: String?,
     val shareUrl: String?,
     val platforms: Platforms,
+    val bpm: Double?,
+    val musicalKey: String?,
+    val keyScale: String?,
 )
 
 data class Platforms(
@@ -24,6 +27,9 @@ data class HistoryItem(
     val shareUrl: String?,
     val platforms: Platforms,
     val createdAt: String,
+    val bpm: Double?,
+    val musicalKey: String?,
+    val keyScale: String?,
 )
 
 data class HistoryDetail(
@@ -35,6 +41,9 @@ data class HistoryDetail(
     val shareUrl: String?,
     val platforms: Platforms,
     val createdAt: String,
+    val bpm: Double?,
+    val musicalKey: String?,
+    val keyScale: String?,
     val sharedTo: List<SharedGroup>,
 )
 

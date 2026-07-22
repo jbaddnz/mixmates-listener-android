@@ -25,4 +25,10 @@ class AuthRepository @Inject constructor(
 
     suspend fun signInWithGoogle(idToken: String, nonce: String, name: String?): GoogleSignInData =
         api.signInWithGoogle(GoogleSignInRequest(idToken = idToken, nonce = nonce, name = name)).data
+
+    /** Deletes the account server-side, then clears the local token. */
+    suspend fun deleteAccount() {
+        api.deleteAccount()
+        tokenManager.clearToken()
+    }
 }

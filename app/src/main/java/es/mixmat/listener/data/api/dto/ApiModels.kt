@@ -77,6 +77,9 @@ data class TrackDto(
     val shortcode: String? = null,
     @SerialName("share_url") val shareUrl: String? = null,
     val platforms: PlatformsDto = PlatformsDto(),
+    val bpm: Double? = null,
+    @SerialName("musical_key") val musicalKey: String? = null,
+    @SerialName("key_scale") val keyScale: String? = null,
 )
 
 @Serializable
@@ -105,6 +108,9 @@ data class HistoryItemDto(
     @SerialName("share_url") val shareUrl: String? = null,
     val platforms: PlatformsDto = PlatformsDto(),
     @SerialName("created_at") val createdAt: String = "",
+    val bpm: Double? = null,
+    @SerialName("musical_key") val musicalKey: String? = null,
+    @SerialName("key_scale") val keyScale: String? = null,
 )
 
 @Serializable
@@ -117,6 +123,9 @@ data class HistoryDetailData(
     @SerialName("share_url") val shareUrl: String? = null,
     val platforms: PlatformsDto = PlatformsDto(),
     @SerialName("created_at") val createdAt: String = "",
+    val bpm: Double? = null,
+    @SerialName("musical_key") val musicalKey: String? = null,
+    @SerialName("key_scale") val keyScale: String? = null,
     @SerialName("shared_to") val sharedTo: List<SharedGroupDto> = emptyList(),
 )
 
