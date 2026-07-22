@@ -20,14 +20,14 @@ val keystoreProperties = Properties().apply {
 
 android {
     namespace = "es.mixmat.listener"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "es.mixmat.listener"
         minSdk = 26
-        targetSdk = 35
-        versionCode = 9
-        versionName = "0.4.1"
+        targetSdk = 36
+        versionCode = 10
+        versionName = "0.4.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
