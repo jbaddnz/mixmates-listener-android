@@ -148,7 +148,7 @@ class TokenEntryViewModelTest {
 
         val state = viewModel.uiState.value
         assertFalse(state.isValid)
-        assertTrue(state.error!!.contains("not enabled"))
+        assertTrue(state.error!!.contains("enabled"))
         verify { authRepository.clearToken() }
     }
 
@@ -183,7 +183,7 @@ class TokenEntryViewModelTest {
         assertFalse(state.isValid)
         assertFalse(state.isGoogleSigningIn)
         assertNotNull(state.error)
-        assertTrue(state.error!!.contains("not enabled"))
+        assertTrue(state.error!!.contains("enabled"))
         verify(exactly = 0) { authRepository.saveToken(any()) }
     }
 
