@@ -58,6 +58,11 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            // Bundle native debug symbols into the AAB so Play can symbolicate
+            // native crashes/ANRs (the .so files are all third-party/transitive).
+            ndk {
+                debugSymbolLevel = "FULL"
+            }
             if (keystoreProperties.getProperty("storeFile") != null) {
                 signingConfig = signingConfigs.getByName("release")
             }
