@@ -8,7 +8,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -24,11 +23,11 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import es.mixmat.listener.audio.RecorderState
+import es.mixmat.listener.ui.components.OpenInMixMatesButton
 import es.mixmat.listener.ui.components.TrackCard
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -108,11 +107,11 @@ fun ListenScreen(
                                     artist = track.artist,
                                     thumbnail = track.thumbnail,
                                     platforms = track.platforms,
-                                    shareUrl = track.shareUrl,
                                     status = result.status,
                                     bpm = track.bpm,
                                     musicalKey = track.musicalKey,
                                     keyScale = track.keyScale,
+                                    shareUrl = track.shareUrl,
                                     onPlatformClick = { url ->
                                         context.startActivity(
                                             Intent(Intent.ACTION_VIEW, Uri.parse(url)),
@@ -168,30 +167,7 @@ fun ListenScreen(
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
-                    Button(
-                        onClick = {
-                            context.startActivity(
-                                Intent(Intent.ACTION_VIEW, Uri.parse("https://mixmat.es/?listen=1")),
-                            )
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Transparent,
-                            contentColor = Color.White,
-                        ),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(
-                                brush = Brush.horizontalGradient(
-                                    colors = listOf(
-                                        Color(0xFF1DB954),
-                                        Color(0xFF2CCCD3),
-                                    ),
-                                ),
-                                shape = MaterialTheme.shapes.extraLarge,
-                            ),
-                    ) {
-                        Text("Open in MixMates")
-                    }
+                    OpenInMixMatesButton(url = "https://mixmat.es/?listen=1")
                     Spacer(modifier = Modifier.height(12.dp))
                     OutlinedButton(onClick = viewModel::dismiss) {
                         Text("Listen again")
@@ -298,21 +274,14 @@ fun ListenScreen(
                 }
             }
         }
-            Text(
-                text = "mixmat.es",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.primary,
-                textDecoration = TextDecoration.Underline,
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 12.dp)
-                    .clickable {
-                        context.startActivity(
-                            Intent(Intent.ACTION_VIEW, Uri.parse("https://mixmat.es")),
-                        )
-                    }
-                    .padding(8.dp),
-            )
+            if (uiState.result == null) {
+                OpenInMixMatesButton(
+                    url = "https://mixmat.es",
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(start = 24.dp, end = 24.dp, bottom = 12.dp),
+                )
+            }
         }
     }
 

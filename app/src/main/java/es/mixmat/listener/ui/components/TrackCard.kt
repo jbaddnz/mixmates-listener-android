@@ -1,7 +1,9 @@
 package es.mixmat.listener.ui.components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -34,14 +36,14 @@ fun TrackCard(
     artist: String,
     thumbnail: String?,
     platforms: Platforms,
-    shareUrl: String?,
     status: String?,
     onPlatformClick: (String) -> Unit,
-    onShareClick: ((String) -> Unit)? = null,
     modifier: Modifier = Modifier,
     bpm: Double? = null,
     musicalKey: String? = null,
     keyScale: String? = null,
+    shareUrl: String? = null,
+    onShareClick: ((String) -> Unit)? = null,
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -77,10 +79,15 @@ fun TrackCard(
                         overflow = TextOverflow.Ellipsis,
                     )
                     trackMetaLabel(bpm, musicalKey, keyScale)?.let { meta ->
+                        Spacer(modifier = Modifier.height(6.dp))
                         Text(
                             text = meta,
                             style = MaterialTheme.typography.labelMedium,
                             color = TrackCardMeta,
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(50))
+                                .background(TrackCardMeta.copy(alpha = 0.15f))
+                                .padding(horizontal = 10.dp, vertical = 3.dp),
                         )
                     }
                 }
@@ -127,11 +134,17 @@ fun TrackCard(
                 }
             }
 
+            // Opt-in system-share (share sheet to any app). Passed only where there's
+            // no persona-share below it — e.g. the Listen result card.
+            // Brand gradient per the platform-branding spec (green→cyan, white text) —
+            // reuses the "Open in MixMates" gradient vocabulary. Opt-in: only passed
+            // where there's no persona-share below, e.g. the Listen result card.
             shareUrl?.let { url ->
-                Spacer(modifier = Modifier.height(4.dp))
-                TextButton(onClick = { onShareClick?.invoke(url) ?: onPlatformClick(url) }) {
-                    Text("Share link", color = TrackCardMeta)
-                }
+                Spacer(modifier = Modifier.height(12.dp))
+                GradientButton(
+                    text = "Share link",
+                    onClick = { onShareClick?.invoke(url) ?: onPlatformClick(url) },
+                )
             }
         }
     }
@@ -169,7 +182,6 @@ private fun TrackCardPreview() {
                 tidal = "https://tidal.com/track/456",
                 appleMusic = null,
             ),
-            shareUrl = "https://mixmat.es/aBcDeF12",
             status = null,
             onPlatformClick = {},
             bpm = 105.0,
@@ -188,7 +200,6 @@ private fun TrackCardDuplicatePreview() {
             artist = "Richy Mitch & The Coal Miners",
             thumbnail = null,
             platforms = Platforms(spotify = "https://open.spotify.com/track/123", tidal = null, appleMusic = null),
-            shareUrl = null,
             status = "duplicate",
             onPlatformClick = {},
         )

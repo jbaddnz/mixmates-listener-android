@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -17,6 +16,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import es.mixmat.listener.ui.components.GradientButton
+import es.mixmat.listener.ui.components.OpenInMixMatesButton
 import es.mixmat.listener.ui.components.TrackCard
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -93,7 +93,6 @@ fun ShareScreen(
                                         artist = track.artist,
                                         thumbnail = track.thumbnail,
                                         platforms = track.platforms,
-                                        shareUrl = track.shareUrl,
                                         status = result.status,
                                         bpm = track.bpm,
                                         musicalKey = track.musicalKey,
@@ -101,18 +100,6 @@ fun ShareScreen(
                                         onPlatformClick = { url ->
                                             context.startActivity(
                                                 Intent(Intent.ACTION_VIEW, Uri.parse(url)),
-                                            )
-                                        },
-                                        onShareClick = { url ->
-                                            val sendIntent = Intent(Intent.ACTION_SEND).apply {
-                                                putExtra(
-                                                    Intent.EXTRA_TEXT,
-                                                    "${track.artist} - ${track.title}\n$url",
-                                                )
-                                                type = "text/plain"
-                                            }
-                                            context.startActivity(
-                                                Intent.createChooser(sendIntent, null),
                                             )
                                         },
                                     )
@@ -126,28 +113,6 @@ fun ShareScreen(
                                 )
                             }
                         }
-
-                        Spacer(modifier = Modifier.height(16.dp))
-                        OutlinedButton(
-                            onClick = {
-                                context.startActivity(
-                                    Intent(
-                                        Intent.ACTION_VIEW,
-                                        Uri.parse("https://mixmat.es/?listen=1"),
-                                    ),
-                                )
-                            },
-                            modifier = Modifier.fillMaxWidth(),
-                        ) {
-                            Icon(
-                                Icons.AutoMirrored.Filled.OpenInNew,
-                                contentDescription = null,
-                                modifier = Modifier.size(18.dp),
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text("Open in MixMates")
-                        }
-
 
                         if (uiState.groups.isNotEmpty()) {
                             Spacer(modifier = Modifier.height(24.dp))
@@ -202,7 +167,10 @@ fun ShareScreen(
                             Text(error, color = MaterialTheme.colorScheme.error)
                         }
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(24.dp))
+                        OpenInMixMatesButton(url = "https://mixmat.es/?listen=1")
+
+                        Spacer(modifier = Modifier.height(12.dp))
                         OutlinedButton(
                             onClick = onDismiss,
                             modifier = Modifier.fillMaxWidth(),

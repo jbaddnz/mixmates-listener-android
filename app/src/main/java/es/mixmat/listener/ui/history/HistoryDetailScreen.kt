@@ -7,7 +7,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -17,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import es.mixmat.listener.ui.components.GradientButton
+import es.mixmat.listener.ui.components.OpenInMixMatesButton
 import es.mixmat.listener.ui.components.TrackCard
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -74,7 +74,6 @@ fun HistoryDetailScreen(
                         artist = detail.artist,
                         thumbnail = detail.thumbnail,
                         platforms = detail.platforms,
-                        shareUrl = detail.shareUrl,
                         status = null,
                         bpm = detail.bpm,
                         musicalKey = detail.musicalKey,
@@ -82,32 +81,7 @@ fun HistoryDetailScreen(
                         onPlatformClick = { url ->
                             context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
                         },
-                        onShareClick = { url ->
-                            val sendIntent = Intent(Intent.ACTION_SEND).apply {
-                                putExtra(Intent.EXTRA_TEXT, "${detail.artist} - ${detail.title}\n$url")
-                                type = "text/plain"
-                            }
-                            context.startActivity(Intent.createChooser(sendIntent, null))
-                        },
                     )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-                    OutlinedButton(
-                        onClick = {
-                            context.startActivity(
-                                Intent(Intent.ACTION_VIEW, Uri.parse("https://mixmat.es/?listen=1")),
-                            )
-                        },
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        Icon(
-                            Icons.AutoMirrored.Filled.OpenInNew,
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp),
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("Open in MixMates")
-                    }
 
                     if (detail.sharedTo.isNotEmpty()) {
                         Spacer(modifier = Modifier.height(16.dp))
@@ -175,6 +149,9 @@ fun HistoryDetailScreen(
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(error, color = MaterialTheme.colorScheme.error)
                     }
+
+                    Spacer(modifier = Modifier.height(24.dp))
+                    OpenInMixMatesButton(url = "https://mixmat.es/?listen=1")
                 }
             }
         }
