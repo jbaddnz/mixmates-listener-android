@@ -214,7 +214,7 @@ data class ReportData(
     val reported: Boolean = false,
 )
 
-// -- Google Sign-In --
+// -- Provider sign-in (Google + Apple) --
 
 @Serializable
 data class GoogleSignInRequest(
@@ -223,8 +223,23 @@ data class GoogleSignInRequest(
     val name: String? = null,
 )
 
+// The Apple endpoint's field names deliberately differ from Google's:
+// identity_token (not id_token), and the name nested under user.
 @Serializable
-data class GoogleSignInData(
+data class AppleSignInRequest(
+    @SerialName("identity_token") val identityToken: String,
+    val nonce: String,
+    val user: AppleSignInUser? = null,
+)
+
+@Serializable
+data class AppleSignInUser(
+    val name: String? = null,
+)
+
+/** Both `/auth/google` and `/auth/apple` return this envelope. */
+@Serializable
+data class ProviderSignInData(
     val token: String,
     @SerialName("is_new_account") val isNewAccount: Boolean,
     @SerialName("listen_enabled") val listenEnabled: Boolean,

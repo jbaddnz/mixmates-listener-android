@@ -14,13 +14,29 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MixMatesListener">
 
+        <!-- singleTask so the Sign in with Apple App Link resumes the existing
+             task via onNewIntent instead of stacking a second MainActivity. -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
+            android:launchMode="singleTask"
             android:theme="@style/Theme.MixMatesListener.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <!-- Sign in with Apple return: the server's stateless trampoline
+                 303s here with the response in the URL fragment. Verified App
+                 Link (assetlinks.json on mixmat.es) so no other app can claim
+                 it — the id_token is a bearer artifact. -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="https"
+                    android:host="mixmat.es"
+                    android:path="/app/listener/signin-apple" />
             </intent-filter>
             <meta-data
                 android:name="android.app.shortcuts"

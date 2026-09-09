@@ -36,6 +36,14 @@ android {
             "GOOGLE_WEB_CLIENT_ID",
             "\"${localProperties.getProperty("GOOGLE_WEB_CLIENT_ID", "")}\"",
         )
+
+        // Apple Services ID for Sign in with Apple (web flow). Left empty, the
+        // Apple button is hidden — the value comes from Jamie's Apple console.
+        buildConfigField(
+            "String",
+            "APPLE_SERVICES_ID",
+            "\"${localProperties.getProperty("APPLE_SERVICES_ID", "")}\"",
+        )
     }
 
     signingConfigs {
@@ -126,6 +134,9 @@ dependencies {
     implementation(libs.credentials)
     implementation(libs.credentials.play.services)
     implementation(libs.googleid)
+
+    // Sign in with Apple (web flow in a Custom Tab)
+    implementation(libs.browser)
 
     // WorkManager
     implementation(libs.work.runtime.ktx)

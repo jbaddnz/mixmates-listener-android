@@ -15,7 +15,12 @@ interface ListenerApi {
     @POST("auth/google")
     suspend fun signInWithGoogle(
         @Body request: GoogleSignInRequest,
-    ): ApiResponse<GoogleSignInData>
+    ): ApiResponse<ProviderSignInData>
+
+    @POST("auth/apple")
+    suspend fun signInWithApple(
+        @Body request: AppleSignInRequest,
+    ): ApiResponse<ProviderSignInData>
 
     @Multipart
     @POST("recognize")
