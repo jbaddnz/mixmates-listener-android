@@ -59,8 +59,6 @@ class TokenEntryViewModel @Inject constructor(
         }
     }
 
-    fun hasToken(): Boolean = authRepository.hasToken()
-
     fun isAppleSignInAvailable(): Boolean = appleSignInHelper.isConfigured()
 
     fun onTokenChange(token: String) {
