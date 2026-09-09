@@ -47,7 +47,9 @@ fun GradientButton(
             .fillMaxWidth()
             .background(
                 brush = if (enabled) {
-                    Brush.horizontalGradient(listOf(Color(0xFF1DB954), Color(0xFF00D4FF)))
+                    // The exact brand gradient (#1DB954 → #2CCCD3) — it marks a
+                    // song's journey between people; keep it off everything else.
+                    Brush.horizontalGradient(listOf(Color(0xFF1DB954), Color(0xFF2CCCD3)))
                 } else {
                     SolidColor(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
                 },

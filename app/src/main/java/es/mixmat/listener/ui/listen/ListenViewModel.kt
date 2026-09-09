@@ -9,6 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import es.mixmat.listener.audio.AudioRecorder
 import es.mixmat.listener.audio.RecorderState
 import es.mixmat.listener.data.api.RateLimitException
+import es.mixmat.listener.data.prefs.ListenerPrefs
 import es.mixmat.listener.data.repository.AuthRepository
 import es.mixmat.listener.data.repository.HistoryRepository
 import es.mixmat.listener.data.repository.RecognitionRepository
@@ -43,6 +44,7 @@ class ListenViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val historyRepository: HistoryRepository,
     private val connectivityManager: ConnectivityManager,
+    private val listenerPrefs: ListenerPrefs,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ListenUiState())
@@ -80,6 +82,10 @@ class ListenViewModel @Inject constructor(
         )
 
         viewModelScope.launch {
+            // Read at record start, not at construction, so a settings change
+            // applies to the very next capture with no restart.
+            val durationMs = listenerPrefs.getRecordingLengthSeconds() * 1000L
+
             try {
                 withContext(Dispatchers.IO) {
                     audioRecorder.start()
@@ -92,10 +98,10 @@ class ListenViewModel @Inject constructor(
             val startTime = System.currentTimeMillis()
             while (audioRecorder.state.value == RecorderState.RECORDING) {
                 val elapsed = System.currentTimeMillis() - startTime
-                val progress = (elapsed.toFloat() / AudioRecorder.RECORD_DURATION_MS).coerceIn(0f, 1f)
+                val progress = (elapsed.toFloat() / durationMs).coerceIn(0f, 1f)
                 _uiState.value = _uiState.value.copy(recordingProgress = progress)
 
-                if (elapsed >= AudioRecorder.RECORD_DURATION_MS) {
+                if (elapsed >= durationMs) {
                     stopAndSubmit()
                     return@launch
                 }

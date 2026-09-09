@@ -19,11 +19,10 @@ import es.mixmat.listener.domain.model.Platforms
 import es.mixmat.listener.ui.theme.AppleMusicRed
 import es.mixmat.listener.ui.theme.MixMatesListenerTheme
 import es.mixmat.listener.ui.theme.SpotifyGreen
-import es.mixmat.listener.ui.theme.TidalCyan
 
 // The track card uses a fixed dark surface in BOTH light and dark themes so the
-// brand-coloured platform buttons (Spotify green, Apple red, Tidal cyan) stay
-// legible everywhere — without altering the brand colours themselves.
+// brand-coloured platform buttons (Spotify green, Apple red, Tidal monochrome)
+// stay legible everywhere — without altering the brand colours themselves.
 private val TrackCardSurface = Color(0xFF26242E)
 private val TrackCardTitle = Color(0xFFF4F2F7)
 private val TrackCardArtist = Color(0xFFB8B4C4)
@@ -104,6 +103,11 @@ fun TrackCard(
 
             Spacer(modifier = Modifier.height(12.dp))
 
+            // Neutrality rule (load-bearing): Spotify, Apple Music and Tidal get
+            // identical shape, size and prominence — each filled in its own brand
+            // identity, none preferred (our own green happens to sit close to
+            // Spotify's). Tidal's identity IS monochrome: the card's label colour
+            // on the card's background colour.
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.fillMaxWidth(),
@@ -111,7 +115,8 @@ fun TrackCard(
                 platforms.spotify?.let { url ->
                     PlatformButton(
                         label = "Spotify",
-                        color = SpotifyGreen,
+                        container = SpotifyGreen,
+                        content = Color.White,
                         modifier = Modifier.weight(1f),
                         onClick = { onPlatformClick(url) },
                     )
@@ -119,7 +124,8 @@ fun TrackCard(
                 platforms.appleMusic?.let { url ->
                     PlatformButton(
                         label = "Apple Music",
-                        color = AppleMusicRed,
+                        container = AppleMusicRed,
+                        content = Color.White,
                         modifier = Modifier.weight(1f),
                         onClick = { onPlatformClick(url) },
                     )
@@ -127,7 +133,8 @@ fun TrackCard(
                 platforms.tidal?.let { url ->
                     PlatformButton(
                         label = "Tidal",
-                        color = TidalCyan,
+                        container = TrackCardTitle,
+                        content = TrackCardSurface,
                         modifier = Modifier.weight(1f),
                         onClick = { onPlatformClick(url) },
                     )
@@ -150,20 +157,23 @@ fun TrackCard(
     }
 }
 
-/** Outlined pill tinted with a platform's brand colour, sized to fill its slot. */
+/** Filled pill in a platform's brand identity, sized to fill its slot. */
 @Composable
 private fun PlatformButton(
     label: String,
-    color: Color,
+    container: Color,
+    content: Color,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {
-    OutlinedButton(
+    Button(
         onClick = onClick,
         modifier = modifier,
         contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
-        colors = ButtonDefaults.outlinedButtonColors(contentColor = color),
-        border = BorderStroke(2.dp, color.copy(alpha = 0.7f)),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = container,
+            contentColor = content,
+        ),
     ) {
         Text(label, maxLines = 1, overflow = TextOverflow.Ellipsis)
     }

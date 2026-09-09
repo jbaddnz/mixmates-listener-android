@@ -13,6 +13,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import es.mixmat.listener.data.prefs.ListenerPrefs
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,6 +47,36 @@ fun SettingsScreen(
                 .padding(padding)
                 .padding(16.dp),
         ) {
+            Text(
+                text = "Recording",
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = "Length — ${uiState.recordingLengthSeconds} seconds",
+                style = MaterialTheme.typography.bodyLarge,
+            )
+
+            Slider(
+                value = uiState.recordingLengthSeconds.toFloat(),
+                onValueChange = { viewModel.setRecordingLength(it.roundToInt()) },
+                valueRange = ListenerPrefs.RECORDING_LENGTH_MIN_SECONDS.toFloat()..
+                    ListenerPrefs.RECORDING_LENGTH_MAX_SECONDS.toFloat(),
+                steps = ListenerPrefs.RECORDING_LENGTH_MAX_SECONDS -
+                    ListenerPrefs.RECORDING_LENGTH_MIN_SECONDS - 1,
+            )
+
+            Text(
+                text = "Longer clips give recognition more to work with; shorter ones are quicker.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
             OutlinedButton(
                 onClick = { showDeleteConfirmation = true },
                 enabled = !uiState.isDeleting,

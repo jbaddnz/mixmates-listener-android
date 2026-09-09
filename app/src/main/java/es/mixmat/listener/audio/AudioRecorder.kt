@@ -77,6 +77,5 @@ class AudioRecorder @Inject constructor(
 
     companion object {
         const val MIME_TYPE = "audio/mp4"
-        const val RECORD_DURATION_MS = 11_000L
     }
 }

@@ -3,7 +3,9 @@ package es.mixmat.listener.ui.listen
 import android.Manifest
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.provider.Settings
+import android.view.HapticFeedbackConstants
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.animateFloatAsState
@@ -22,12 +24,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import es.mixmat.listener.audio.RecorderState
+import es.mixmat.listener.ui.components.Equalizer
 import es.mixmat.listener.ui.components.OpenInMixMatesButton
+import es.mixmat.listener.ui.components.SuccessWave
 import es.mixmat.listener.ui.components.TrackCard
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -39,7 +44,23 @@ fun ListenScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    val view = LocalView.current
     var showMicDisclosure by remember { mutableStateOf(false) }
+
+    // Success haptic when a recognition lands (Android's confirm idiom;
+    // CONFIRM needs API 30, minSdk is 26).
+    val isSuccess = uiState.result?.status in listOf("saved", "duplicate")
+    LaunchedEffect(isSuccess) {
+        if (isSuccess) {
+            view.performHapticFeedback(
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    HapticFeedbackConstants.CONFIRM
+                } else {
+                    HapticFeedbackConstants.VIRTUAL_KEY
+                },
+            )
+        }
+    }
 
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission(),
@@ -92,7 +113,7 @@ fun ListenScreen(
 
             when {
                 uiState.isSubmitting -> {
-                    CircularProgressIndicator(modifier = Modifier.size(64.dp))
+                    Equalizer()
                     Spacer(modifier = Modifier.height(16.dp))
                     Text("Identifying...", style = MaterialTheme.typography.bodyLarge)
                 }
@@ -101,6 +122,8 @@ fun ListenScreen(
                     val result = uiState.result!!
                     when (result.status) {
                         "saved", "duplicate" -> {
+                            SuccessWave()
+                            Spacer(modifier = Modifier.height(16.dp))
                             result.track?.let { track ->
                                 TrackCard(
                                     title = track.title,
@@ -169,7 +192,8 @@ fun ListenScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                     OpenInMixMatesButton(url = "https://mixmat.es/?listen=1")
                     Spacer(modifier = Modifier.height(12.dp))
-                    OutlinedButton(onClick = viewModel::dismiss) {
+                    // Quiet secondary by design — Share on the card is the hero.
+                    TextButton(onClick = viewModel::dismiss) {
                         Text("Listen again")
                     }
                 }

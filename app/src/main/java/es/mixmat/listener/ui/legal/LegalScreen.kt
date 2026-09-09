@@ -53,6 +53,21 @@ fun LegalScreen(
                 Text("Source Code (GitHub)")
             }
 
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Our marks line — keep above any third-party credits. Never "upgrade"
+            // this with "registered" or ®: these are common-law marks, and falsely
+            // representing a mark as registered is an offence under the NZ Trade
+            // Marks Act. "A New Zealand company" attaches to MixMat Ltd (which is
+            // a registered company), not to the marks.
+            Text(
+                text = "MixMates, MixMates Listener, mixmat.es, and the mmL mark are " +
+                    "trademarks of MixMat Ltd, a New Zealand company.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 12.dp),
+            )
+
             Spacer(modifier = Modifier.weight(1f))
 
             Column(

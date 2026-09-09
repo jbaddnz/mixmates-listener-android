@@ -10,7 +10,7 @@ val Purple40 = Color(0xFF6650a4)
 val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
-// Platform brand colours (match the web client)
+// Platform brand colours (match the web client). Tidal has none on purpose —
+// its pill is monochrome; monochrome IS Tidal's identity.
 val SpotifyGreen = Color(0xFF1DB954)
-val TidalCyan = Color(0xFF00D4FF)
 val AppleMusicRed = Color(0xFFFA243C)
