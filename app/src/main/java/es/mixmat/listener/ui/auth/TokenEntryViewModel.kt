@@ -206,13 +206,16 @@ class TokenEntryViewModel @Inject constructor(
                     )
                     return@launch
                 }
-                // Token validated — keep it stored. Whether a Listen Key
-                // connection counts as a "method" for the last-used hint is an
-                // open product call — provider sign-ins only for now.
+                // Token validated — keep it stored. A Listen Key connection
+                // counts as a "method" for the last-used hint (Jamie's call,
+                // 2026-09-09): a key user retrying a provider instead is
+                // exactly how account forks happen.
+                authRepository.recordSignInMethod(ListenerPrefs.METHOD_LISTEN_KEY)
                 _uiState.value = _uiState.value.copy(
                     isValidating = false,
                     isValid = true,
                     profile = profile,
+                    lastSignInMethod = ListenerPrefs.METHOD_LISTEN_KEY,
                 )
             } catch (e: Exception) {
                 Log.e("TokenEntry", "Token validation failed", e)

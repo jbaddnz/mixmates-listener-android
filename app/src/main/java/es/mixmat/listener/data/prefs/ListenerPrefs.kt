@@ -46,6 +46,7 @@ class ListenerPrefs @Inject constructor(
     companion object {
         const val METHOD_GOOGLE = "google"
         const val METHOD_APPLE = "apple"
+        const val METHOD_LISTEN_KEY = "listen_key"
 
         const val RECORDING_LENGTH_MIN_SECONDS = 6
         const val RECORDING_LENGTH_MAX_SECONDS = 12

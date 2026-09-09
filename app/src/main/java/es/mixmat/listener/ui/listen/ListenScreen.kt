@@ -31,6 +31,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import es.mixmat.listener.audio.RecorderState
 import es.mixmat.listener.ui.components.Equalizer
+import es.mixmat.listener.ui.components.MixmatesWordmarkLink
 import es.mixmat.listener.ui.components.OpenInMixMatesButton
 import es.mixmat.listener.ui.components.SuccessWave
 import es.mixmat.listener.ui.components.TrackCard
@@ -298,12 +299,17 @@ fun ListenScreen(
                 }
             }
         }
-            if (uiState.result == null) {
-                OpenInMixMatesButton(
-                    url = "https://mixmat.es",
+            // Idle state only, like iOS's §7 wordmark — but ours links to the
+            // web app, doing the job of the old bottom "Open in MixMates"
+            // button it replaced.
+            val isIdle = uiState.result == null &&
+                !uiState.isSubmitting &&
+                uiState.recorderState != RecorderState.RECORDING
+            if (isIdle) {
+                MixmatesWordmarkLink(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
-                        .padding(start = 24.dp, end = 24.dp, bottom = 12.dp),
+                        .padding(bottom = 24.dp),
                 )
             }
         }

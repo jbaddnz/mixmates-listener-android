@@ -68,6 +68,18 @@ fun LegalScreen(
                 modifier = Modifier.padding(horizontal = 12.dp),
             )
 
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Third-party credit — stays below our own marks line. Licence
+            // text ships in assets/OFL.txt.
+            Text(
+                text = "Includes the MuseoModerno font, © its authors, " +
+                    "used under the SIL Open Font License 1.1.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 12.dp),
+            )
+
             Spacer(modifier = Modifier.weight(1f))
 
             Column(

@@ -182,13 +182,24 @@ class TokenEntryViewModelTest {
     }
 
     @Test
-    fun `validateAndSave does not record a sign-in method`() = runTest {
-        // Whether a Listen Key connection counts as a "method" for the
-        // last-used hint is an open product call — provider sign-ins only.
+    fun `validateAndSave records Listen Key as the sign-in method`() = runTest {
         coEvery { authRepository.getProfile() } returns validProfile
 
         val viewModel = viewModel()
         viewModel.onTokenChange("valid-token")
+        viewModel.validateAndSave()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        verify { authRepository.recordSignInMethod(ListenerPrefs.METHOD_LISTEN_KEY) }
+        assertEquals(ListenerPrefs.METHOD_LISTEN_KEY, viewModel.uiState.value.lastSignInMethod)
+    }
+
+    @Test
+    fun `failed validation does not record a sign-in method`() = runTest {
+        coEvery { authRepository.getProfile() } throws RuntimeException("401")
+
+        val viewModel = viewModel()
+        viewModel.onTokenChange("bad-token")
         viewModel.validateAndSave()
         testDispatcher.scheduler.advanceUntilIdle()
 

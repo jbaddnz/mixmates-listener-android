@@ -216,6 +216,7 @@ private fun SignInContent(
             Text(
                 text = buildAnnotatedString {
                     append("Last time you signed in with ")
+                    if (method == ListenerPrefs.METHOD_LISTEN_KEY) append("a ")
                     withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
                         append(providerDisplayName(method))
                     }
@@ -327,6 +328,7 @@ private fun SignInContent(
 private fun providerDisplayName(method: String): String = when (method) {
     ListenerPrefs.METHOD_GOOGLE -> "Google"
     ListenerPrefs.METHOD_APPLE -> "Apple"
+    ListenerPrefs.METHOD_LISTEN_KEY -> "Listen Key"
     else -> method.replaceFirstChar { it.uppercase() }
 }
 
