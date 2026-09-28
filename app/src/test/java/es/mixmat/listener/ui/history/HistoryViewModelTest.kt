@@ -3,6 +3,7 @@ package es.mixmat.listener.ui.history
 import app.cash.turbine.test
 import es.mixmat.listener.data.repository.HistoryPage
 import es.mixmat.listener.data.repository.HistoryRepository
+import es.mixmat.listener.data.session.UnseenTracks
 import es.mixmat.listener.domain.model.HistoryItem
 import es.mixmat.listener.domain.model.Platforms
 import android.util.Log
@@ -30,6 +31,7 @@ class HistoryViewModelTest {
 
     private val testDispatcher = StandardTestDispatcher()
     private lateinit var historyRepository: HistoryRepository
+    private lateinit var unseenTracks: UnseenTracks
 
     @Before
     fun setUp() {
@@ -38,6 +40,8 @@ class HistoryViewModelTest {
         every { Log.e(any(), any(), any()) } returns 0
         every { Log.e(any(), any()) } returns 0
         historyRepository = mockk()
+        // A real one: it has no dependencies and its whole job is holding a flag.
+        unseenTracks = UnseenTracks()
     }
 
     @After
@@ -66,7 +70,7 @@ class HistoryViewModelTest {
             items = items, cursor = "abc", hasMore = true,
         )
 
-        val viewModel = HistoryViewModel(historyRepository)
+        val viewModel = HistoryViewModel(historyRepository, unseenTracks)
         testDispatcher.scheduler.advanceUntilIdle()
 
         val state = viewModel.uiState.value
@@ -80,7 +84,7 @@ class HistoryViewModelTest {
     fun `loadHistory sets error on failure`() = runTest {
         coEvery { historyRepository.getHistory(any(), any()) } throws RuntimeException("Network error")
 
-        val viewModel = HistoryViewModel(historyRepository)
+        val viewModel = HistoryViewModel(historyRepository, unseenTracks)
         testDispatcher.scheduler.advanceUntilIdle()
 
         val state = viewModel.uiState.value
@@ -97,7 +101,7 @@ class HistoryViewModelTest {
             items = listOf(createItem("2")), cursor = null, hasMore = false,
         )
 
-        val viewModel = HistoryViewModel(historyRepository)
+        val viewModel = HistoryViewModel(historyRepository, unseenTracks)
         testDispatcher.scheduler.advanceUntilIdle()
 
         viewModel.loadMore()
@@ -117,7 +121,7 @@ class HistoryViewModelTest {
         )
         coEvery { historyRepository.delete("1") } returns Unit
 
-        val viewModel = HistoryViewModel(historyRepository)
+        val viewModel = HistoryViewModel(historyRepository, unseenTracks)
         testDispatcher.scheduler.advanceUntilIdle()
 
         viewModel.deleteItem("1")
@@ -135,7 +139,7 @@ class HistoryViewModelTest {
         )
         coEvery { historyRepository.delete("1") } throws RuntimeException("Failed")
 
-        val viewModel = HistoryViewModel(historyRepository)
+        val viewModel = HistoryViewModel(historyRepository, unseenTracks)
         testDispatcher.scheduler.advanceUntilIdle()
 
         viewModel.deleteItem("1")
@@ -145,11 +149,37 @@ class HistoryViewModelTest {
         assertEquals(1, viewModel.uiState.value.items.size)
     }
 
+    /** Opening History is what answers "where did my track go?", so the dot goes. */
+    @Test
+    fun `opening history clears the unseen marker`() = runTest {
+        coEvery { historyRepository.getHistory(any(), any()) } returns HistoryPage(
+            items = listOf(createItem("1")), cursor = null, hasMore = false,
+        )
+        unseenTracks.markUnseen()
+
+        HistoryViewModel(historyRepository, unseenTracks)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertFalse(unseenTracks.hasUnseen.value)
+    }
+
+    /** It clears on arrival, not on a successful load — a failed fetch still counts as seen. */
+    @Test
+    fun `the marker clears even when the load fails`() = runTest {
+        coEvery { historyRepository.getHistory(any(), any()) } throws RuntimeException("Network")
+        unseenTracks.markUnseen()
+
+        HistoryViewModel(historyRepository, unseenTracks)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertFalse(unseenTracks.hasUnseen.value)
+    }
+
     @Test
     fun `clearError clears error`() = runTest {
         coEvery { historyRepository.getHistory(any(), any()) } throws RuntimeException("fail")
 
-        val viewModel = HistoryViewModel(historyRepository)
+        val viewModel = HistoryViewModel(historyRepository, unseenTracks)
         testDispatcher.scheduler.advanceUntilIdle()
 
         viewModel.clearError()

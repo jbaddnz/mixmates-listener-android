@@ -11,6 +11,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import es.mixmat.listener.ui.components.MixmatesWordmarkLink
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -86,6 +88,8 @@ fun LegalScreen(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+                MixmatesWordmarkLink(fontSize = 18.sp)
+                Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = "MixMates Listener",
                     style = MaterialTheme.typography.labelMedium,

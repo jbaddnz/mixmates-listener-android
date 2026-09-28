@@ -6,10 +6,8 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import es.mixmat.listener.data.api.RateLimitException
 import es.mixmat.listener.data.repository.AuthRepository
-import es.mixmat.listener.data.repository.GroupRepository
-import es.mixmat.listener.data.repository.HistoryRepository
 import es.mixmat.listener.data.repository.RecognitionRepository
-import es.mixmat.listener.domain.model.Group
+import es.mixmat.listener.data.session.UnseenTracks
 import es.mixmat.listener.domain.model.RecognitionResult
 import es.mixmat.listener.util.MusicUrlExtractor
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,18 +20,17 @@ data class ShareUiState(
     val isResolving: Boolean = true,
     val result: RecognitionResult? = null,
     val error: String? = null,
-    val groups: List<Group> = emptyList(),
-    val selectedGroupIds: Set<String> = emptySet(),
-    val isSharing: Boolean = false,
-    val shareResult: Map<String, String>? = null,
 )
 
+/**
+ * Group sharing lives in `TrackShareViewModel` now, not here — one picker for the
+ * result screen, history detail and this screen alike.
+ */
 @HiltViewModel
 class ShareViewModel @Inject constructor(
     private val recognitionRepository: RecognitionRepository,
     private val authRepository: AuthRepository,
-    private val historyRepository: HistoryRepository,
-    private val groupRepository: GroupRepository,
+    private val unseenTracks: UnseenTracks,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ShareUiState())
@@ -64,7 +61,10 @@ class ShareViewModel @Inject constructor(
                     isResolving = false,
                     result = result,
                 )
-                loadGroups()
+                // A resolved link lands in history the same as a mic recognition,
+                // so it earns the same marker — the rule is any result carrying a
+                // history id, not any result from the microphone.
+                if (result.historyId != null) unseenTracks.markUnseen()
             } catch (e: RateLimitException) {
                 _uiState.value = _uiState.value.copy(
                     isResolving = false,
@@ -89,42 +89,4 @@ class ShareViewModel @Inject constructor(
         }
     }
 
-    private suspend fun loadGroups() {
-        try {
-            val groups = groupRepository.getGroups()
-            _uiState.value = _uiState.value.copy(groups = groups)
-        } catch (e: Exception) {
-            Log.e("Share", "Failed to load groups", e)
-        }
-    }
-
-    fun toggleGroup(groupId: String) {
-        val current = _uiState.value.selectedGroupIds
-        _uiState.value = _uiState.value.copy(
-            selectedGroupIds = if (groupId in current) current - groupId else current + groupId,
-        )
-    }
-
-    fun share() {
-        val historyId = _uiState.value.result?.historyId ?: return
-        val groupIds = _uiState.value.selectedGroupIds.toList()
-        if (groupIds.isEmpty()) return
-
-        _uiState.value = _uiState.value.copy(isSharing = true)
-        viewModelScope.launch {
-            try {
-                val results = historyRepository.share(historyId, groupIds)
-                _uiState.value = _uiState.value.copy(
-                    isSharing = false,
-                    shareResult = results,
-                )
-            } catch (e: Exception) {
-                Log.e("Share", "Failed to share", e)
-                _uiState.value = _uiState.value.copy(
-                    isSharing = false,
-                    error = "Couldn't share — try again",
-                )
-            }
-        }
-    }
 }

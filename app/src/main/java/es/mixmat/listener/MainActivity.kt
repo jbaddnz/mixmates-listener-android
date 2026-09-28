@@ -53,9 +53,14 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun publishShareShortcut() {
+        // Both labels match the plain app target ShareActivity already presents
+        // ("Listener", with "MixMates" beneath it from the activity label), so the
+        // two chooser entries read as one destination listed twice rather than two
+        // different features. Set identically because choosers differ on which of
+        // the two they render.
         val shortcut = ShortcutInfoCompat.Builder(this, "share_resolve")
-            .setShortLabel("MixMates")
-            .setLongLabel("Resolve in MixMates")
+            .setShortLabel("Listener")
+            .setLongLabel("Listener")
             .setIcon(IconCompat.createWithResource(this, R.mipmap.ic_launcher))
             .setIntent(
                 Intent(Intent.ACTION_SEND).apply {

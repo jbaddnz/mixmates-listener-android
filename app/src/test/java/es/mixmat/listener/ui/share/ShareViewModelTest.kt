@@ -3,10 +3,8 @@ package es.mixmat.listener.ui.share
 import android.util.Log
 import es.mixmat.listener.data.api.RateLimitException
 import es.mixmat.listener.data.repository.AuthRepository
-import es.mixmat.listener.data.repository.GroupRepository
-import es.mixmat.listener.data.repository.HistoryRepository
 import es.mixmat.listener.data.repository.RecognitionRepository
-import es.mixmat.listener.domain.model.Group
+import es.mixmat.listener.data.session.UnseenTracks
 import es.mixmat.listener.domain.model.Platforms
 import es.mixmat.listener.domain.model.RecognitionResult
 import es.mixmat.listener.domain.model.Track
@@ -40,8 +38,7 @@ class ShareViewModelTest {
     private val testDispatcher = StandardTestDispatcher()
     private lateinit var recognitionRepository: RecognitionRepository
     private lateinit var authRepository: AuthRepository
-    private lateinit var historyRepository: HistoryRepository
-    private lateinit var groupRepository: GroupRepository
+    private lateinit var unseenTracks: UnseenTracks
 
     private val testTrack = Track(
         title = "Midnight City",
@@ -66,11 +63,6 @@ class ShareViewModelTest {
         track = testTrack,
     )
 
-    private val testGroups = listOf(
-        Group(id = "g1", name = "Listen", description = null),
-        Group(id = "g2", name = "Friday Jams", description = null),
-    )
-
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
@@ -79,8 +71,7 @@ class ShareViewModelTest {
         every { Log.e(any(), any()) } returns 0
         recognitionRepository = mockk()
         authRepository = mockk()
-        historyRepository = mockk()
-        groupRepository = mockk()
+        unseenTracks = UnseenTracks()
     }
 
     @After
@@ -88,15 +79,13 @@ class ShareViewModelTest {
         Dispatchers.resetMain()
     }
 
-    private fun createViewModel() = ShareViewModel(
-        recognitionRepository, authRepository, historyRepository, groupRepository,
-    )
+    private fun createViewModel() =
+        ShareViewModel(recognitionRepository, authRepository, unseenTracks)
 
     @Test
-    fun `resolve with valid URL sets result and loads groups`() = runTest {
+    fun `resolve with valid URL sets result`() = runTest {
         every { authRepository.hasToken() } returns true
         coEvery { recognitionRepository.resolve(any(), any()) } returns testResult
-        coEvery { groupRepository.getGroups() } returns testGroups
 
         val viewModel = createViewModel()
         viewModel.resolve("https://open.spotify.com/track/123")
@@ -107,7 +96,6 @@ class ShareViewModelTest {
         assertNotNull(state.result)
         assertEquals("saved", state.result!!.status)
         assertEquals("Midnight City", state.result!!.track!!.title)
-        assertEquals(2, state.groups.size)
         assertNull(state.error)
     }
 
@@ -116,7 +104,6 @@ class ShareViewModelTest {
         val duplicateResult = testResult.copy(status = "duplicate")
         every { authRepository.hasToken() } returns true
         coEvery { recognitionRepository.resolve(any(), any()) } returns duplicateResult
-        coEvery { groupRepository.getGroups() } returns testGroups
 
         val viewModel = createViewModel()
         viewModel.resolve("https://open.spotify.com/track/123")
@@ -156,7 +143,6 @@ class ShareViewModelTest {
     fun `resolve extracts URL from surrounding text`() = runTest {
         every { authRepository.hasToken() } returns true
         coEvery { recognitionRepository.resolve(any(), any()) } returns testResult
-        coEvery { groupRepository.getGroups() } returns emptyList()
 
         val viewModel = createViewModel()
         viewModel.resolve("Check this out! https://open.spotify.com/track/123 so good")
@@ -207,59 +193,45 @@ class ShareViewModelTest {
         assertTrue(viewModel.uiState.value.error!!.contains("Something went wrong"))
     }
 
+    /**
+     * A resolved link lands in history just like a mic recognition, so it earns
+     * the History marker too. Missed on the first pass, which made the dot
+     * untestable for anyone testing via the share path rather than the mic.
+     */
     @Test
-    fun `toggleGroup adds and removes group`() = runTest {
+    fun `a resolved link marks history unseen`() = runTest {
         every { authRepository.hasToken() } returns true
         coEvery { recognitionRepository.resolve(any(), any()) } returns testResult
-        coEvery { groupRepository.getGroups() } returns testGroups
 
-        val viewModel = createViewModel()
-        viewModel.resolve("https://open.spotify.com/track/123")
+        createViewModel().resolve("https://open.spotify.com/track/123")
         testDispatcher.scheduler.advanceUntilIdle()
 
-        viewModel.toggleGroup("g2")
-        assertTrue("g2" in viewModel.uiState.value.selectedGroupIds)
-
-        viewModel.toggleGroup("g2")
-        assertFalse("g2" in viewModel.uiState.value.selectedGroupIds)
+        assertTrue(unseenTracks.hasUnseen.value)
     }
 
     @Test
-    fun `share calls repository and sets result`() = runTest {
+    fun `a resolve that saves nothing leaves the marker alone`() = runTest {
         every { authRepository.hasToken() } returns true
-        coEvery { recognitionRepository.resolve(any(), any()) } returns testResult
-        coEvery { groupRepository.getGroups() } returns testGroups
-        coEvery { historyRepository.share(any(), any()) } returns mapOf("g2" to "shared")
+        coEvery { recognitionRepository.resolve(any(), any()) } returns
+            testResult.copy(status = "no_match", historyId = null, track = null)
 
-        val viewModel = createViewModel()
-        viewModel.resolve("https://open.spotify.com/track/123")
+        createViewModel().resolve("https://open.spotify.com/track/123")
         testDispatcher.scheduler.advanceUntilIdle()
 
-        viewModel.toggleGroup("g2")
-        viewModel.share()
-        testDispatcher.scheduler.advanceUntilIdle()
-
-        val state = viewModel.uiState.value
-        assertFalse(state.isSharing)
-        assertEquals("shared", state.shareResult!!["g2"])
-        coVerify { historyRepository.share("hist123", listOf("g2")) }
+        assertFalse(unseenTracks.hasUnseen.value)
     }
 
     @Test
-    fun `share failure sets error`() = runTest {
+    fun `a failed resolve leaves the marker alone`() = runTest {
         every { authRepository.hasToken() } returns true
-        coEvery { recognitionRepository.resolve(any(), any()) } returns testResult
-        coEvery { groupRepository.getGroups() } returns testGroups
-        coEvery { historyRepository.share(any(), any()) } throws RuntimeException("Failed")
+        coEvery { recognitionRepository.resolve(any(), any()) } throws IOException("No network")
 
-        val viewModel = createViewModel()
-        viewModel.resolve("https://open.spotify.com/track/123")
+        createViewModel().resolve("https://open.spotify.com/track/123")
         testDispatcher.scheduler.advanceUntilIdle()
 
-        viewModel.toggleGroup("g2")
-        viewModel.share()
-        testDispatcher.scheduler.advanceUntilIdle()
-
-        assertEquals("Couldn't share — try again", viewModel.uiState.value.error)
+        assertFalse(unseenTracks.hasUnseen.value)
     }
+
+    // Group selection and sharing moved to TrackShareViewModelTest when the
+    // picker moved into the shared sheet.
 }

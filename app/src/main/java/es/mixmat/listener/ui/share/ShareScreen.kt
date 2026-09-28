@@ -18,6 +18,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import es.mixmat.listener.ui.components.GradientButton
 import es.mixmat.listener.ui.components.OpenInMixMatesButton
 import es.mixmat.listener.ui.components.TrackCard
+import es.mixmat.listener.ui.sharesheet.TrackShareSheet
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,6 +28,7 @@ fun ShareScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    var showShareSheet by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -114,52 +116,16 @@ fun ShareScreen(
                             }
                         }
 
-                        if (uiState.groups.isNotEmpty()) {
+                        // Same sheet as the result screen and history detail. The
+                        // inline picker that was here hid itself entirely when the
+                        // fetch came back empty — and also when it failed, which
+                        // is not the same thing.
+                        if (uiState.result?.historyId != null) {
                             Spacer(modifier = Modifier.height(24.dp))
-                            Text(
-                                "Share to groups",
-                                style = MaterialTheme.typography.titleSmall,
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-
-                            uiState.groups.forEach { group ->
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier.fillMaxWidth(),
-                                ) {
-                                    Checkbox(
-                                        checked = group.id in uiState.selectedGroupIds,
-                                        onCheckedChange = { viewModel.toggleGroup(group.id) },
-                                    )
-                                    Text(group.name, modifier = Modifier.weight(1f))
-                                }
-                            }
-
-                            Spacer(modifier = Modifier.height(12.dp))
-
                             GradientButton(
                                 text = "Share",
-                                onClick = viewModel::share,
-                                enabled = uiState.selectedGroupIds.isNotEmpty(),
-                                loading = uiState.isSharing,
+                                onClick = { showShareSheet = true },
                             )
-
-                            uiState.shareResult?.let { results ->
-                                Spacer(modifier = Modifier.height(8.dp))
-                                results.forEach { (groupId, status) ->
-                                    val groupName =
-                                        uiState.groups.find { it.id == groupId }?.name ?: groupId
-                                    val displayStatus = when (status) {
-                                        "duplicate" -> "Already in $groupName!"
-                                        "shared" -> "Shared to $groupName"
-                                        else -> "$groupName: $status"
-                                    }
-                                    Text(
-                                        text = displayStatus,
-                                        style = MaterialTheme.typography.bodySmall,
-                                    )
-                                }
-                            }
                         }
 
                         uiState.error?.let { error ->
@@ -181,5 +147,16 @@ fun ShareScreen(
                 }
             }
         }
+    }
+
+    if (showShareSheet) {
+        val track = uiState.result?.track
+        TrackShareSheet(
+            historyId = uiState.result?.historyId,
+            shareUrl = track?.shareUrl,
+            artist = track?.artist,
+            title = track?.title,
+            onDismiss = { showShareSheet = false },
+        )
     }
 }

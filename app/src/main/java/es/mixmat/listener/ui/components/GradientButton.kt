@@ -16,6 +16,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
+import es.mixmat.listener.ui.theme.BrandCyan
+import es.mixmat.listener.ui.theme.BrandGreen
 
 /**
  * The app's primary call-to-action: a green→cyan gradient pill with white text.
@@ -49,7 +51,7 @@ fun GradientButton(
                 brush = if (enabled) {
                     // The exact brand gradient (#1DB954 → #2CCCD3) — it marks a
                     // song's journey between people; keep it off everything else.
-                    Brush.horizontalGradient(listOf(Color(0xFF1DB954), Color(0xFF2CCCD3)))
+                    Brush.horizontalGradient(listOf(BrandGreen, BrandCyan))
                 } else {
                     SolidColor(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
                 },

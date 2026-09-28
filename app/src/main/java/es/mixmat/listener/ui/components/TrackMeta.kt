@@ -11,7 +11,9 @@ import kotlin.math.roundToInt
  */
 fun trackMetaLabel(bpm: Double?, musicalKey: String?, keyScale: String?): String? {
     val parts = mutableListOf<String>()
-    if (bpm != null) parts += "${bpm.roundToInt()} BPM"
+    // Zero is treated as absent, matching iOS: "0 BPM" reads worse than no tag,
+    // and a zero would be a fault rather than a measurement.
+    if (bpm != null && bpm > 0) parts += "${bpm.roundToInt()} BPM"
     if (musicalKey != null) {
         val key = keyDisplay[musicalKey] ?: musicalKey
         val suffix = if (keyScale == "MINOR") "m" else ""

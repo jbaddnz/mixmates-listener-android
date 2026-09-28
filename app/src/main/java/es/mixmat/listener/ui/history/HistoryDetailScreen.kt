@@ -18,6 +18,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import es.mixmat.listener.ui.components.GradientButton
 import es.mixmat.listener.ui.components.OpenInMixMatesButton
 import es.mixmat.listener.ui.components.TrackCard
+import es.mixmat.listener.ui.sharesheet.TrackShareSheet
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -28,6 +29,7 @@ fun HistoryDetailScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    var showShareSheet by remember { mutableStateOf(false) }
 
     LaunchedEffect(historyId) {
         viewModel.load(historyId)
@@ -98,52 +100,14 @@ fun HistoryDetailScreen(
                         }
                     }
 
-                    if (uiState.groups.isNotEmpty()) {
-                        Spacer(modifier = Modifier.height(24.dp))
-                        Text(
-                            "Share to groups",
-                            style = MaterialTheme.typography.titleSmall,
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        uiState.groups.forEach { group ->
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.fillMaxWidth(),
-                            ) {
-                                Checkbox(
-                                    checked = group.id in uiState.selectedGroupIds,
-                                    onCheckedChange = { viewModel.toggleGroup(group.id) },
-                                )
-                                Text(group.name, modifier = Modifier.weight(1f))
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.height(12.dp))
-
-                        GradientButton(
-                            text = "Share",
-                            onClick = viewModel::share,
-                            enabled = uiState.selectedGroupIds.isNotEmpty(),
-                            loading = uiState.isSharing,
-                        )
-
-                        uiState.shareResult?.let { results ->
-                            Spacer(modifier = Modifier.height(8.dp))
-                            results.forEach { (groupId, status) ->
-                                val groupName = uiState.groups.find { it.id == groupId }?.name ?: groupId
-                                val displayStatus = when (status) {
-                                    "duplicate" -> "Already in $groupName!"
-                                    "shared" -> "Shared to $groupName"
-                                    else -> "$groupName: $status"
-                                }
-                                Text(
-                                    text = displayStatus,
-                                    style = MaterialTheme.typography.bodySmall,
-                                )
-                            }
-                        }
-                    }
+                    // One picker for the whole app, in the sheet. The inline copy
+                    // that used to live here has gone; it had already started to
+                    // drift from the one on the result screen.
+                    Spacer(modifier = Modifier.height(24.dp))
+                    GradientButton(
+                        text = "Share",
+                        onClick = { showShareSheet = true },
+                    )
 
                     uiState.error?.let { error ->
                         Spacer(modifier = Modifier.height(8.dp))
@@ -155,5 +119,19 @@ fun HistoryDetailScreen(
                 }
             }
         }
+    }
+
+    if (showShareSheet) {
+        val detail = uiState.detail
+        TrackShareSheet(
+            historyId = detail?.id,
+            shareUrl = detail?.shareUrl,
+            artist = detail?.artist,
+            title = detail?.title,
+            onDismiss = { showShareSheet = false },
+            // Already-shared groups start ticked; the sheet intersects them
+            // against what the endpoint actually returns.
+            preselecting = detail?.sharedTo?.map { it.groupId }?.toSet() ?: emptySet(),
+        )
     }
 }

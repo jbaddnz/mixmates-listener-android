@@ -141,15 +141,15 @@ fun TrackCard(
                 }
             }
 
-            // Opt-in system-share (share sheet to any app). Passed only where there's
-            // no persona-share below it — e.g. the Listen result card.
+            // The hero. Opens the app's own share sheet, where the group picker comes
+            // first and the public link is one tap further on — sharing to your people
+            // is the point, so it should not cost more than sharing outwards.
             // Brand gradient per the platform-branding spec (green→cyan, white text) —
-            // reuses the "Open in MixMates" gradient vocabulary. Opt-in: only passed
-            // where there's no persona-share below, e.g. the Listen result card.
+            // reuses the "Open in MixMates" gradient vocabulary.
             shareUrl?.let { url ->
                 Spacer(modifier = Modifier.height(12.dp))
                 GradientButton(
-                    text = "Share link",
+                    text = "Share",
                     onClick = { onShareClick?.invoke(url) ?: onPlatformClick(url) },
                 )
             }

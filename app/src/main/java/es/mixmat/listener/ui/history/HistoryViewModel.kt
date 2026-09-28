@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import es.mixmat.listener.data.repository.HistoryRepository
+import es.mixmat.listener.data.session.UnseenTracks
 import es.mixmat.listener.domain.model.HistoryItem
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,6 +24,7 @@ data class HistoryUiState(
 @HiltViewModel
 class HistoryViewModel @Inject constructor(
     private val historyRepository: HistoryRepository,
+    private val unseenTracks: UnseenTracks,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HistoryUiState())
@@ -30,6 +32,10 @@ class HistoryViewModel @Inject constructor(
 
     init {
         loadHistory()
+        // History has been opened, so the marker has done its job. Cleared here
+        // rather than on the navigation action so it clears when the screen
+        // actually appears, however it was reached.
+        unseenTracks.clear()
     }
 
     fun loadHistory() {

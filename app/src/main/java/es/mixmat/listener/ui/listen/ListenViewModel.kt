@@ -13,6 +13,7 @@ import es.mixmat.listener.data.prefs.ListenerPrefs
 import es.mixmat.listener.data.repository.AuthRepository
 import es.mixmat.listener.data.repository.HistoryRepository
 import es.mixmat.listener.data.repository.RecognitionRepository
+import es.mixmat.listener.data.session.UnseenTracks
 import es.mixmat.listener.domain.model.RecognitionResult
 import es.mixmat.listener.domain.model.UserProfile
 import kotlinx.coroutines.Dispatchers
@@ -35,6 +36,7 @@ data class ListenUiState(
     val permissionDenied: Boolean = false,
     val reported: Boolean = false,
     val isReporting: Boolean = false,
+    val hasUnseenTracks: Boolean = false,
 )
 
 @HiltViewModel
@@ -45,6 +47,7 @@ class ListenViewModel @Inject constructor(
     private val historyRepository: HistoryRepository,
     private val connectivityManager: ConnectivityManager,
     private val listenerPrefs: ListenerPrefs,
+    private val unseenTracks: UnseenTracks,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ListenUiState())
@@ -55,6 +58,11 @@ class ListenViewModel @Inject constructor(
         viewModelScope.launch {
             audioRecorder.state.collect { state ->
                 _uiState.value = _uiState.value.copy(recorderState = state)
+            }
+        }
+        viewModelScope.launch {
+            unseenTracks.hasUnseen.collect { hasUnseen ->
+                _uiState.value = _uiState.value.copy(hasUnseenTracks = hasUnseen)
             }
         }
     }
@@ -133,6 +141,9 @@ class ListenViewModel @Inject constructor(
                     isSubmitting = false,
                     result = result,
                 )
+                // A history id means it landed somewhere, so mark History unseen.
+                // A duplicate counts; a no-match does not.
+                if (result.historyId != null) unseenTracks.markUnseen()
                 file.delete()
             } catch (e: RateLimitException) {
                 Log.w("Listen", "Rate limited, retry after ${e.retryAfterSeconds}s")
@@ -178,6 +189,10 @@ class ListenViewModel @Inject constructor(
         _uiState.value = ListenUiState(
             profile = _uiState.value.profile,
             hasAudioPermission = _uiState.value.hasAudioPermission,
+            // Carried over deliberately: listening again does not make the earlier
+            // track any more seen. The StateFlow would not re-emit to restore it,
+            // since its value hasn't changed.
+            hasUnseenTracks = _uiState.value.hasUnseenTracks,
         )
     }
 

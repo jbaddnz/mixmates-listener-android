@@ -18,10 +18,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import es.mixmat.listener.domain.model.HistoryItem
+import es.mixmat.listener.ui.components.MixmatesWordmarkLink
 import es.mixmat.listener.ui.components.trackMetaLabel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -119,6 +121,20 @@ fun HistoryScreen(
                                     contentAlignment = Alignment.Center,
                                 ) {
                                     CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                                }
+                            }
+                        }
+                        // Scrolls with the list rather than pinned, so it never
+                        // competes with the last track for the bottom of the screen.
+                        if (!uiState.hasMore) {
+                            item {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 24.dp),
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    MixmatesWordmarkLink(fontSize = 18.sp)
                                 }
                             }
                         }

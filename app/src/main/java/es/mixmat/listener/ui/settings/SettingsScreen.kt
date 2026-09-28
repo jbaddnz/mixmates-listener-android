@@ -1,7 +1,5 @@
 package es.mixmat.listener.ui.settings
 
-import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -11,9 +9,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import es.mixmat.listener.data.prefs.ListenerPrefs
+import es.mixmat.listener.ui.components.MixmatesWordmarkLink
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -137,20 +137,12 @@ fun SettingsScreen(
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                 )
-                Spacer(modifier = Modifier.height(4.dp))
-                TextButton(
-                    onClick = {
-                        context.startActivity(
-                            Intent(Intent.ACTION_VIEW, Uri.parse("https://mixmat.es")),
-                        )
-                    },
-                ) {
-                    Text(
-                        text = "mixmat.es",
-                        style = MaterialTheme.typography.labelMedium,
-                    )
-                }
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(8.dp))
+                // The brand mark in place of the plain-text link that was here —
+                // same destination, and it carries the identity the idle screen
+                // already establishes.
+                MixmatesWordmarkLink(fontSize = 18.sp)
+                Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = "MixMat Ltd",
                     style = MaterialTheme.typography.labelSmall,

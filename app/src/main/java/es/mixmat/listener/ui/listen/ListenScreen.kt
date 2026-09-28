@@ -35,6 +35,8 @@ import es.mixmat.listener.ui.components.MixmatesWordmarkLink
 import es.mixmat.listener.ui.components.OpenInMixMatesButton
 import es.mixmat.listener.ui.components.SuccessWave
 import es.mixmat.listener.ui.components.TrackCard
+import es.mixmat.listener.ui.sharesheet.TrackShareSheet
+import es.mixmat.listener.ui.theme.BrandCyan
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,6 +49,7 @@ fun ListenScreen(
     val context = LocalContext.current
     val view = LocalView.current
     var showMicDisclosure by remember { mutableStateOf(false) }
+    var showShareSheet by remember { mutableStateOf(false) }
 
     // Success haptic when a recognition lands (Android's confirm idiom;
     // CONFIRM needs API 30, minSdk is 26).
@@ -82,7 +85,16 @@ fun ListenScreen(
                         )
                     }
                     IconButton(onClick = onNavigateToHistory) {
-                        Icon(Icons.Default.History, contentDescription = "History")
+                        // Cyan, not red: this is news, not an error.
+                        BadgedBox(
+                            badge = {
+                                if (uiState.hasUnseenTracks) {
+                                    Badge(containerColor = BrandCyan)
+                                }
+                            },
+                        ) {
+                            Icon(Icons.Default.History, contentDescription = "History")
+                        }
                     }
                     IconButton(onClick = onNavigateToSettings) {
                         Icon(Icons.Default.Settings, contentDescription = "Settings")
@@ -141,13 +153,9 @@ fun ListenScreen(
                                             Intent(Intent.ACTION_VIEW, Uri.parse(url)),
                                         )
                                     },
-                                    onShareClick = { url ->
-                                        val sendIntent = Intent(Intent.ACTION_SEND).apply {
-                                            putExtra(Intent.EXTRA_TEXT, "${track.artist} - ${track.title}\n$url")
-                                            type = "text/plain"
-                                        }
-                                        context.startActivity(Intent.createChooser(sendIntent, null))
-                                    },
+                                    // Opens our own sheet, not the system chooser:
+                                    // the group picker is the point of the moment.
+                                    onShareClick = { showShareSheet = true },
                                 )
                             }
                         }
@@ -341,6 +349,22 @@ fun ListenScreen(
                     Text("Not now")
                 }
             },
+        )
+    }
+
+    if (showShareSheet) {
+        val result = uiState.result
+        val track = result?.track
+        TrackShareSheet(
+            // Only a saved entry can be shared to a group, so a no_match or a
+            // no_links result opens the sheet with the system share alone.
+            historyId = result?.historyId?.takeIf {
+                result.status in listOf("saved", "duplicate")
+            },
+            shareUrl = track?.shareUrl,
+            artist = track?.artist,
+            title = track?.title,
+            onDismiss = { showShareSheet = false },
         )
     }
 }

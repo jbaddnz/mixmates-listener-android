@@ -14,3 +14,8 @@ val Pink40 = Color(0xFF7D5260)
 // its pill is monochrome; monochrome IS Tidal's identity.
 val SpotifyGreen = Color(0xFF1DB954)
 val AppleMusicRed = Color(0xFFFA243C)
+
+// MixMates brand gradient, green → cyan. Same pair the wordmark and the gradient
+// buttons run through; named here so there is one definition to change.
+val BrandGreen = Color(0xFF1DB954)
+val BrandCyan = Color(0xFF2CCCD3)
