@@ -5,10 +5,13 @@ package es.mixmat.listener.ui.sharesheet
  * test can hold them to the rules: no website, no upgrade or plan talk, and no
  * em or en dashes. Wording matches iOS exactly; change both together.
  *
- * Constants only. Anything built from a group name is assembled at the call site
- * from these pieces, so the test still sees every word.
+ * Constants only. Anything that names a group is a template here with [GROUP]
+ * filled in by a function, so the test still sees every word.
  */
 object GroupFlowCopy {
+    /** Placeholder for a group name in the templates below. */
+    private const val GROUP = "{group}"
+
     // -- Start a group --
     const val START_A_GROUP = "Start a group"
     const val START_HINT = "Make a group, then send your friends the invite link."
@@ -24,8 +27,15 @@ object GroupFlowCopy {
     /** Share sheet text after a create, followed by the invite link. */
     const val INVITE_MESSAGE_NEW = "I started a group on MixMates. Join me:"
 
-    /** Share sheet text from a picker row, which may be a friend's group. */
-    const val INVITE_MESSAGE = "Join my group on MixMates:"
+    /** Share sheet text from a picker row. Names the group: it may be a friend's, so never "my". */
+    const val INVITE_MESSAGE = "Join $GROUP on MixMates:"
+
+    /** Accessibility label on a row's invite icon, so each row reads differently. */
+    const val INVITE_TO = "Invite a friend to $GROUP"
+
+    fun inviteMessage(groupName: String) = INVITE_MESSAGE.replace(GROUP, groupName)
+
+    fun inviteTo(groupName: String) = INVITE_TO.replace(GROUP, groupName)
 
     // -- Start errors --
     const val NAME_TAKEN = "That name's taken. Try adding something of your own to it."
@@ -41,7 +51,7 @@ object GroupFlowCopy {
     /** After a refused share. Agreed with iOS. */
     const val SAVE_AND_SHARE = "Save and share"
 
-    /** After a refused create. iOS has no create yet, so not agreed. */
+    /** After a refused create, where "Save and share" would be wrong. */
     const val SAVE = "Save"
 
     /** Back to where the refused action left off, selection kept. Agreed with iOS. */

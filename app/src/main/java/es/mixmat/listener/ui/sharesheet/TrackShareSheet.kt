@@ -263,10 +263,12 @@ private fun GroupPicker(
                 }
                 // Hidden when null, which the demo group always is.
                 group.inviteUrl?.let { url ->
-                    IconButton(onClick = { context.shareInvite(GroupFlowCopy.INVITE_MESSAGE, url) }) {
+                    IconButton(
+                        onClick = { context.shareInvite(GroupFlowCopy.inviteMessage(group.name), url) },
+                    ) {
                         Icon(
                             imageVector = Icons.Default.PersonAdd,
-                            contentDescription = GroupFlowCopy.INVITE_A_FRIEND,
+                            contentDescription = GroupFlowCopy.inviteTo(group.name),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }

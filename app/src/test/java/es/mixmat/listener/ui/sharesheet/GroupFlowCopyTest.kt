@@ -53,6 +53,10 @@ class GroupFlowCopyTest {
         assertEquals("Your name", GroupFlowCopy.YOUR_NAME)
         assertEquals("Save and share", GroupFlowCopy.SAVE_AND_SHARE)
         assertEquals("Not now", GroupFlowCopy.NOT_NOW)
+        assertEquals("Too many tries. Try again later.", GroupFlowCopy.TOO_MANY_TRIES)
+        assertEquals("I started a group on MixMates. Join me:", GroupFlowCopy.INVITE_MESSAGE_NEW)
+        assertEquals("Join Night Shift on MixMates:", GroupFlowCopy.inviteMessage("Night Shift"))
+        assertEquals("Invite a friend to Night Shift", GroupFlowCopy.inviteTo("Night Shift"))
         assertEquals("Couldn't save your name. Try again.", GroupFlowCopy.NAME_SAVE_FAILED)
         assertEquals(
             "That's an Apple private address. Choose a name your friends will see.",
