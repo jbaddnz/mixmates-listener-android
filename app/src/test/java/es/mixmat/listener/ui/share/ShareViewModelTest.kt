@@ -1,6 +1,7 @@
 package es.mixmat.listener.ui.share
 
 import android.util.Log
+import es.mixmat.listener.R
 import es.mixmat.listener.data.api.RateLimitException
 import es.mixmat.listener.data.repository.AuthRepository
 import es.mixmat.listener.data.repository.RecognitionRepository
@@ -8,6 +9,7 @@ import es.mixmat.listener.data.session.UnseenTracks
 import es.mixmat.listener.domain.model.Platforms
 import es.mixmat.listener.domain.model.RecognitionResult
 import es.mixmat.listener.domain.model.Track
+import es.mixmat.listener.ui.text.UiText
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -123,7 +125,7 @@ class ShareViewModelTest {
         val state = viewModel.uiState.value
         assertFalse(state.isResolving)
         assertNull(state.result)
-        assertEquals("Sign in to MixMates Listener first.", state.error)
+        assertEquals(UiText(R.string.share_sign_in_first), state.error)
     }
 
     @Test
@@ -136,7 +138,7 @@ class ShareViewModelTest {
 
         val state = viewModel.uiState.value
         assertFalse(state.isResolving)
-        assertTrue(state.error!!.contains("No supported music link"))
+        assertEquals(UiText(R.string.share_no_supported_link), state.error)
     }
 
     @Test
@@ -163,8 +165,7 @@ class ShareViewModelTest {
 
         val state = viewModel.uiState.value
         assertFalse(state.isResolving)
-        assertTrue(state.error!!.contains("Rate limit"))
-        assertTrue(state.error!!.contains("60"))
+        assertEquals(UiText(R.string.share_rate_limited, 60), state.error)
     }
 
     @Test
@@ -178,7 +179,7 @@ class ShareViewModelTest {
         viewModel.resolve("https://open.spotify.com/track/123")
         testDispatcher.scheduler.advanceUntilIdle()
 
-        assertTrue(viewModel.uiState.value.error!!.contains("isn't supported"))
+        assertEquals(UiText(R.string.share_link_type_unsupported), viewModel.uiState.value.error)
     }
 
     @Test
@@ -190,7 +191,7 @@ class ShareViewModelTest {
         viewModel.resolve("https://open.spotify.com/track/123")
         testDispatcher.scheduler.advanceUntilIdle()
 
-        assertTrue(viewModel.uiState.value.error!!.contains("Something went wrong"))
+        assertEquals(UiText(R.string.share_something_went_wrong), viewModel.uiState.value.error)
     }
 
     /**

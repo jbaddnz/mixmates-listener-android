@@ -86,6 +86,12 @@ android {
         compose = true
         buildConfig = true
     }
+
+    // Lists English and Spanish in Android 13+'s per-app language setting, so
+    // the language is chosen in system settings rather than an in-app toggle.
+    androidResources {
+        generateLocaleConfig = true
+    }
 }
 
 dependencies {

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Listen screen -->
+    <string name="listen_title">Listen</string>
+    <string name="listen_history">History</string>
+    <string name="listen_settings">Settings</string>
+    <string name="listen_greeting">Hi, %1$s</string>
+    <string name="listen_identifying">Identifying...</string>
+    <string name="listen_no_match">No match found</string>
+    <string name="listen_no_match_hint">Try again with clearer audio</string>
+    <string name="listen_no_links">%1$s identified but no streaming links available</string>
+    <string name="listen_track_fallback">Track</string>
+    <string name="listen_reported">Reported — thanks!</string>
+    <string name="listen_reporting">Reporting…</string>
+    <string name="listen_wrong_match">Wrong match?</string>
+    <string name="listen_again">Listen again</string>
+    <string name="listen_listening">Listening...</string>
+    <string name="listen_stop_early">Stop early</string>
+    <string name="listen_saved_offline">Saved offline - will submit when connected</string>
+    <string name="listen_mic_needed">Microphone access is needed to identify music</string>
+    <string name="listen_open_settings">Open settings</string>
+    <string name="listen_start_listening">Start listening</string>
+    <string name="listen_tap_to_listen">Tap to listen</string>
+    <string name="listen_mic_title">Microphone access</string>
+    <string name="listen_mic_body">MixMates Listener uses your microphone to capture a short audio clip of music playing nearby. The clip is sent to a recognition service to identify the song, then discarded. No audio is stored permanently.</string>
+    <string name="listen_allow">Allow</string>
+    <string name="listen_not_now">Not now</string>
+
+    <!-- Listen errors -->
+    <string name="listen_error_verify">Could not verify your account. Check your connection.</string>
+    <string name="listen_error_mic">Could not access microphone</string>
+    <string name="listen_error_recording">Recording failed</string>
+    <string name="listen_error_rate_limit">Rate limit reached. Try again in %1$d seconds.</string>
+    <string name="listen_error_recognition">Recognition failed. Queued for retry.</string>
+    <string name="listen_error_report">Could not submit report. Try again.</string>
+
+    <!-- Track card and shared components -->
+    <string name="listen_album_art">%1$s album art</string>
+    <string name="listen_already_in_queue">Already in your queue!</string>
+    <string name="listen_share">Share</string>
+    <string name="listen_open_in_mixmates">Open in MixMates</string>
+</resources>

@@ -2,6 +2,7 @@ package es.mixmat.listener.ui.auth
 
 import android.util.Log
 import androidx.credentials.exceptions.GetCredentialCancellationException
+import es.mixmat.listener.R
 import es.mixmat.listener.data.api.dto.ProviderSignInData
 import es.mixmat.listener.data.auth.AppleSignInHelper
 import es.mixmat.listener.data.auth.AppleSignInReturn
@@ -11,6 +12,7 @@ import es.mixmat.listener.data.prefs.ListenerPrefs
 import es.mixmat.listener.data.repository.AuthRepository
 import es.mixmat.listener.domain.model.RateLimit
 import es.mixmat.listener.domain.model.UserProfile
+import es.mixmat.listener.ui.text.UiText
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -130,7 +132,7 @@ class TokenEntryViewModelTest {
         viewModel.onTokenChange("   ")
         viewModel.validateAndSave()
 
-        assertEquals("Token cannot be empty", viewModel.uiState.value.error)
+        assertEquals(UiText(R.string.auth_error_token_empty), viewModel.uiState.value.error)
         assertFalse(viewModel.uiState.value.isValidating)
     }
 
@@ -161,7 +163,7 @@ class TokenEntryViewModelTest {
 
         val state = viewModel.uiState.value
         assertFalse(state.isValid)
-        assertNotNull(state.error)
+        assertEquals(UiText(R.string.auth_error_token_invalid), state.error)
         verify { authRepository.clearToken() }
     }
 
@@ -177,7 +179,7 @@ class TokenEntryViewModelTest {
 
         val state = viewModel.uiState.value
         assertFalse(state.isValid)
-        assertTrue(state.error!!.contains("enabled"))
+        assertEquals(UiText(R.string.auth_error_listen_disabled_key), state.error)
         verify { authRepository.clearToken() }
     }
 
@@ -238,8 +240,7 @@ class TokenEntryViewModelTest {
         val state = viewModel.uiState.value
         assertFalse(state.isValid)
         assertFalse(state.isGoogleSigningIn)
-        assertNotNull(state.error)
-        assertTrue(state.error!!.contains("enabled"))
+        assertEquals(UiText(R.string.auth_error_listen_disabled_provider), state.error)
         verify(exactly = 0) { authRepository.saveToken(any()) }
     }
 
@@ -255,8 +256,7 @@ class TokenEntryViewModelTest {
         val state = viewModel.uiState.value
         assertFalse(state.isValid)
         assertFalse(state.isGoogleSigningIn)
-        assertNotNull(state.error)
-        assertTrue(state.error!!.contains("failed"))
+        assertEquals(UiText(R.string.auth_error_google_failed), state.error)
     }
 
     @Test
@@ -336,7 +336,7 @@ class TokenEntryViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
 
         val state = viewModel.uiState.value
-        assertTrue(state.error!!.contains("failed"))
+        assertEquals(UiText(R.string.auth_error_apple_failed), state.error)
         coVerify(exactly = 0) { authRepository.signInWithApple(any(), any(), any()) }
     }
 
@@ -389,7 +389,7 @@ class TokenEntryViewModelTest {
         val state = viewModel.uiState.value
         assertFalse(state.showNewAccountDialog)
         assertFalse(state.isValid)
-        assertTrue(state.error!!.contains("enabled"))
+        assertEquals(UiText(R.string.auth_error_listen_disabled_provider), state.error)
         verify(exactly = 0) { authRepository.saveToken(any()) }
     }
 

@@ -4,12 +4,14 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import es.mixmat.listener.R
 import es.mixmat.listener.data.api.ApiException
 import es.mixmat.listener.data.api.RateLimitException
 import es.mixmat.listener.data.repository.AuthRepository
 import es.mixmat.listener.data.repository.GroupRepository
 import es.mixmat.listener.data.repository.HistoryRepository
 import es.mixmat.listener.domain.model.Group
+import es.mixmat.listener.ui.text.UiText
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -35,7 +37,7 @@ sealed interface GroupsState {
     data class Loaded(val groups: List<Group>, val canCreate: Boolean) : GroupsState
 
     /** [retryable] is false for a permanent failure, where a Try again button would be a lie. */
-    data class Failed(val message: String, val retryable: Boolean) : GroupsState
+    data class Failed(val message: UiText, val retryable: Boolean) : GroupsState
 }
 
 /** The start-a-group part of the sheet. */
@@ -48,7 +50,7 @@ sealed interface StartGroupState {
      */
     data class Naming(
         val isCreating: Boolean = false,
-        val error: String? = null,
+        val error: UiText? = null,
         val draft: String = "",
     ) : StartGroupState
     data class Created(val group: Group) : StartGroupState
@@ -57,13 +59,13 @@ sealed interface StartGroupState {
      * `already_has_group`. Shown whatever the refreshed list says, because that
      * refresh will normally come back with `can_create: false`.
      */
-    data class Refused(val message: String) : StartGroupState
+    data class Refused(val message: UiText) : StartGroupState
 }
 
 /** Asking for a display name after `name_required`, in place of the rest of the sheet. */
 data class NamePrompt(
     val isSaving: Boolean = false,
-    val error: String? = null,
+    val error: UiText? = null,
     /** Refused a create rather than a share, which changes the button's wording. */
     val forCreate: Boolean = false,
 )
@@ -73,7 +75,7 @@ data class TrackShareUiState(
     val selectedGroupIds: Set<String> = emptySet(),
     val isSharing: Boolean = false,
     val shareResult: Map<String, String>? = null,
-    val shareError: String? = null,
+    val shareError: UiText? = null,
     val startGroup: StartGroupState = StartGroupState.Closed,
     val namePrompt: NamePrompt? = null,
 )
@@ -220,7 +222,7 @@ class TrackShareViewModel @Inject constructor(
                     }
                     e is ApiException && e.code == CODE_ALREADY_HAS_GROUP -> {
                         _uiState.value = _uiState.value.copy(
-                            startGroup = StartGroupState.Refused(GroupFlowCopy.ALREADY_HAS_GROUP),
+                            startGroup = StartGroupState.Refused(UiText(R.string.sharesheet_already_has_group)),
                         )
                         refreshGroups(select = null)
                     }
@@ -318,7 +320,7 @@ class TrackShareViewModel @Inject constructor(
         if (this is ApiException && code == CODE_LISTEN_DISABLED) {
             GroupsState.Failed(LISTEN_DISABLED, retryable = false)
         } else {
-            GroupsState.Failed("Couldn't load your groups", retryable = true)
+            GroupsState.Failed(UiText(R.string.sharesheet_load_failed), retryable = true)
         }
 
     /**
@@ -328,30 +330,30 @@ class TrackShareViewModel @Inject constructor(
      * accepting tracks. `name_required` only lands here on the retry after a
      * name was set, where asking again would loop.
      */
-    private fun Throwable.toShareError(): String {
+    private fun Throwable.toShareError(): UiText {
         if (this !is ApiException) return GENERIC_SHARE_FAILURE
         return when (code) {
-            CODE_GROUP_LOCKED -> "This group is no longer accepting new tracks"
-            CODE_NOT_FOUND -> "You're no longer in that group"
+            CODE_GROUP_LOCKED -> UiText(R.string.sharesheet_group_locked)
+            CODE_NOT_FOUND -> UiText(R.string.sharesheet_not_a_member)
             CODE_LISTEN_DISABLED -> LISTEN_DISABLED
             else -> GENERIC_SHARE_FAILURE
         }
     }
 
-    private fun Throwable.toCreateError(): String {
-        if (this is RateLimitException) return GroupFlowCopy.TOO_MANY_TRIES
-        if (this !is ApiException) return GroupFlowCopy.CREATE_FAILED
+    private fun Throwable.toCreateError(): UiText {
+        if (this is RateLimitException) return TOO_MANY_TRIES
+        if (this !is ApiException) return CREATE_FAILED
         return when (code) {
-            CODE_NAME_TAKEN -> GroupFlowCopy.NAME_TAKEN
+            CODE_NAME_TAKEN -> UiText(R.string.sharesheet_name_taken)
             CODE_LISTEN_DISABLED -> LISTEN_DISABLED
-            else -> GroupFlowCopy.CREATE_FAILED
+            else -> CREATE_FAILED
         }
     }
 
-    private fun Throwable.toNameError(): String = when {
-        this is RateLimitException -> GroupFlowCopy.TOO_MANY_TRIES
-        this is ApiException && code == CODE_PRIVATE_RELAY -> GroupFlowCopy.PRIVATE_RELAY
-        else -> GroupFlowCopy.NAME_SAVE_FAILED
+    private fun Throwable.toNameError(): UiText = when {
+        this is RateLimitException -> TOO_MANY_TRIES
+        this is ApiException && code == CODE_PRIVATE_RELAY -> UiText(R.string.sharesheet_private_relay)
+        else -> UiText(R.string.sharesheet_name_save_failed)
     }
 
     private companion object {
@@ -367,8 +369,9 @@ class TrackShareViewModel @Inject constructor(
         const val CODE_ALREADY_HAS_GROUP = "already_has_group"
         const val CODE_PRIVATE_RELAY = "private_relay_name"
 
-        /** Two sentences, no dash: em and en dashes are out in this flow. */
-        const val GENERIC_SHARE_FAILURE = "Couldn't share. Try again."
-        const val LISTEN_DISABLED = "Listening isn't enabled on this account"
+        val GENERIC_SHARE_FAILURE = UiText(R.string.sharesheet_share_failed)
+        val LISTEN_DISABLED = UiText(R.string.sharesheet_listen_disabled)
+        val CREATE_FAILED = UiText(R.string.sharesheet_create_failed)
+        val TOO_MANY_TRIES = UiText(R.string.sharesheet_too_many_tries)
     }
 }

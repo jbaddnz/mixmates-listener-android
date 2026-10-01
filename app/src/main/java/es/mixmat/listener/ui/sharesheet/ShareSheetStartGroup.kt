@@ -20,11 +20,15 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
+import es.mixmat.listener.R
 import es.mixmat.listener.domain.model.Group
 import es.mixmat.listener.ui.components.GradientButton
+import es.mixmat.listener.ui.text.UiText
+import es.mixmat.listener.ui.text.asString
 
 /** The server's limit, after trimming. Capped at input so `invalid_field` never fires. */
 internal const val MAX_NAME_LENGTH = 100
@@ -37,17 +41,17 @@ internal const val MAX_NAME_LENGTH = 100
 fun ShareSheetStartGroupPrompt(onStart: () -> Unit, modifier: Modifier = Modifier) {
     Column(modifier = modifier.fillMaxWidth().padding(vertical = 8.dp)) {
         Text(
-            text = GroupFlowCopy.START_A_GROUP,
+            text = stringResource(R.string.sharesheet_start_a_group),
             style = MaterialTheme.typography.titleSmall,
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
-            text = GroupFlowCopy.START_HINT,
+            text = stringResource(R.string.sharesheet_start_hint),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Spacer(modifier = Modifier.height(12.dp))
-        GradientButton(text = GroupFlowCopy.START_A_GROUP, onClick = onStart)
+        GradientButton(text = stringResource(R.string.sharesheet_start_a_group), onClick = onStart)
     }
 }
 
@@ -63,7 +67,7 @@ fun ShareSheetStartGroupButton(
     enabled: Boolean = true,
 ) {
     GradientButton(
-        text = GroupFlowCopy.START_A_GROUP,
+        text = stringResource(R.string.sharesheet_start_a_group),
         onClick = onStart,
         modifier = modifier,
         enabled = enabled,
@@ -80,18 +84,18 @@ fun ShareSheetStartGroupNaming(
 ) {
     var name by rememberSaveable { mutableStateOf(state.draft) }
     val canSubmit = name.isNotBlank() && !state.isCreating
-    val error = state.error
+    val error = state.error?.asString()
 
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
-            text = GroupFlowCopy.START_A_GROUP,
+            text = stringResource(R.string.sharesheet_start_a_group),
             style = MaterialTheme.typography.titleSmall,
         )
         Spacer(modifier = Modifier.height(8.dp))
         OutlinedTextField(
             value = name,
             onValueChange = { name = it.take(MAX_NAME_LENGTH) },
-            label = { Text(GroupFlowCopy.NAME_YOUR_GROUP) },
+            label = { Text(stringResource(R.string.sharesheet_name_your_group)) },
             singleLine = true,
             isError = error != null,
             supportingText = if (error != null) {
@@ -109,13 +113,13 @@ fun ShareSheetStartGroupNaming(
         )
         Spacer(modifier = Modifier.height(12.dp))
         GradientButton(
-            text = GroupFlowCopy.CREATE,
+            text = stringResource(R.string.sharesheet_create),
             onClick = { onCreate(name) },
             enabled = name.isNotBlank(),
             loading = state.isCreating,
         )
         TextButton(onClick = onCancel, enabled = !state.isCreating) {
-            Text(GroupFlowCopy.CANCEL)
+            Text(stringResource(R.string.sharesheet_cancel))
         }
     }
 }
@@ -131,9 +135,10 @@ fun ShareSheetGroupCreated(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
+    val message = stringResource(R.string.sharesheet_invite_message_new)
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
-            text = GroupFlowCopy.GROUP_READY,
+            text = stringResource(R.string.sharesheet_group_ready),
             style = MaterialTheme.typography.titleSmall,
         )
         Spacer(modifier = Modifier.height(4.dp))
@@ -144,21 +149,21 @@ fun ShareSheetGroupCreated(
         Spacer(modifier = Modifier.height(12.dp))
         group.inviteUrl?.let { url ->
             GradientButton(
-                text = GroupFlowCopy.INVITE_A_FRIEND,
-                onClick = { context.shareInvite(GroupFlowCopy.INVITE_MESSAGE_NEW, url) },
+                text = stringResource(R.string.sharesheet_invite_a_friend),
+                onClick = { context.shareInvite(message, url) },
             )
         }
         TextButton(onClick = onShareToIt) {
-            Text(GroupFlowCopy.SHARE_TO_IT)
+            Text(stringResource(R.string.sharesheet_share_to_it))
         }
     }
 }
 
 /** `already_has_group`: the copy, nothing to tap, no link anywhere. */
 @Composable
-fun ShareSheetStartGroupRefused(message: String, modifier: Modifier = Modifier) {
+fun ShareSheetStartGroupRefused(message: UiText, modifier: Modifier = Modifier) {
     Text(
-        text = message,
+        text = message.asString(),
         style = MaterialTheme.typography.bodyMedium,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         modifier = modifier.fillMaxWidth().padding(bottom = 12.dp),

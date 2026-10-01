@@ -16,10 +16,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
+import es.mixmat.listener.R
 import es.mixmat.listener.ui.components.GradientButton
+import es.mixmat.listener.ui.text.asString
 
 /**
  * Shown after `name_required`, in place of the groups section rather than as a
@@ -35,16 +38,16 @@ fun ShareSheetNamePrompt(
 ) {
     var name by rememberSaveable { mutableStateOf("") }
     val canSubmit = name.isNotBlank() && !prompt.isSaving
-    val error = prompt.error
+    val error = prompt.error?.asString()
 
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
-            text = GroupFlowCopy.CHOOSE_A_NAME,
+            text = stringResource(R.string.sharesheet_choose_a_name),
             style = MaterialTheme.typography.titleSmall,
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
-            text = GroupFlowCopy.NICKNAME_FINE,
+            text = stringResource(R.string.sharesheet_nickname_fine),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -52,7 +55,7 @@ fun ShareSheetNamePrompt(
         OutlinedTextField(
             value = name,
             onValueChange = { name = it.take(MAX_NAME_LENGTH) },
-            label = { Text(GroupFlowCopy.YOUR_NAME) },
+            label = { Text(stringResource(R.string.sharesheet_your_name)) },
             singleLine = true,
             isError = error != null,
             supportingText = if (error != null) {
@@ -70,13 +73,15 @@ fun ShareSheetNamePrompt(
         )
         Spacer(modifier = Modifier.height(12.dp))
         GradientButton(
-            text = if (prompt.forCreate) GroupFlowCopy.SAVE else GroupFlowCopy.SAVE_AND_SHARE,
+            text = stringResource(
+                if (prompt.forCreate) R.string.sharesheet_save else R.string.sharesheet_save_and_share,
+            ),
             onClick = { onSave(name) },
             enabled = name.isNotBlank(),
             loading = prompt.isSaving,
         )
         TextButton(onClick = onCancel, enabled = !prompt.isSaving) {
-            Text(GroupFlowCopy.NOT_NOW)
+            Text(stringResource(R.string.sharesheet_not_now))
         }
     }
 }

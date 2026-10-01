@@ -1,6 +1,7 @@
 package es.mixmat.listener.ui.sharesheet
 
 import android.util.Log
+import es.mixmat.listener.R
 import es.mixmat.listener.data.api.ApiException
 import es.mixmat.listener.data.repository.AuthRepository
 import es.mixmat.listener.data.repository.GroupRepository
@@ -8,6 +9,7 @@ import es.mixmat.listener.data.repository.HistoryRepository
 import es.mixmat.listener.domain.model.Group
 import es.mixmat.listener.domain.model.GroupList
 import es.mixmat.listener.domain.model.UserProfile
+import es.mixmat.listener.ui.text.UiText
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -114,7 +116,7 @@ class TrackShareViewModelTest {
 
         val state = viewModel.uiState.value.groups
         assertTrue(state is GroupsState.Failed)
-        assertEquals("Couldn't load your groups", (state as GroupsState.Failed).message)
+        assertEquals(UiText(R.string.sharesheet_load_failed), (state as GroupsState.Failed).message)
         assertTrue(state.retryable)
     }
 
@@ -128,7 +130,7 @@ class TrackShareViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
 
         val state = viewModel.uiState.value.groups as GroupsState.Failed
-        assertEquals("Listening isn't enabled on this account", state.message)
+        assertEquals(UiText(R.string.sharesheet_listen_disabled), state.message)
         assertFalse(state.retryable)
     }
 
@@ -211,9 +213,9 @@ class TrackShareViewModelTest {
     @Test
     fun `each of the three 403 codes gets its own sentence`() = runTest {
         val expected = mapOf(
-            "group_locked" to "This group is no longer accepting new tracks",
-            "not_found" to "You're no longer in that group",
-            "auth_listen_disabled" to "Listening isn't enabled on this account",
+            "group_locked" to UiText(R.string.sharesheet_group_locked),
+            "not_found" to UiText(R.string.sharesheet_not_a_member),
+            "auth_listen_disabled" to UiText(R.string.sharesheet_listen_disabled),
         )
 
         expected.forEach { (code, sentence) ->
@@ -242,7 +244,7 @@ class TrackShareViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Two sentences, no dash: em and en dashes are out in this flow.
-        assertEquals("Couldn't share. Try again.", viewModel.uiState.value.shareError)
+        assertEquals(UiText(R.string.sharesheet_share_failed), viewModel.uiState.value.shareError)
     }
 
     @Test
@@ -256,7 +258,7 @@ class TrackShareViewModelTest {
         viewModel.share("h1")
         testDispatcher.scheduler.advanceUntilIdle()
 
-        assertEquals("Couldn't share. Try again.", viewModel.uiState.value.shareError)
+        assertEquals(UiText(R.string.sharesheet_share_failed), viewModel.uiState.value.shareError)
     }
 
     /** Matches iOS: a group the user has left drops out of the picker and the selection. */
@@ -277,7 +279,7 @@ class TrackShareViewModelTest {
         val state = viewModel.uiState.value
         assertEquals(GroupsState.Loaded(remaining, canCreate = false), state.groups)
         assertTrue(state.selectedGroupIds.isEmpty())
-        assertEquals("You're no longer in that group", state.shareError)
+        assertEquals(UiText(R.string.sharesheet_not_a_member), state.shareError)
     }
 
     @Test
@@ -291,7 +293,7 @@ class TrackShareViewModelTest {
         viewModel.share("h1")
         testDispatcher.scheduler.advanceUntilIdle()
         assertEquals(
-            "This group is no longer accepting new tracks",
+            UiText(R.string.sharesheet_group_locked),
             viewModel.uiState.value.shareError,
         )
 
@@ -416,7 +418,7 @@ class TrackShareViewModelTest {
 
         assertEquals(
             StartGroupState.Naming(
-                error = "That name's taken. Try adding something of your own to it.",
+                error = UiText(R.string.sharesheet_name_taken),
                 draft = "Friends",
             ),
             viewModel.uiState.value.startGroup,
@@ -433,7 +435,10 @@ class TrackShareViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
 
         val state = viewModel.uiState.value
-        assertEquals(StartGroupState.Refused("This account already has a group."), state.startGroup)
+        assertEquals(
+            StartGroupState.Refused(UiText(R.string.sharesheet_already_has_group)),
+            state.startGroup,
+        )
         assertEquals(GroupsState.Loaded(groups, canCreate = false), state.groups)
     }
 
@@ -510,7 +515,7 @@ class TrackShareViewModelTest {
 
         val state = viewModel.uiState.value
         assertNull(state.namePrompt)
-        assertEquals("Couldn't share. Try again.", state.shareError)
+        assertEquals(UiText(R.string.sharesheet_share_failed), state.shareError)
         coVerify(exactly = 2) { historyRepository.share("h1", listOf("g1")) }
     }
 
@@ -530,7 +535,7 @@ class TrackShareViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
 
         assertEquals(
-            NamePrompt(error = "That's an Apple private address. Choose a name your friends will see."),
+            NamePrompt(error = UiText(R.string.sharesheet_private_relay)),
             viewModel.uiState.value.namePrompt,
         )
         coVerify(exactly = 1) { historyRepository.share("h1", listOf("g1")) }

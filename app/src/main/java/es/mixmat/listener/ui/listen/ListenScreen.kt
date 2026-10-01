@@ -25,16 +25,19 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import es.mixmat.listener.R
 import es.mixmat.listener.audio.RecorderState
 import es.mixmat.listener.ui.components.Equalizer
 import es.mixmat.listener.ui.components.MixmatesWordmarkLink
 import es.mixmat.listener.ui.components.SuccessWave
 import es.mixmat.listener.ui.components.TrackCard
 import es.mixmat.listener.ui.sharesheet.TrackShareSheet
+import es.mixmat.listener.ui.text.asString
 import es.mixmat.listener.ui.theme.BrandCyan
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -74,7 +77,7 @@ fun ListenScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Listen") },
+                title = { Text(stringResource(R.string.listen_title)) },
                 actions = {
                     uiState.profile?.rateLimit?.let { rl ->
                         Text(
@@ -92,11 +95,17 @@ fun ListenScreen(
                                 }
                             },
                         ) {
-                            Icon(Icons.Default.History, contentDescription = "History")
+                            Icon(
+                                Icons.Default.History,
+                                contentDescription = stringResource(R.string.listen_history),
+                            )
                         }
                     }
                     IconButton(onClick = onNavigateToSettings) {
-                        Icon(Icons.Default.Settings, contentDescription = "Settings")
+                        Icon(
+                            Icons.Default.Settings,
+                            contentDescription = stringResource(R.string.listen_settings),
+                        )
                     }
                 },
             )
@@ -116,7 +125,7 @@ fun ListenScreen(
         ) {
             uiState.profile?.let { profile ->
                 Text(
-                    text = "Hi, ${profile.displayName}",
+                    text = stringResource(R.string.listen_greeting, profile.displayName),
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -127,7 +136,10 @@ fun ListenScreen(
                 uiState.isSubmitting -> {
                     Equalizer()
                     Spacer(modifier = Modifier.height(16.dp))
-                    Text("Identifying...", style = MaterialTheme.typography.bodyLarge)
+                    Text(
+                        stringResource(R.string.listen_identifying),
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
                 }
 
                 uiState.result != null -> {
@@ -160,19 +172,22 @@ fun ListenScreen(
                         }
                         "no_match" -> {
                             Text(
-                                text = "No match found",
+                                text = stringResource(R.string.listen_no_match),
                                 style = MaterialTheme.typography.headlineSmall,
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
-                                text = "Try again with clearer audio",
+                                text = stringResource(R.string.listen_no_match_hint),
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
                         }
                         "no_links" -> {
                             Text(
-                                text = "${result.track?.title ?: "Track"} identified but no streaming links available",
+                                text = stringResource(
+                                    R.string.listen_no_links,
+                                    result.track?.title ?: stringResource(R.string.listen_track_fallback),
+                                ),
                                 style = MaterialTheme.typography.bodyLarge,
                                 textAlign = TextAlign.Center,
                             )
@@ -183,7 +198,7 @@ fun ListenScreen(
                         Spacer(modifier = Modifier.height(8.dp))
                         if (uiState.reported) {
                             Text(
-                                text = "Reported — thanks!",
+                                text = stringResource(R.string.listen_reported),
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.tertiary,
                             )
@@ -192,7 +207,15 @@ fun ListenScreen(
                                 onClick = viewModel::reportWrongMatch,
                                 enabled = !uiState.isReporting,
                             ) {
-                                Text(if (uiState.isReporting) "Reporting…" else "Wrong match?")
+                                Text(
+                                    stringResource(
+                                        if (uiState.isReporting) {
+                                            R.string.listen_reporting
+                                        } else {
+                                            R.string.listen_wrong_match
+                                        },
+                                    ),
+                                )
                             }
                         }
                     }
@@ -200,7 +223,7 @@ fun ListenScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                     // Quiet secondary by design — Share on the card is the hero.
                     TextButton(onClick = viewModel::dismiss) {
-                        Text("Listen again")
+                        Text(stringResource(R.string.listen_again))
                     }
                 }
 
@@ -215,19 +238,22 @@ fun ListenScreen(
                         strokeWidth = 8.dp,
                     )
                     Spacer(modifier = Modifier.height(24.dp))
-                    Text("Listening...", style = MaterialTheme.typography.headlineSmall)
+                    Text(
+                        stringResource(R.string.listen_listening),
+                        style = MaterialTheme.typography.headlineSmall,
+                    )
                     Spacer(modifier = Modifier.height(16.dp))
                     FilledTonalButton(onClick = viewModel::stopAndSubmit) {
                         Icon(Icons.Default.Stop, contentDescription = null)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Stop early")
+                        Text(stringResource(R.string.listen_stop_early))
                     }
                 }
 
                 else -> {
                     uiState.error?.let { error ->
                         Text(
-                            text = error,
+                            text = error.asString(),
                             color = MaterialTheme.colorScheme.error,
                             style = MaterialTheme.typography.bodyMedium,
                         )
@@ -236,7 +262,7 @@ fun ListenScreen(
 
                     if (uiState.queuedOffline) {
                         Text(
-                            text = "Saved offline - will submit when connected",
+                            text = stringResource(R.string.listen_saved_offline),
                             color = MaterialTheme.colorScheme.tertiary,
                             style = MaterialTheme.typography.bodyMedium,
                         )
@@ -245,7 +271,7 @@ fun ListenScreen(
 
                     if (uiState.permissionDenied) {
                         Text(
-                            text = "Microphone access is needed to identify music",
+                            text = stringResource(R.string.listen_mic_needed),
                             style = MaterialTheme.typography.bodyMedium,
                             textAlign = TextAlign.Center,
                         )
@@ -259,7 +285,7 @@ fun ListenScreen(
                                 )
                             },
                         ) {
-                            Text("Open settings")
+                            Text(stringResource(R.string.listen_open_settings))
                         }
                         Spacer(modifier = Modifier.height(16.dp))
                     }
@@ -290,7 +316,7 @@ fun ListenScreen(
                         ) {
                             Icon(
                                 Icons.Default.Mic,
-                                contentDescription = "Start listening",
+                                contentDescription = stringResource(R.string.listen_start_listening),
                                 tint = Color.White,
                                 modifier = Modifier.size(36.dp),
                             )
@@ -298,7 +324,7 @@ fun ListenScreen(
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
-                        text = "Tap to listen",
+                        text = stringResource(R.string.listen_tap_to_listen),
                         style = MaterialTheme.typography.bodyLarge,
                     )
                 }
@@ -323,14 +349,8 @@ fun ListenScreen(
     if (showMicDisclosure) {
         AlertDialog(
             onDismissRequest = { showMicDisclosure = false },
-            title = { Text("Microphone access") },
-            text = {
-                Text(
-                    "MixMates Listener uses your microphone to capture a short audio clip " +
-                        "of music playing nearby. The clip is sent to a recognition service to " +
-                        "identify the song, then discarded. No audio is stored permanently.",
-                )
-            },
+            title = { Text(stringResource(R.string.listen_mic_title)) },
+            text = { Text(stringResource(R.string.listen_mic_body)) },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -338,12 +358,12 @@ fun ListenScreen(
                         permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
                     },
                 ) {
-                    Text("Allow")
+                    Text(stringResource(R.string.listen_allow))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showMicDisclosure = false }) {
-                    Text("Not now")
+                    Text(stringResource(R.string.listen_not_now))
                 }
             },
         )

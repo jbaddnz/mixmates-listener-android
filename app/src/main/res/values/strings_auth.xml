@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Sign-in screen -->
+    <string name="auth_wordmark_description">MixMates</string>
+    <string name="auth_prompt">Sign in to start listening.</string>
+    <string name="auth_sign_in_google">Sign in with Google</string>
+    <string name="auth_sign_in_apple">Sign in with Apple</string>
+    <!-- %1$s is Google, Apple or Listen Key, shown in bold. -->
+    <string name="auth_last_signed_in_with">Last time you signed in with %1$s.</string>
+    <string name="auth_last_signed_in_with_key">Last time you signed in with a %1$s.</string>
+    <string name="auth_free_no_purchases">Free • No in-app purchases</string>
+    <string name="auth_or">or</string>
+    <string name="auth_use_listen_key">Use a Listen Key</string>
+    <string name="auth_listen_key_where">Find it in MixMates &gt; Settings &gt; Listening</string>
+    <string name="auth_listen_key_label">Listen Key</string>
+    <string name="auth_connect">Connect</string>
+
+    <!-- New-account tripwire dialog -->
+    <string name="auth_new_account_title">New MixMates account created</string>
+    <string name="auth_new_account_body">There was no MixMates account for this sign-in, so we made a new one. Already have an account — maybe with Apple, or another Google account? Sign out and use that instead.</string>
+    <string name="auth_new_account_keep">Keep this account</string>
+    <string name="auth_new_account_sign_out">Sign out</string>
+
+    <!-- Sign-in errors -->
+    <string name="auth_error_google_failed">Google sign-in failed. Try again or use a Listen Key.</string>
+    <string name="auth_error_apple_failed">Apple sign-in failed. Try again or use a Listen Key.</string>
+    <string name="auth_error_listen_disabled_provider">Listen isn\'t enabled on your account. Contact support if you think this is a mistake.</string>
+    <string name="auth_error_token_empty">Token cannot be empty</string>
+    <string name="auth_error_listen_disabled_key">Listen is not enabled on your account. Enable it in MixMates Settings.</string>
+    <string name="auth_error_token_invalid">Invalid token. Check your Listen Key in MixMates Settings.</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_back">Back</string>
+    <string name="settings_recording">Recording</string>
+    <string name="settings_recording_length">Length — %1$d seconds</string>
+    <string name="settings_recording_hint">Longer clips give recognition more to work with; shorter ones are quicker.</string>
+    <string name="settings_delete_account">Delete account</string>
+    <string name="settings_sign_out">Sign out</string>
+    <string name="settings_legal">Legal</string>
+    <string name="settings_sign_out_title">Sign out?</string>
+    <string name="settings_sign_out_body">You\'ll need to sign in again to use the app.</string>
+    <string name="settings_cancel">Cancel</string>
+    <string name="settings_delete_title">Delete account?</string>
+    <string name="settings_delete_body">This permanently deletes your account and your listen history. This can\'t be undone.</string>
+    <string name="settings_delete">Delete</string>
+    <string name="settings_error_delete_failed">Couldn\'t delete your account. Try again.</string>
+
+    <!-- Legal -->
+    <string name="legal_title">Legal</string>
+    <string name="legal_back">Back</string>
+    <string name="legal_privacy">Privacy Policy</string>
+    <string name="legal_terms">Terms of Service</string>
+    <string name="legal_source">Source Code (GitHub)</string>
+    <!-- Never add "registered" or ®: common-law marks only (NZ Trade Marks Act). Same in every language. -->
+    <string name="legal_trademarks">MixMates, MixMates Listener, mixmat.es, and the mmL mark are trademarks of MixMat Ltd, a New Zealand company.</string>
+    <string name="legal_font_credit">Includes the MuseoModerno font, © its authors, used under the SIL Open Font License 1.1.</string>
+</resources>

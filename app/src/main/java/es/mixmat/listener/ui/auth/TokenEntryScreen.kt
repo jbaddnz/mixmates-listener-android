@@ -19,12 +19,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
@@ -33,6 +33,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import es.mixmat.listener.R
 import es.mixmat.listener.data.auth.GoogleSignInHelper
 import es.mixmat.listener.data.prefs.ListenerPrefs
+import es.mixmat.listener.ui.text.asString
 import es.mixmat.listener.ui.theme.MixMatesListenerTheme
 
 // The sign-in screen commits to the fixed dark brand surface in both themes,
@@ -81,22 +82,16 @@ fun TokenEntryScreen(
     if (uiState.showNewAccountDialog) {
         AlertDialog(
             onDismissRequest = viewModel::declineNewAccount,
-            title = { Text("New MixMates account created") },
-            text = {
-                Text(
-                    "There was no MixMates account for this sign-in, so we made a new one. " +
-                        "Already have an account — maybe with Apple, or another Google account? " +
-                        "Sign out and use that instead.",
-                )
-            },
+            title = { Text(stringResource(R.string.auth_new_account_title)) },
+            text = { Text(stringResource(R.string.auth_new_account_body)) },
             confirmButton = {
                 TextButton(onClick = viewModel::keepNewAccount) {
-                    Text("Keep this account")
+                    Text(stringResource(R.string.auth_new_account_keep))
                 }
             },
             dismissButton = {
                 TextButton(onClick = viewModel::declineNewAccount) {
-                    Text("Sign out")
+                    Text(stringResource(R.string.auth_new_account_sign_out))
                 }
             },
         )
@@ -127,13 +122,14 @@ private fun SignInContent(
     ) {
         Image(
             painter = painterResource(R.drawable.mml_wordmark),
-            contentDescription = "MixMates",
+            contentDescription = stringResource(R.string.auth_wordmark_description),
             modifier = Modifier.width(280.dp),
         )
 
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
+            // Product name, the same in every language.
             text = "Listener",
             style = MaterialTheme.typography.displaySmall,
             color = Color.White.copy(alpha = 0.8f),
@@ -142,7 +138,7 @@ private fun SignInContent(
         Spacer(modifier = Modifier.height(28.dp))
 
         Text(
-            text = "Sign in to start listening.",
+            text = stringResource(R.string.auth_prompt),
             style = MaterialTheme.typography.bodyLarge,
             color = Color.White.copy(alpha = 0.7f),
         )
@@ -174,7 +170,7 @@ private fun SignInContent(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
             }
-            Text("Sign in with Google", style = MaterialTheme.typography.titleSmall)
+            Text(stringResource(R.string.auth_sign_in_google), style = MaterialTheme.typography.titleSmall)
         }
 
         // White like the iOS treatment; sits below Google on purpose — Google
@@ -207,20 +203,30 @@ private fun SignInContent(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                 }
-                Text("Sign in with Apple", style = MaterialTheme.typography.titleSmall)
+                Text(stringResource(R.string.auth_sign_in_apple), style = MaterialTheme.typography.titleSmall)
             }
         }
 
         uiState.lastSignInMethod?.let { method ->
+            // The whole sentence is one resource so each language can place the
+            // name where it belongs; the name is then found in it and bolded.
+            val provider = providerDisplayName(method)
+            val sentence = stringResource(
+                if (method == ListenerPrefs.METHOD_LISTEN_KEY) {
+                    R.string.auth_last_signed_in_with_key
+                } else {
+                    R.string.auth_last_signed_in_with
+                },
+                provider,
+            )
             Spacer(modifier = Modifier.height(12.dp))
             Text(
                 text = buildAnnotatedString {
-                    append("Last time you signed in with ")
-                    if (method == ListenerPrefs.METHOD_LISTEN_KEY) append("a ")
-                    withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                        append(providerDisplayName(method))
+                    append(sentence)
+                    val start = sentence.indexOf(provider)
+                    if (start >= 0) {
+                        addStyle(SpanStyle(fontWeight = FontWeight.Bold), start, start + provider.length)
                     }
-                    append(".")
                 },
                 style = MaterialTheme.typography.bodySmall,
                 color = Color.White.copy(alpha = 0.75f),
@@ -230,7 +236,7 @@ private fun SignInContent(
         Spacer(modifier = Modifier.height(12.dp))
 
         Text(
-            text = "Free • No in-app purchases",
+            text = stringResource(R.string.auth_free_no_purchases),
             style = MaterialTheme.typography.bodySmall,
             color = Color.White.copy(alpha = 0.6f),
         )
@@ -238,7 +244,7 @@ private fun SignInContent(
         uiState.error?.let { error ->
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = error,
+                text = error.asString(),
                 color = SignInError,
                 style = MaterialTheme.typography.bodySmall,
                 textAlign = TextAlign.Center,
@@ -256,7 +262,7 @@ private fun SignInContent(
                 color = Color.White.copy(alpha = 0.2f),
             )
             Text(
-                text = "or",
+                text = stringResource(R.string.auth_or),
                 style = MaterialTheme.typography.bodySmall,
                 color = Color.White.copy(alpha = 0.6f),
                 modifier = Modifier.padding(horizontal = 16.dp),
@@ -270,7 +276,7 @@ private fun SignInContent(
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            text = "Use a Listen Key",
+            text = stringResource(R.string.auth_use_listen_key),
             style = MaterialTheme.typography.titleSmall,
             color = Color.White.copy(alpha = 0.7f),
         )
@@ -278,7 +284,7 @@ private fun SignInContent(
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "Find it in MixMates > Settings > Listening",
+            text = stringResource(R.string.auth_listen_key_where),
             style = MaterialTheme.typography.bodySmall,
             color = Color.White.copy(alpha = 0.5f),
         )
@@ -288,7 +294,7 @@ private fun SignInContent(
         OutlinedTextField(
             value = uiState.token,
             onValueChange = onTokenChange,
-            label = { Text("Listen Key") },
+            label = { Text(stringResource(R.string.auth_listen_key_label)) },
             visualTransformation = PasswordVisualTransformation(),
             singleLine = true,
             colors = OutlinedTextFieldDefaults.colors(
@@ -320,11 +326,12 @@ private fun SignInContent(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
             }
-            Text("Connect")
+            Text(stringResource(R.string.auth_connect))
         }
     }
 }
 
+/** Brand names, the same in every language, so plain strings rather than resources. */
 private fun providerDisplayName(method: String): String = when (method) {
     ListenerPrefs.METHOD_GOOGLE -> "Google"
     ListenerPrefs.METHOD_APPLE -> "Apple"

@@ -17,7 +17,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import es.mixmat.listener.R
 import es.mixmat.listener.domain.model.Group
 
 /**
@@ -55,8 +57,8 @@ fun ShareSheetPostShareState(
                 )
                 Text(
                     text = when (status) {
-                        "shared" -> "Shared to $groupName"
-                        "duplicate" -> "Already in $groupName"
+                        "shared" -> stringResource(R.string.sharesheet_shared_to, groupName)
+                        "duplicate" -> stringResource(R.string.sharesheet_already_in, groupName)
                         // Unreachable: the server's status is a closed set of the
                         // two above. Kept as the branch the `when` needs.
                         else -> "$groupName: $status"
@@ -68,7 +70,7 @@ fun ShareSheetPostShareState(
 
         Spacer(modifier = Modifier.height(4.dp))
         TextButton(onClick = onShareSomewhereElse) {
-            Text("Share somewhere else")
+            Text(stringResource(R.string.sharesheet_share_somewhere_else))
         }
     }
 }

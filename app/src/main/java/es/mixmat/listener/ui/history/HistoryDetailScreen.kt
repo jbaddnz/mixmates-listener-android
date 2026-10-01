@@ -12,13 +12,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import es.mixmat.listener.R
 import es.mixmat.listener.ui.components.GradientButton
 import es.mixmat.listener.ui.components.OpenInMixMatesButton
 import es.mixmat.listener.ui.components.TrackCard
 import es.mixmat.listener.ui.sharesheet.TrackShareSheet
+import es.mixmat.listener.ui.text.asString
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,10 +41,13 @@ fun HistoryDetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Track Details") },
+                title = { Text(stringResource(R.string.history_detail_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.history_back),
+                        )
                     }
                 },
             )
@@ -59,7 +65,7 @@ fun HistoryDetailScreen(
                     modifier = Modifier.fillMaxSize().padding(padding),
                     contentAlignment = Alignment.Center,
                 ) {
-                    Text(uiState.error!!, color = MaterialTheme.colorScheme.error)
+                    Text(uiState.error!!.asString(), color = MaterialTheme.colorScheme.error)
                 }
             }
             uiState.detail != null -> {
@@ -88,7 +94,7 @@ fun HistoryDetailScreen(
                     if (detail.sharedTo.isNotEmpty()) {
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
-                            "Shared to",
+                            stringResource(R.string.history_shared_to),
                             style = MaterialTheme.typography.titleSmall,
                         )
                         detail.sharedTo.forEach { group ->
@@ -105,13 +111,13 @@ fun HistoryDetailScreen(
                     // drift from the one on the result screen.
                     Spacer(modifier = Modifier.height(24.dp))
                     GradientButton(
-                        text = "Share",
+                        text = stringResource(R.string.history_share),
                         onClick = { showShareSheet = true },
                     )
 
                     uiState.error?.let { error ->
                         Spacer(modifier = Modifier.height(8.dp))
-                        Text(error, color = MaterialTheme.colorScheme.error)
+                        Text(error.asString(), color = MaterialTheme.colorScheme.error)
                     }
 
                     Spacer(modifier = Modifier.height(24.dp))

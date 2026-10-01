@@ -12,9 +12,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import es.mixmat.listener.R
 import es.mixmat.listener.domain.model.Platforms
 import es.mixmat.listener.ui.theme.AppleMusicRed
 import es.mixmat.listener.ui.theme.MixMatesListenerTheme
@@ -54,7 +56,7 @@ fun TrackCard(
                 if (thumbnail != null) {
                     AsyncImage(
                         model = thumbnail,
-                        contentDescription = "$title album art",
+                        contentDescription = stringResource(R.string.listen_album_art, title),
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .size(64.dp)
@@ -95,7 +97,7 @@ fun TrackCard(
             if (status == "duplicate") {
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "Already in your queue!",
+                    text = stringResource(R.string.listen_already_in_queue),
                     style = MaterialTheme.typography.labelSmall,
                     color = TrackCardPositive,
                 )
@@ -149,7 +151,7 @@ fun TrackCard(
             shareUrl?.let { url ->
                 Spacer(modifier = Modifier.height(12.dp))
                 GradientButton(
-                    text = "Share",
+                    text = stringResource(R.string.listen_share),
                     onClick = { onShareClick?.invoke(url) ?: onPlatformClick(url) },
                 )
             }

@@ -32,11 +32,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import es.mixmat.listener.R
 import es.mixmat.listener.domain.model.Group
 import es.mixmat.listener.ui.components.GradientButton
+import es.mixmat.listener.ui.text.UiText
+import es.mixmat.listener.ui.text.asString
 
 /**
  * The app's own share sheet: groups first, then a way out to the system share.
@@ -85,7 +89,7 @@ fun TrackShareSheet(
                 .padding(bottom = 32.dp),
         ) {
             Text(
-                text = "Share",
+                text = stringResource(R.string.sharesheet_title),
                 style = MaterialTheme.typography.titleLarge,
             )
             Spacer(modifier = Modifier.height(16.dp))
@@ -159,12 +163,12 @@ private fun GroupsSection(
         // through a groups outage.
         is GroupsState.Failed -> Column(modifier = Modifier.fillMaxWidth()) {
             Text(
-                text = groups.message,
+                text = groups.message.asString(),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             if (groups.retryable) {
-                TextButton(onClick = onRetry) { Text("Try again") }
+                TextButton(onClick = onRetry) { Text(stringResource(R.string.sharesheet_try_again)) }
             }
         }
 
@@ -233,14 +237,14 @@ private fun GroupPicker(
     groups: List<Group>,
     selectedGroupIds: Set<String>,
     isSharing: Boolean,
-    shareError: String?,
+    shareError: UiText?,
     onToggleGroup: (String) -> Unit,
     onShare: () -> Unit,
 ) {
     val context = LocalContext.current
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
-            text = "Share to groups",
+            text = stringResource(R.string.sharesheet_share_to_groups),
             style = MaterialTheme.typography.titleSmall,
         )
         Spacer(modifier = Modifier.height(8.dp))
@@ -268,12 +272,13 @@ private fun GroupPicker(
                 }
                 // Hidden when null, which the demo group always is.
                 group.inviteUrl?.let { url ->
+                    val message = stringResource(R.string.sharesheet_invite_message, group.name)
                     IconButton(
-                        onClick = { context.shareInvite(GroupFlowCopy.inviteMessage(group.name), url) },
+                        onClick = { context.shareInvite(message, url) },
                     ) {
                         Icon(
                             imageVector = Icons.Default.PersonAdd,
-                            contentDescription = GroupFlowCopy.inviteTo(group.name),
+                            contentDescription = stringResource(R.string.sharesheet_invite_to, group.name),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
@@ -283,7 +288,7 @@ private fun GroupPicker(
 
         Spacer(modifier = Modifier.height(12.dp))
         GradientButton(
-            text = "Share",
+            text = stringResource(R.string.sharesheet_share),
             onClick = onShare,
             enabled = selectedGroupIds.isNotEmpty(),
             loading = isSharing,
@@ -292,7 +297,7 @@ private fun GroupPicker(
         shareError?.let { error ->
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = error,
+                text = error.asString(),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.error,
             )
@@ -317,7 +322,7 @@ private fun SystemShareRow(onClick: () -> Unit) {
         )
         Text(
             // One horizontal ellipsis, not three full stops.
-            text = "More ways to share…",
+            text = stringResource(R.string.sharesheet_more_ways),
             style = MaterialTheme.typography.bodyLarge,
         )
     }

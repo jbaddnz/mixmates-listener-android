@@ -12,12 +12,15 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import es.mixmat.listener.R
 import es.mixmat.listener.ui.components.GradientButton
 import es.mixmat.listener.ui.components.TrackCard
 import es.mixmat.listener.ui.sharesheet.TrackShareSheet
+import es.mixmat.listener.ui.text.asString
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,10 +35,10 @@ fun ShareScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Shared link") },
+                title = { Text(stringResource(R.string.share_title)) },
                 navigationIcon = {
                     IconButton(onClick = onDismiss) {
-                        Icon(Icons.Default.Close, contentDescription = "Close")
+                        Icon(Icons.Default.Close, contentDescription = stringResource(R.string.share_close))
                     }
                 },
             )
@@ -54,7 +57,7 @@ fun ShareScreen(
                     ) {
                         CircularProgressIndicator(modifier = Modifier.size(64.dp))
                         Spacer(modifier = Modifier.height(16.dp))
-                        Text("Resolving...", style = MaterialTheme.typography.bodyLarge)
+                        Text(stringResource(R.string.share_resolving), style = MaterialTheme.typography.bodyLarge)
                     }
                 }
 
@@ -66,14 +69,14 @@ fun ShareScreen(
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         Text(
-                            text = uiState.error!!,
+                            text = uiState.error!!.asString(),
                             style = MaterialTheme.typography.bodyLarge,
                             textAlign = TextAlign.Center,
                             color = MaterialTheme.colorScheme.error,
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         OutlinedButton(onClick = onDismiss) {
-                            Text("Close")
+                            Text(stringResource(R.string.share_close))
                         }
                     }
                 }
@@ -108,7 +111,10 @@ fun ShareScreen(
                             }
                             "no_links" -> {
                                 Text(
-                                    text = "${result.track?.title ?: "Track"} identified but no streaming links available",
+                                    text = stringResource(
+                                        R.string.share_no_links,
+                                        result.track?.title ?: stringResource(R.string.share_track_fallback),
+                                    ),
                                     style = MaterialTheme.typography.bodyLarge,
                                     textAlign = TextAlign.Center,
                                 )
@@ -122,14 +128,14 @@ fun ShareScreen(
                         if (uiState.result?.historyId != null) {
                             Spacer(modifier = Modifier.height(24.dp))
                             GradientButton(
-                                text = "Share",
+                                text = stringResource(R.string.share_share),
                                 onClick = { showShareSheet = true },
                             )
                         }
 
                         uiState.error?.let { error ->
                             Spacer(modifier = Modifier.height(8.dp))
-                            Text(error, color = MaterialTheme.colorScheme.error)
+                            Text(error.asString(), color = MaterialTheme.colorScheme.error)
                         }
 
                         Spacer(modifier = Modifier.height(24.dp))
@@ -137,7 +143,7 @@ fun ShareScreen(
                             onClick = onDismiss,
                             modifier = Modifier.fillMaxWidth(),
                         ) {
-                            Text("Done")
+                            Text(stringResource(R.string.share_done))
                         }
                     }
                 }

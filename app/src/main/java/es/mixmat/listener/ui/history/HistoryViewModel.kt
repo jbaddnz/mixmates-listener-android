@@ -4,9 +4,11 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import es.mixmat.listener.R
 import es.mixmat.listener.data.repository.HistoryRepository
 import es.mixmat.listener.data.session.UnseenTracks
 import es.mixmat.listener.domain.model.HistoryItem
+import es.mixmat.listener.ui.text.UiText
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -16,7 +18,7 @@ data class HistoryUiState(
     val items: List<HistoryItem> = emptyList(),
     val isLoading: Boolean = false,
     val isLoadingMore: Boolean = false,
-    val error: String? = null,
+    val error: UiText? = null,
     val cursor: String? = null,
     val hasMore: Boolean = false,
 )
@@ -51,7 +53,7 @@ class HistoryViewModel @Inject constructor(
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    error = "Failed to load history",
+                    error = UiText(R.string.history_load_failed),
                 )
             }
         }
@@ -88,7 +90,7 @@ class HistoryViewModel @Inject constructor(
             } catch (e: Exception) {
                 Log.e("History", "Failed to delete item", e)
                 _uiState.value = _uiState.value.copy(
-                    error = "Couldn't remove — try again",
+                    error = UiText(R.string.history_remove_failed),
                 )
             }
         }

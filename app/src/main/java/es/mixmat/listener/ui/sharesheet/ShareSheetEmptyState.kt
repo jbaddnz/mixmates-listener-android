@@ -9,7 +9,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import es.mixmat.listener.R
 
 /**
  * Shown when the groups fetch succeeded and came back empty — which is not the
@@ -22,12 +24,12 @@ import androidx.compose.ui.unit.dp
 fun ShareSheetEmptyState(modifier: Modifier = Modifier) {
     Column(modifier = modifier.fillMaxWidth().padding(vertical = 8.dp)) {
         Text(
-            text = "No groups yet",
+            text = stringResource(R.string.sharesheet_no_groups_title),
             style = MaterialTheme.typography.titleSmall,
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
-            text = "Once you're in a group, your finds can go straight to it from here.",
+            text = stringResource(R.string.sharesheet_no_groups_body),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )

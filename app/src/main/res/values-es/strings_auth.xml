@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Sign-in screen -->
+    <string name="auth_wordmark_description">MixMates</string>
+    <string name="auth_prompt">Inicia sesión para empezar a escuchar.</string>
+    <string name="auth_sign_in_google">Iniciar sesión con Google</string>
+    <string name="auth_sign_in_apple">Iniciar sesión con Apple</string>
+    <string name="auth_last_signed_in_with">La última vez iniciaste sesión con %1$s.</string>
+    <string name="auth_last_signed_in_with_key">La última vez iniciaste sesión con una %1$s.</string>
+    <string name="auth_free_no_purchases">Gratis • Sin compras en la app</string>
+    <string name="auth_or">o</string>
+    <string name="auth_use_listen_key">Usa una Listen Key</string>
+    <!-- The web app is English-only, so its menu names stay in English. -->
+    <string name="auth_listen_key_where">Encuéntrala en MixMates &gt; Settings &gt; Listening</string>
+    <string name="auth_listen_key_label">Listen Key</string>
+    <string name="auth_connect">Conectar</string>
+
+    <!-- New-account tripwire dialog -->
+    <string name="auth_new_account_title">Nueva cuenta de MixMates creada</string>
+    <string name="auth_new_account_body">No había ninguna cuenta de MixMates para este inicio de sesión, así que hemos creado una nueva. ¿Ya tienes una cuenta, quizá con Apple o con otra cuenta de Google? Cierra sesión y usa esa.</string>
+    <string name="auth_new_account_keep">Quedarme con esta cuenta</string>
+    <string name="auth_new_account_sign_out">Cerrar sesión</string>
+
+    <!-- Sign-in errors -->
+    <string name="auth_error_google_failed">No se ha podido iniciar sesión con Google. Inténtalo de nuevo o usa una Listen Key.</string>
+    <string name="auth_error_apple_failed">No se ha podido iniciar sesión con Apple. Inténtalo de nuevo o usa una Listen Key.</string>
+    <string name="auth_error_listen_disabled_provider">Listen no está activado en tu cuenta. Contacta con soporte si crees que es un error.</string>
+    <string name="auth_error_token_empty">La clave no puede estar vacía</string>
+    <string name="auth_error_listen_disabled_key">Listen no está activado en tu cuenta. Actívalo en Settings de MixMates.</string>
+    <string name="auth_error_token_invalid">Clave no válida. Comprueba tu Listen Key en Settings de MixMates.</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Ajustes</string>
+    <string name="settings_back">Atrás</string>
+    <string name="settings_recording">Grabación</string>
+    <string name="settings_recording_length">Duración: %1$d segundos</string>
+    <string name="settings_recording_hint">Los clips más largos ayudan al reconocimiento; los más cortos son más rápidos.</string>
+    <string name="settings_delete_account">Eliminar cuenta</string>
+    <string name="settings_sign_out">Cerrar sesión</string>
+    <string name="settings_legal">Legal</string>
+    <string name="settings_sign_out_title">¿Cerrar sesión?</string>
+    <string name="settings_sign_out_body">Tendrás que volver a iniciar sesión para usar la app.</string>
+    <string name="settings_cancel">Cancelar</string>
+    <string name="settings_delete_title">¿Eliminar cuenta?</string>
+    <string name="settings_delete_body">Esto elimina para siempre tu cuenta y tu historial de escucha. No se puede deshacer.</string>
+    <string name="settings_delete">Eliminar</string>
+    <string name="settings_error_delete_failed">No se ha podido eliminar tu cuenta. Inténtalo de nuevo.</string>
+
+    <!-- Legal -->
+    <string name="legal_title">Legal</string>
+    <string name="legal_back">Atrás</string>
+    <string name="legal_privacy">Política de privacidad</string>
+    <string name="legal_terms">Condiciones del servicio</string>
+    <string name="legal_source">Código fuente (GitHub)</string>
+    <!-- Never "marca registrada" or ®: common-law marks only (NZ Trade Marks Act). -->
+    <string name="legal_trademarks">MixMates, MixMates Listener, mixmat.es y la marca mmL son marcas de MixMat Ltd, una empresa de Nueva Zelanda.</string>
+    <string name="legal_font_credit">Incluye la fuente MuseoModerno, © sus autores, usada bajo la SIL Open Font License 1.1.</string>
+</resources>

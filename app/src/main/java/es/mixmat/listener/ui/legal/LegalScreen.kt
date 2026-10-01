@@ -10,8 +10,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import es.mixmat.listener.R
 import es.mixmat.listener.ui.components.MixmatesWordmarkLink
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -28,10 +30,13 @@ fun LegalScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Legal") },
+                title = { Text(stringResource(R.string.legal_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.legal_back),
+                        )
                     }
                 },
             )
@@ -44,15 +49,15 @@ fun LegalScreen(
                 .padding(16.dp),
         ) {
             TextButton(onClick = { openUrl("https://mixmat.es/privacy") }) {
-                Text("Privacy Policy")
+                Text(stringResource(R.string.legal_privacy))
             }
 
             TextButton(onClick = { openUrl("https://mixmat.es/terms") }) {
-                Text("Terms of Service")
+                Text(stringResource(R.string.legal_terms))
             }
 
             TextButton(onClick = { openUrl("https://github.com/jbaddnz/mixmates-listener-android") }) {
-                Text("Source Code (GitHub)")
+                Text(stringResource(R.string.legal_source))
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -61,10 +66,10 @@ fun LegalScreen(
             // this with "registered" or ®: these are common-law marks, and falsely
             // representing a mark as registered is an offence under the NZ Trade
             // Marks Act. "A New Zealand company" attaches to MixMat Ltd (which is
-            // a registered company), not to the marks.
+            // a registered company), not to the marks. The rule holds in every
+            // translation: no "marca registrada" in Spanish either.
             Text(
-                text = "MixMates, MixMates Listener, mixmat.es, and the mmL mark are " +
-                    "trademarks of MixMat Ltd, a New Zealand company.",
+                text = stringResource(R.string.legal_trademarks),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(horizontal = 12.dp),
@@ -75,8 +80,7 @@ fun LegalScreen(
             // Third-party credit — stays below our own marks line. Licence
             // text ships in assets/OFL.txt.
             Text(
-                text = "Includes the MuseoModerno font, © its authors, " +
-                    "used under the SIL Open Font License 1.1.",
+                text = stringResource(R.string.legal_font_credit),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(horizontal = 12.dp),

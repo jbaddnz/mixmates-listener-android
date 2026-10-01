@@ -1,10 +1,12 @@
 package es.mixmat.listener.ui.history
 
 import android.util.Log
+import es.mixmat.listener.R
 import es.mixmat.listener.data.repository.HistoryRepository
 import es.mixmat.listener.domain.model.HistoryDetail
 import es.mixmat.listener.domain.model.Platforms
 import es.mixmat.listener.domain.model.SharedGroup
+import es.mixmat.listener.ui.text.UiText
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -85,7 +87,8 @@ class HistoryDetailViewModelTest {
         viewModel.load("h1")
         testDispatcher.scheduler.advanceUntilIdle()
 
-        assertNotNull(viewModel.uiState.value.error)
+        // The exception's own text never reaches the user.
+        assertEquals(UiText(R.string.history_detail_load_failed), viewModel.uiState.value.error)
         assertFalse(viewModel.uiState.value.isLoading)
     }
 }

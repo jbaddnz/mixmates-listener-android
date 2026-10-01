@@ -8,12 +8,15 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import es.mixmat.listener.R
 import es.mixmat.listener.data.prefs.ListenerPrefs
 import es.mixmat.listener.ui.components.MixmatesWordmarkLink
+import es.mixmat.listener.ui.text.asString
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -32,10 +35,13 @@ fun SettingsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Settings") },
+                title = { Text(stringResource(R.string.settings_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.settings_back),
+                        )
                     }
                 },
             )
@@ -48,7 +54,7 @@ fun SettingsScreen(
                 .padding(16.dp),
         ) {
             Text(
-                text = "Recording",
+                text = stringResource(R.string.settings_recording),
                 style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -56,7 +62,7 @@ fun SettingsScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "Length — ${uiState.recordingLengthSeconds} seconds",
+                text = stringResource(R.string.settings_recording_length, uiState.recordingLengthSeconds),
                 style = MaterialTheme.typography.bodyLarge,
             )
 
@@ -70,7 +76,7 @@ fun SettingsScreen(
             )
 
             Text(
-                text = "Longer clips give recognition more to work with; shorter ones are quicker.",
+                text = stringResource(R.string.settings_recording_hint),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -92,14 +98,14 @@ fun SettingsScreen(
                         color = MaterialTheme.colorScheme.error,
                     )
                 } else {
-                    Text("Delete account")
+                    Text(stringResource(R.string.settings_delete_account))
                 }
             }
 
             uiState.error?.let { error ->
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = error,
+                    text = error.asString(),
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodySmall,
                 )
@@ -113,7 +119,7 @@ fun SettingsScreen(
                 onClick = { showConfirmation = true },
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text("Sign out")
+                Text(stringResource(R.string.settings_sign_out))
             }
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -122,7 +128,7 @@ fun SettingsScreen(
                 onClick = onNavigateToLegal,
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text("Legal")
+                Text(stringResource(R.string.settings_legal))
             }
 
             Spacer(modifier = Modifier.weight(1f))
@@ -161,8 +167,8 @@ fun SettingsScreen(
     if (showConfirmation) {
         AlertDialog(
             onDismissRequest = { showConfirmation = false },
-            title = { Text("Sign out?") },
-            text = { Text("You'll need to sign in again to use the app.") },
+            title = { Text(stringResource(R.string.settings_sign_out_title)) },
+            text = { Text(stringResource(R.string.settings_sign_out_body)) },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -171,12 +177,12 @@ fun SettingsScreen(
                         onTokenCleared()
                     },
                 ) {
-                    Text("Sign out")
+                    Text(stringResource(R.string.settings_sign_out))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showConfirmation = false }) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.settings_cancel))
                 }
             },
         )
@@ -185,13 +191,8 @@ fun SettingsScreen(
     if (showDeleteConfirmation) {
         AlertDialog(
             onDismissRequest = { showDeleteConfirmation = false },
-            title = { Text("Delete account?") },
-            text = {
-                Text(
-                    "This permanently deletes your account and your listen history. " +
-                        "This can't be undone.",
-                )
-            },
+            title = { Text(stringResource(R.string.settings_delete_title)) },
+            text = { Text(stringResource(R.string.settings_delete_body)) },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -199,12 +200,12 @@ fun SettingsScreen(
                         viewModel.deleteAccount { onTokenCleared() }
                     },
                 ) {
-                    Text("Delete", color = MaterialTheme.colorScheme.error)
+                    Text(stringResource(R.string.settings_delete), color = MaterialTheme.colorScheme.error)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteConfirmation = false }) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.settings_cancel))
                 }
             },
         )

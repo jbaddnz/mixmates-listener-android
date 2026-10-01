@@ -6,6 +6,7 @@ import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import es.mixmat.listener.R
 import es.mixmat.listener.data.api.dto.ProviderSignInData
 import es.mixmat.listener.data.auth.AppleSignInHelper
 import es.mixmat.listener.data.auth.AppleSignInReturn
@@ -13,6 +14,7 @@ import es.mixmat.listener.data.auth.GoogleSignInHelper
 import es.mixmat.listener.data.prefs.ListenerPrefs
 import es.mixmat.listener.data.repository.AuthRepository
 import es.mixmat.listener.domain.model.UserProfile
+import es.mixmat.listener.ui.text.UiText
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -23,7 +25,7 @@ data class TokenEntryUiState(
     val token: String = "",
     val isValidating: Boolean = false,
     val isValid: Boolean = false,
-    val error: String? = null,
+    val error: UiText? = null,
     val profile: UserProfile? = null,
     val isGoogleSigningIn: Boolean = false,
     val isAppleSigningIn: Boolean = false,
@@ -88,7 +90,7 @@ class TokenEntryViewModel @Inject constructor(
                 Log.e("TokenEntry", "Google sign-in failed", e)
                 _uiState.value = _uiState.value.copy(
                     isGoogleSigningIn = false,
-                    error = "Google sign-in failed. Try again or use a Listen Key.",
+                    error = UiText(R.string.auth_error_google_failed),
                 )
             }
         }
@@ -109,7 +111,7 @@ class TokenEntryViewModel @Inject constructor(
             Log.e("TokenEntry", "Apple sign-in return invalid: ${ret.error}")
             _uiState.value = _uiState.value.copy(
                 isAppleSigningIn = false,
-                error = "Apple sign-in failed. Try again or use a Listen Key.",
+                error = UiText(R.string.auth_error_apple_failed),
             )
             return
         }
@@ -126,7 +128,7 @@ class TokenEntryViewModel @Inject constructor(
             Log.e("TokenEntry", "Apple sign-in failed", e)
             _uiState.value = _uiState.value.copy(
                 isAppleSigningIn = false,
-                error = "Apple sign-in failed. Try again or use a Listen Key.",
+                error = UiText(R.string.auth_error_apple_failed),
             )
         }
     }
@@ -167,7 +169,7 @@ class TokenEntryViewModel @Inject constructor(
             _uiState.value = _uiState.value.copy(
                 isGoogleSigningIn = false,
                 isAppleSigningIn = false,
-                error = "Listen isn't enabled on your account. Contact support if you think this is a mistake.",
+                error = UiText(R.string.auth_error_listen_disabled_provider),
             )
             return
         }
@@ -185,7 +187,7 @@ class TokenEntryViewModel @Inject constructor(
     fun validateAndSave() {
         val token = _uiState.value.token.trim()
         if (token.isBlank()) {
-            _uiState.value = _uiState.value.copy(error = "Token cannot be empty")
+            _uiState.value = _uiState.value.copy(error = UiText(R.string.auth_error_token_empty))
             return
         }
 
@@ -202,7 +204,7 @@ class TokenEntryViewModel @Inject constructor(
                     authRepository.clearToken()
                     _uiState.value = _uiState.value.copy(
                         isValidating = false,
-                        error = "Listen is not enabled on your account. Enable it in MixMates Settings.",
+                        error = UiText(R.string.auth_error_listen_disabled_key),
                     )
                     return@launch
                 }
@@ -222,7 +224,7 @@ class TokenEntryViewModel @Inject constructor(
                 authRepository.clearToken()
                 _uiState.value = _uiState.value.copy(
                     isValidating = false,
-                    error = "Invalid token. Check your Listen Key in MixMates Settings.",
+                    error = UiText(R.string.auth_error_token_invalid),
                 )
             }
         }

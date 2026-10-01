@@ -4,8 +4,10 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import es.mixmat.listener.R
 import es.mixmat.listener.data.prefs.ListenerPrefs
 import es.mixmat.listener.data.repository.AuthRepository
+import es.mixmat.listener.ui.text.UiText
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -13,7 +15,7 @@ import javax.inject.Inject
 
 data class SettingsUiState(
     val isDeleting: Boolean = false,
-    val error: String? = null,
+    val error: UiText? = null,
     val recordingLengthSeconds: Int = ListenerPrefs.RECORDING_LENGTH_DEFAULT_SECONDS,
 )
 
@@ -52,7 +54,7 @@ class SettingsViewModel @Inject constructor(
                 Log.e("Settings", "Account deletion failed", e)
                 _uiState.value = _uiState.value.copy(
                     isDeleting = false,
-                    error = "Couldn't delete your account. Try again.",
+                    error = UiText(R.string.settings_error_delete_failed),
                 )
             }
         }

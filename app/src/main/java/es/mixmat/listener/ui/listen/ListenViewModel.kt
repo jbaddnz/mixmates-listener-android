@@ -6,6 +6,7 @@ import android.net.NetworkCapabilities
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import es.mixmat.listener.R
 import es.mixmat.listener.audio.AudioRecorder
 import es.mixmat.listener.audio.RecorderState
 import es.mixmat.listener.data.api.RateLimitException
@@ -16,6 +17,7 @@ import es.mixmat.listener.data.repository.RecognitionRepository
 import es.mixmat.listener.data.session.UnseenTracks
 import es.mixmat.listener.domain.model.RecognitionResult
 import es.mixmat.listener.domain.model.UserProfile
+import es.mixmat.listener.ui.text.UiText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,7 +32,7 @@ data class ListenUiState(
     val recordingProgress: Float = 0f,
     val isSubmitting: Boolean = false,
     val result: RecognitionResult? = null,
-    val error: String? = null,
+    val error: UiText? = null,
     val queuedOffline: Boolean = false,
     val hasAudioPermission: Boolean = false,
     val permissionDenied: Boolean = false,
@@ -82,7 +84,7 @@ class ListenViewModel @Inject constructor(
             } catch (e: Exception) {
                 Log.e("Listen", "Failed to load profile", e)
                 _uiState.value = _uiState.value.copy(
-                    error = "Could not verify your account. Check your connection.",
+                    error = UiText(R.string.listen_error_verify),
                 )
             }
         }
@@ -106,7 +108,7 @@ class ListenViewModel @Inject constructor(
                     audioRecorder.start()
                 }
             } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(error = "Could not access microphone")
+                _uiState.value = _uiState.value.copy(error = UiText(R.string.listen_error_mic))
                 return@launch
             }
 
@@ -127,7 +129,7 @@ class ListenViewModel @Inject constructor(
 
     fun stopAndSubmit() {
         val file = audioRecorder.stop() ?: run {
-            _uiState.value = _uiState.value.copy(error = "Recording failed")
+            _uiState.value = _uiState.value.copy(error = UiText(R.string.listen_error_recording))
             return
         }
 
@@ -156,7 +158,7 @@ class ListenViewModel @Inject constructor(
                 Log.w("Listen", "Rate limited, retry after ${e.retryAfterSeconds}s")
                 _uiState.value = _uiState.value.copy(
                     isSubmitting = false,
-                    error = "Rate limit reached. Try again in ${e.retryAfterSeconds} seconds.",
+                    error = UiText(R.string.listen_error_rate_limit, e.retryAfterSeconds),
                 )
                 file.delete()
             } catch (e: Exception) {
@@ -164,7 +166,7 @@ class ListenViewModel @Inject constructor(
                 recognitionRepository.queueForLater(file.absolutePath, AudioRecorder.MIME_TYPE)
                 _uiState.value = _uiState.value.copy(
                     isSubmitting = false,
-                    error = "Recognition failed. Queued for retry.",
+                    error = UiText(R.string.listen_error_recognition),
                     queuedOffline = true,
                 )
             }
@@ -185,7 +187,7 @@ class ListenViewModel @Inject constructor(
                 Log.e("Listen", "Report failed", e)
                 _uiState.value = _uiState.value.copy(
                     isReporting = false,
-                    error = "Could not submit report. Try again.",
+                    error = UiText(R.string.listen_error_report),
                 )
             }
         }

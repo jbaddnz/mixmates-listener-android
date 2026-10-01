@@ -1,11 +1,13 @@
 package es.mixmat.listener.ui.history
 
 import app.cash.turbine.test
+import es.mixmat.listener.R
 import es.mixmat.listener.data.repository.HistoryPage
 import es.mixmat.listener.data.repository.HistoryRepository
 import es.mixmat.listener.data.session.UnseenTracks
 import es.mixmat.listener.domain.model.HistoryItem
 import es.mixmat.listener.domain.model.Platforms
+import es.mixmat.listener.ui.text.UiText
 import android.util.Log
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -88,7 +90,7 @@ class HistoryViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
 
         val state = viewModel.uiState.value
-        assertEquals("Failed to load history", state.error)
+        assertEquals(UiText(R.string.history_load_failed), state.error)
         assertFalse(state.isLoading)
     }
 
@@ -145,7 +147,7 @@ class HistoryViewModelTest {
         viewModel.deleteItem("1")
         testDispatcher.scheduler.advanceUntilIdle()
 
-        assertEquals("Couldn't remove — try again", viewModel.uiState.value.error)
+        assertEquals(UiText(R.string.history_remove_failed), viewModel.uiState.value.error)
         assertEquals(1, viewModel.uiState.value.items.size)
     }
 

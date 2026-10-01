@@ -14,7 +14,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import es.mixmat.listener.R
 
 /**
  * Outlined "Open in MixMates" call-to-action with a leading open-in-new icon.
@@ -38,6 +40,6 @@ fun OpenInMixMatesButton(
             modifier = Modifier.size(18.dp),
         )
         Spacer(modifier = Modifier.width(8.dp))
-        Text("Open in MixMates")
+        Text(stringResource(R.string.listen_open_in_mixmates))
     }
 }

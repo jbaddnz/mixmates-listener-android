@@ -4,11 +4,13 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import es.mixmat.listener.R
 import es.mixmat.listener.data.api.RateLimitException
 import es.mixmat.listener.data.repository.AuthRepository
 import es.mixmat.listener.data.repository.RecognitionRepository
 import es.mixmat.listener.data.session.UnseenTracks
 import es.mixmat.listener.domain.model.RecognitionResult
+import es.mixmat.listener.ui.text.UiText
 import es.mixmat.listener.util.MusicUrlExtractor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,7 +21,7 @@ import javax.inject.Inject
 data class ShareUiState(
     val isResolving: Boolean = true,
     val result: RecognitionResult? = null,
-    val error: String? = null,
+    val error: UiText? = null,
 )
 
 /**
@@ -40,7 +42,7 @@ class ShareViewModel @Inject constructor(
         if (!authRepository.hasToken()) {
             _uiState.value = ShareUiState(
                 isResolving = false,
-                error = "Sign in to MixMates Listener first.",
+                error = UiText(R.string.share_sign_in_first),
             )
             return
         }
@@ -49,7 +51,7 @@ class ShareViewModel @Inject constructor(
         if (url == null) {
             _uiState.value = ShareUiState(
                 isResolving = false,
-                error = "No supported music link found. Share a Spotify, Tidal, or Apple Music track link.",
+                error = UiText(R.string.share_no_supported_link),
             )
             return
         }
@@ -68,22 +70,22 @@ class ShareViewModel @Inject constructor(
             } catch (e: RateLimitException) {
                 _uiState.value = _uiState.value.copy(
                     isResolving = false,
-                    error = "Rate limit reached. Try again in ${e.retryAfterSeconds} seconds.",
+                    error = UiText(R.string.share_rate_limited, e.retryAfterSeconds),
                 )
             } catch (e: HttpException) {
                 _uiState.value = _uiState.value.copy(
                     isResolving = false,
                     error = if (e.code() == 400) {
-                        "This link type isn't supported. Share a direct track link."
+                        UiText(R.string.share_link_type_unsupported)
                     } else {
-                        "Something went wrong. Check your connection and try again."
+                        UiText(R.string.share_something_went_wrong)
                     },
                 )
             } catch (e: Exception) {
                 Log.e("Share", "Resolve failed", e)
                 _uiState.value = _uiState.value.copy(
                     isResolving = false,
-                    error = "Something went wrong. Check your connection and try again.",
+                    error = UiText(R.string.share_something_went_wrong),
                 )
             }
         }

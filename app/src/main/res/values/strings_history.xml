@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- History list -->
+    <string name="history_title">History</string>
+    <string name="history_back">Back</string>
+    <string name="history_retry">Retry</string>
+    <string name="history_empty">No tracks yet</string>
+    <string name="history_delete">Delete</string>
+    <string name="history_load_failed">Failed to load history</string>
+    <string name="history_remove_failed">Couldn\'t remove — try again</string>
+
+    <!-- History detail -->
+    <string name="history_detail_title">Track Details</string>
+    <string name="history_shared_to">Shared to</string>
+    <string name="history_share">Share</string>
+    <string name="history_detail_load_failed">Failed to load details</string>
+
+    <!-- Inbound shared link -->
+    <string name="share_title">Shared link</string>
+    <string name="share_close">Close</string>
+    <string name="share_resolving">Resolving...</string>
+    <string name="share_share">Share</string>
+    <string name="share_done">Done</string>
+    <string name="share_track_fallback">Track</string>
+    <string name="share_no_links">%1$s identified but no streaming links available</string>
+    <string name="share_sign_in_first">Sign in to MixMates Listener first.</string>
+    <string name="share_no_supported_link">No supported music link found. Share a Spotify, Tidal, or Apple Music track link.</string>
+    <string name="share_rate_limited">Rate limit reached. Try again in %1$d seconds.</string>
+    <string name="share_link_type_unsupported">This link type isn\'t supported. Share a direct track link.</string>
+    <string name="share_something_went_wrong">Something went wrong. Check your connection and try again.</string>
+</resources>

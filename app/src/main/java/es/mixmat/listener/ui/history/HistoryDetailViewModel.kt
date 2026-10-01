@@ -4,8 +4,10 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import es.mixmat.listener.R
 import es.mixmat.listener.data.repository.HistoryRepository
 import es.mixmat.listener.domain.model.HistoryDetail
+import es.mixmat.listener.ui.text.UiText
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -14,7 +16,7 @@ import javax.inject.Inject
 data class HistoryDetailUiState(
     val detail: HistoryDetail? = null,
     val isLoading: Boolean = true,
-    val error: String? = null,
+    val error: UiText? = null,
 )
 
 /**
@@ -41,7 +43,8 @@ class HistoryDetailViewModel @Inject constructor(
                 Log.e("HistoryDetail", "Failed to load details", e)
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    error = "Failed to load details: ${e.message}",
+                    // The exception text stays in the log, not in front of the user.
+                    error = UiText(R.string.history_detail_load_failed),
                 )
             }
         }

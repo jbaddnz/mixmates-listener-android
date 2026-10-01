@@ -16,13 +16,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import es.mixmat.listener.R
 import es.mixmat.listener.domain.model.HistoryItem
+import es.mixmat.listener.ui.text.asString
 import es.mixmat.listener.ui.components.MixmatesWordmarkLink
 import es.mixmat.listener.ui.components.trackMetaLabel
 
@@ -36,10 +40,11 @@ fun HistoryScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val listState = rememberLazyListState()
     val snackbarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
 
     LaunchedEffect(uiState.error) {
         uiState.error?.let {
-            snackbarHostState.showSnackbar(it)
+            snackbarHostState.showSnackbar(it.asString(context))
             viewModel.clearError()
         }
     }
@@ -58,10 +63,13 @@ fun HistoryScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("History") },
+                title = { Text(stringResource(R.string.history_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.history_back),
+                        )
                     }
                 },
             )
@@ -83,9 +91,11 @@ fun HistoryScreen(
                     contentAlignment = Alignment.Center,
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(uiState.error!!, color = MaterialTheme.colorScheme.error)
+                        Text(uiState.error!!.asString(), color = MaterialTheme.colorScheme.error)
                         Spacer(modifier = Modifier.height(8.dp))
-                        TextButton(onClick = viewModel::loadHistory) { Text("Retry") }
+                        TextButton(onClick = viewModel::loadHistory) {
+                            Text(stringResource(R.string.history_retry))
+                        }
                     }
                 }
             }
@@ -94,7 +104,7 @@ fun HistoryScreen(
                     modifier = Modifier.fillMaxSize().padding(padding),
                     contentAlignment = Alignment.Center,
                 ) {
-                    Text("No tracks yet", style = MaterialTheme.typography.bodyLarge)
+                    Text(stringResource(R.string.history_empty), style = MaterialTheme.typography.bodyLarge)
                 }
             }
             else -> {
@@ -174,7 +184,7 @@ private fun SwipeToDismissHistoryItem(
             ) {
                 Icon(
                     Icons.Default.Delete,
-                    contentDescription = "Delete",
+                    contentDescription = stringResource(R.string.history_delete),
                     tint = MaterialTheme.colorScheme.onErrorContainer,
                     modifier = Modifier.padding(end = 16.dp),
                 )
