@@ -17,6 +17,8 @@ class GroupFlowCopyTest {
     private val strings: Map<String, String> =
         GroupFlowCopy::class.java.declaredFields
             .filter { it.type == String::class.java && Modifier.isStatic(it.modifiers) }
+            // The {group} placeholder is private, and is copy too.
+            .onEach { it.isAccessible = true }
             .associate { it.name to it.get(null) as String }
 
     private val banned = listOf("mixmat.es", "upgrade", "paid", "plan", "subscription", "pricing", "free tier")
