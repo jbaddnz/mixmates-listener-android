@@ -59,6 +59,12 @@ fun GroupDto.toDomain() = Group(
     id = id,
     name = name,
     description = description,
+    inviteUrl = inviteUrl,
+)
+
+fun GroupListData.toDomain() = GroupList(
+    groups = items.map { it.toDomain() },
+    canCreate = canCreate,
 )
 
 fun RecognizeData.toDomain() = RecognitionResult(

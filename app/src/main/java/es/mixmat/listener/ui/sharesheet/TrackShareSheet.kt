@@ -13,12 +13,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
@@ -88,13 +90,23 @@ fun TrackShareSheet(
             )
             Spacer(modifier = Modifier.height(16.dp))
 
-            if (historyId != null) {
+            val namePrompt = uiState.namePrompt
+            if (historyId != null && namePrompt != null) {
+                ShareSheetNamePrompt(
+                    prompt = namePrompt,
+                    onSave = viewModel::submitName,
+                    onCancel = viewModel::cancelName,
+                )
+            } else if (historyId != null) {
                 GroupsSection(
                     uiState = uiState,
                     onToggleGroup = viewModel::toggleGroup,
                     onShare = { viewModel.share(historyId) },
                     onRetry = viewModel::retry,
                     onShareSomewhereElse = viewModel::backToPicker,
+                    onStartGroup = viewModel::openStartGroup,
+                    onCreateGroup = viewModel::createGroup,
+                    onCloseStartGroup = viewModel::closeStartGroup,
                 )
             }
 
@@ -123,7 +135,8 @@ fun TrackShareSheet(
 
 /**
  * Four mutually exclusive states. Empty and failed are deliberately different
- * things — see [GroupsState].
+ * things — see [GroupsState]. Start a group only ever appears from Loaded with
+ * `canCreate`, never from Loading or Failed.
  */
 @Composable
 private fun GroupsSection(
@@ -132,6 +145,9 @@ private fun GroupsSection(
     onShare: () -> Unit,
     onRetry: () -> Unit,
     onShareSomewhereElse: () -> Unit,
+    onStartGroup: () -> Unit,
+    onCreateGroup: (String) -> Unit,
+    onCloseStartGroup: () -> Unit,
 ) {
     when (val groups = uiState.groups) {
         GroupsState.Loading -> Box(
@@ -152,14 +168,46 @@ private fun GroupsSection(
             }
         }
 
-        is GroupsState.Loaded -> when {
-            groups.groups.isEmpty() -> ShareSheetEmptyState()
-            uiState.shareResult != null -> ShareSheetPostShareState(
-                results = uiState.shareResult,
-                groups = groups.groups,
-                onShareSomewhereElse = onShareSomewhereElse,
+        is GroupsState.Loaded -> when (val start = uiState.startGroup) {
+            is StartGroupState.Naming -> ShareSheetStartGroupNaming(
+                state = start,
+                onCreate = onCreateGroup,
+                onCancel = onCloseStartGroup,
             )
-            else -> GroupPicker(
+            is StartGroupState.Created -> ShareSheetGroupCreated(
+                group = start.group,
+                onShareToIt = onCloseStartGroup,
+            )
+            // The refusal sits above whatever the refreshed list now shows.
+            is StartGroupState.Refused -> Column(modifier = Modifier.fillMaxWidth()) {
+                ShareSheetStartGroupRefused(message = start.message)
+                LoadedGroups(uiState, groups, onToggleGroup, onShare, onShareSomewhereElse, onStartGroup)
+            }
+            StartGroupState.Closed ->
+                LoadedGroups(uiState, groups, onToggleGroup, onShare, onShareSomewhereElse, onStartGroup)
+        }
+    }
+}
+
+@Composable
+private fun LoadedGroups(
+    uiState: TrackShareUiState,
+    groups: GroupsState.Loaded,
+    onToggleGroup: (String) -> Unit,
+    onShare: () -> Unit,
+    onShareSomewhereElse: () -> Unit,
+    onStartGroup: () -> Unit,
+) {
+    when {
+        groups.groups.isEmpty() && groups.canCreate -> ShareSheetStartGroupPrompt(onStart = onStartGroup)
+        groups.groups.isEmpty() -> ShareSheetEmptyState()
+        uiState.shareResult != null -> ShareSheetPostShareState(
+            results = uiState.shareResult,
+            groups = groups.groups,
+            onShareSomewhereElse = onShareSomewhereElse,
+        )
+        else -> Column(modifier = Modifier.fillMaxWidth()) {
+            GroupPicker(
                 groups = groups.groups,
                 selectedGroupIds = uiState.selectedGroupIds,
                 isSharing = uiState.isSharing,
@@ -167,6 +215,10 @@ private fun GroupsSection(
                 onToggleGroup = onToggleGroup,
                 onShare = onShare,
             )
+            if (groups.canCreate) {
+                Spacer(modifier = Modifier.height(8.dp))
+                ShareSheetStartGroupRow(onStart = onStartGroup)
+            }
         }
     }
 }
@@ -180,6 +232,7 @@ private fun GroupPicker(
     onToggleGroup: (String) -> Unit,
     onShare: () -> Unit,
 ) {
+    val context = LocalContext.current
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
             text = "Share to groups",
@@ -192,15 +245,32 @@ private fun GroupPicker(
         groups.forEach { group ->
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { onToggleGroup(group.id) },
+                modifier = Modifier.fillMaxWidth(),
             ) {
-                Checkbox(
-                    checked = group.id in selectedGroupIds,
-                    onCheckedChange = { onToggleGroup(group.id) },
-                )
-                Text(group.name, modifier = Modifier.weight(1f))
+                // Toggling is this inner row only, so Invite is its own target
+                // and never ticks or unticks the group by accident.
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable { onToggleGroup(group.id) },
+                ) {
+                    Checkbox(
+                        checked = group.id in selectedGroupIds,
+                        onCheckedChange = { onToggleGroup(group.id) },
+                    )
+                    Text(group.name, modifier = Modifier.weight(1f))
+                }
+                // Hidden when null, which the demo group always is.
+                group.inviteUrl?.let { url ->
+                    IconButton(onClick = { context.shareInvite(GroupFlowCopy.INVITE_MESSAGE, url) }) {
+                        Icon(
+                            imageVector = Icons.Default.PersonAdd,
+                            contentDescription = GroupFlowCopy.INVITE_A_FRIEND,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
             }
         }
 

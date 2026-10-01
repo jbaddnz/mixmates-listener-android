@@ -26,9 +26,8 @@ import es.mixmat.listener.domain.model.Group
  * No timer and no auto-dismiss: a timed revert would race someone still reading
  * a three-line result, and the sheet is modal so nothing is hidden behind it.
  *
- * Its own file for the same reason as [ShareSheetEmptyState]: this is where
- * "Invite friends to X" lands with group creation, and where a notifications ask
- * would sit if push ever arrives.
+ * Its own file so a notifications ask has somewhere to sit if push ever arrives.
+ * Invite lives on the picker rows, not here.
  */
 @Composable
 fun ShareSheetPostShareState(

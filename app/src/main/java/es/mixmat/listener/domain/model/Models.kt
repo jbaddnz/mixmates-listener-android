@@ -56,6 +56,17 @@ data class Group(
     val id: String,
     val name: String,
     val description: String?,
+    /** The link that admits a friend. Null on the demo group, so no Invite there. */
+    val inviteUrl: String? = null,
+)
+
+/**
+ * One `GET /groups` response. [canCreate] is the server's word on whether this
+ * account may start a group, and only ever comes from a fresh fetch.
+ */
+data class GroupList(
+    val groups: List<Group>,
+    val canCreate: Boolean,
 )
 
 data class UserProfile(

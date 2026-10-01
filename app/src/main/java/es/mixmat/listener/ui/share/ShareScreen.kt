@@ -16,7 +16,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import es.mixmat.listener.ui.components.GradientButton
-import es.mixmat.listener.ui.components.OpenInMixMatesButton
 import es.mixmat.listener.ui.components.TrackCard
 import es.mixmat.listener.ui.sharesheet.TrackShareSheet
 
@@ -134,9 +133,6 @@ fun ShareScreen(
                         }
 
                         Spacer(modifier = Modifier.height(24.dp))
-                        OpenInMixMatesButton(url = "https://mixmat.es/?listen=1")
-
-                        Spacer(modifier = Modifier.height(12.dp))
                         OutlinedButton(
                             onClick = onDismiss,
                             modifier = Modifier.fillMaxWidth(),

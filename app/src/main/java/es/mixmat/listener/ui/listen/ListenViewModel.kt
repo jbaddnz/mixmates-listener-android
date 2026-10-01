@@ -55,6 +55,13 @@ class ListenViewModel @Inject constructor(
 
     init {
         loadProfile()
+        // Follows the repository rather than keeping its own copy, so a name set
+        // in the share sheet shows in the greeting straight away.
+        viewModelScope.launch {
+            authRepository.profile.collect { profile ->
+                if (profile != null) _uiState.value = _uiState.value.copy(profile = profile)
+            }
+        }
         viewModelScope.launch {
             audioRecorder.state.collect { state ->
                 _uiState.value = _uiState.value.copy(recorderState = state)
@@ -70,8 +77,8 @@ class ListenViewModel @Inject constructor(
     private fun loadProfile() {
         viewModelScope.launch {
             try {
-                val profile = authRepository.getProfile()
-                _uiState.value = _uiState.value.copy(profile = profile)
+                // Lands in uiState through the profile flow collected in init.
+                authRepository.getProfile()
             } catch (e: Exception) {
                 Log.e("Listen", "Failed to load profile", e)
                 _uiState.value = _uiState.value.copy(

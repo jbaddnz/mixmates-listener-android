@@ -32,7 +32,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import es.mixmat.listener.audio.RecorderState
 import es.mixmat.listener.ui.components.Equalizer
 import es.mixmat.listener.ui.components.MixmatesWordmarkLink
-import es.mixmat.listener.ui.components.OpenInMixMatesButton
 import es.mixmat.listener.ui.components.SuccessWave
 import es.mixmat.listener.ui.components.TrackCard
 import es.mixmat.listener.ui.sharesheet.TrackShareSheet
@@ -199,8 +198,6 @@ fun ListenScreen(
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
-                    OpenInMixMatesButton(url = "https://mixmat.es/?listen=1")
-                    Spacer(modifier = Modifier.height(12.dp))
                     // Quiet secondary by design — Share on the card is the hero.
                     TextButton(onClick = viewModel::dismiss) {
                         Text("Listen again")

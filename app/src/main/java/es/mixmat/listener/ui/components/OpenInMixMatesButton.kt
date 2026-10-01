@@ -18,8 +18,9 @@ import androidx.compose.ui.unit.dp
 
 /**
  * Outlined "Open in MixMates" call-to-action with a leading open-in-new icon.
- * Opens [url] (the MixMates web app) in the browser. Reused on Track Details,
- * the shared-link screen and the Listen screen so the CTA stays identical.
+ * Opens [url] (the MixMates web app) in the browser. History detail only: it
+ * came off the result and shared-link screens, where it sat beside Start a group
+ * and that flow never points at the website.
  */
 @Composable
 fun OpenInMixMatesButton(

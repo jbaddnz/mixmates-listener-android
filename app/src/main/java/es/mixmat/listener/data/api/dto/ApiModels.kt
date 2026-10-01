@@ -163,6 +163,9 @@ data class ShareData(
 @Serializable
 data class GroupListData(
     val items: List<GroupDto> = emptyList(),
+    // Must default to false, never true. Missing means no, and with
+    // coerceInputValues a true default would also turn a null into "allowed".
+    @SerialName("can_create") val canCreate: Boolean = false,
 )
 
 @Serializable
@@ -170,6 +173,21 @@ data class GroupDto(
     val id: String = "",
     val name: String = "",
     val description: String? = null,
+    /** Null on the demo group, and missing from an older server. */
+    @SerialName("invite_url") val inviteUrl: String? = null,
+)
+
+/** Name only: the description is optional and the app never asks for one. */
+@Serializable
+data class CreateGroupRequest(
+    val name: String,
+)
+
+// -- Profile --
+
+@Serializable
+data class UpdateMeRequest(
+    @SerialName("display_name") val displayName: String,
 )
 
 // -- Recordings --

@@ -12,6 +12,11 @@ interface ListenerApi {
     @GET("auth/me")
     suspend fun me(): ApiResponse<UserData>
 
+    @PATCH("auth/me")
+    suspend fun updateMe(
+        @Body request: UpdateMeRequest,
+    ): ApiResponse<UserData>
+
     @POST("auth/google")
     suspend fun signInWithGoogle(
         @Body request: GoogleSignInRequest,
@@ -63,6 +68,11 @@ interface ListenerApi {
 
     @GET("groups")
     suspend fun groups(): ApiResponse<GroupListData>
+
+    @POST("groups")
+    suspend fun createGroup(
+        @Body request: CreateGroupRequest,
+    ): ApiResponse<GroupDto>
 
     @GET("recordings")
     suspend fun recordings(): ApiResponse<RecordingListData>

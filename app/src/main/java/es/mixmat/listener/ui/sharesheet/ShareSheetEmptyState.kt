@@ -15,10 +15,8 @@ import androidx.compose.ui.unit.dp
  * Shown when the groups fetch succeeded and came back empty — which is not the
  * same as the fetch failing, and must not look the same.
  *
- * Its own file because group creation replaces it wholesale: the title becomes
- * "Start a group" and this gains a button that creates one and hands over an
- * invite link. Keeping it out of the picker means that change touches this file
- * and nothing else.
+ * Only when the account may not start a group. When it may,
+ * [ShareSheetStartGroupPrompt] takes this one's place.
  */
 @Composable
 fun ShareSheetEmptyState(modifier: Modifier = Modifier) {
