@@ -207,6 +207,15 @@ private fun LoadedGroups(
             onShareSomewhereElse = onShareSomewhereElse,
         )
         else -> Column(modifier = Modifier.fillMaxWidth()) {
+            if (groups.canCreate) {
+                // Dims once groups are ticked: the user has picked where this
+                // track goes, so Share is the next step, not starting another.
+                ShareSheetStartGroupButton(
+                    onStart = onStartGroup,
+                    enabled = uiState.selectedGroupIds.isEmpty(),
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+            }
             GroupPicker(
                 groups = groups.groups,
                 selectedGroupIds = uiState.selectedGroupIds,
@@ -215,10 +224,6 @@ private fun LoadedGroups(
                 onToggleGroup = onToggleGroup,
                 onShare = onShare,
             )
-            if (groups.canCreate) {
-                Spacer(modifier = Modifier.height(8.dp))
-                ShareSheetStartGroupRow(onStart = onStartGroup)
-            }
         }
     }
 }

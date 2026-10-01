@@ -2,19 +2,13 @@ package es.mixmat.listener.ui.sharesheet
 
 import android.content.Context
 import android.content.Intent
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.GroupAdd
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -24,7 +18,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
@@ -59,29 +52,22 @@ fun ShareSheetStartGroupPrompt(onStart: () -> Unit, modifier: Modifier = Modifie
 }
 
 /**
- * Sits under a non-empty picker. Most accounts have the demo group or a friend's,
- * so this is the usual way in, and it stays quieter than the Share button.
+ * Sits above a non-empty picker, first thing in the sheet. Most accounts have the
+ * demo group or a friend's, so this is the usual way in. Gradient, Jamie's call:
+ * starting a group is the point of the product, so it gets the brand treatment.
  */
 @Composable
-fun ShareSheetStartGroupRow(onStart: () -> Unit, modifier: Modifier = Modifier) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(onClick = onStart)
-            .padding(vertical = 12.dp),
-    ) {
-        Icon(
-            imageVector = Icons.Default.GroupAdd,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        Text(
-            text = GroupFlowCopy.START_A_GROUP,
-            style = MaterialTheme.typography.bodyLarge,
-        )
-    }
+fun ShareSheetStartGroupButton(
+    onStart: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+) {
+    GradientButton(
+        text = GroupFlowCopy.START_A_GROUP,
+        onClick = onStart,
+        modifier = modifier,
+        enabled = enabled,
+    )
 }
 
 /** One field, then `POST /groups`. Errors stay here so the name can be edited. */
