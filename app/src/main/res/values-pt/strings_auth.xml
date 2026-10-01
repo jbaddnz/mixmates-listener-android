@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Sign-in screen -->
+    <string name="auth_wordmark_description">MixMates</string>
+    <string name="auth_prompt">Entre para começar a ouvir.</string>
+    <string name="auth_sign_in_google">Entrar com Google</string>
+    <string name="auth_sign_in_apple">Entrar com Apple</string>
+    <string name="auth_last_signed_in_with">Da última vez você entrou com %1$s.</string>
+    <string name="auth_last_signed_in_with_key">Da última vez você entrou com uma %1$s.</string>
+    <string name="auth_free_no_purchases">Grátis • Sem compras no app</string>
+    <string name="auth_or">ou</string>
+    <string name="auth_use_listen_key">Usar uma Listen Key</string>
+    <!-- The web app is English-only, so its menu names stay in English. -->
+    <string name="auth_listen_key_where">Encontre em MixMates &gt; Settings &gt; Listening</string>
+    <string name="auth_listen_key_label">Listen Key</string>
+    <string name="auth_connect">Conectar</string>
+
+    <!-- New-account tripwire dialog -->
+    <string name="auth_new_account_title">Nova conta MixMates criada</string>
+    <string name="auth_new_account_body">Não havia nenhuma conta MixMates para este login, então criamos uma nova. Já tem uma conta, talvez com Apple ou outra conta Google? Saia e use essa.</string>
+    <string name="auth_new_account_keep">Manter esta conta</string>
+    <string name="auth_new_account_sign_out">Sair</string>
+
+    <!-- Sign-in errors -->
+    <string name="auth_error_google_failed">Não foi possível entrar com Google. Tente de novo ou use uma Listen Key.</string>
+    <string name="auth_error_apple_failed">Não foi possível entrar com Apple. Tente de novo ou use uma Listen Key.</string>
+    <string name="auth_error_listen_disabled_provider">Listen não está ativado na sua conta. Fale com o suporte se achar que é um erro.</string>
+    <string name="auth_error_token_empty">A chave não pode ficar vazia</string>
+    <string name="auth_error_listen_disabled_key">Listen não está ativado na sua conta. Ative em Settings no MixMates.</string>
+    <string name="auth_error_token_invalid">Chave inválida. Confira sua Listen Key em Settings no MixMates.</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Configurações</string>
+    <string name="settings_back">Voltar</string>
+    <string name="settings_recording">Gravação</string>
+    <string name="settings_recording_length">Duração: %1$d segundos</string>
+    <string name="settings_recording_hint">Trechos mais longos ajudam o reconhecimento; os mais curtos são mais rápidos.</string>
+    <string name="settings_delete_account">Excluir conta</string>
+    <string name="settings_sign_out">Sair</string>
+    <string name="settings_legal">Informações legais</string>
+    <string name="settings_sign_out_title">Sair?</string>
+    <string name="settings_sign_out_body">Você vai precisar entrar de novo para usar o app.</string>
+    <string name="settings_cancel">Cancelar</string>
+    <string name="settings_delete_title">Excluir conta?</string>
+    <string name="settings_delete_body">Isso exclui permanentemente sua conta e seu histórico. Não dá para desfazer.</string>
+    <string name="settings_delete">Excluir</string>
+    <string name="settings_error_delete_failed">Não foi possível excluir sua conta. Tente de novo.</string>
+
+    <!-- Legal -->
+    <string name="legal_title">Informações legais</string>
+    <string name="legal_back">Voltar</string>
+    <string name="legal_privacy">Política de privacidade</string>
+    <string name="legal_terms">Termos de serviço</string>
+    <string name="legal_source">Código-fonte (GitHub)</string>
+    <!-- Never "marca registrada" or ®: common-law marks only (NZ Trade Marks Act). -->
+    <string name="legal_trademarks">MixMates, MixMates Listener, mixmat.es e a marca mmL são marcas da MixMat Ltd, uma empresa da Nova Zelândia.</string>
+    <string name="legal_font_credit">Inclui a fonte MuseoModerno, © seus autores, usada sob a SIL Open Font License 1.1.</string>
+</resources>

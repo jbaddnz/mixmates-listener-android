@@ -30,31 +30,52 @@ class GroupFlowCopyTest {
     private fun unescape(text: String) = text.replace("\\'", "'").replace("\\\"", "\"")
 
     private val english = load("values")
-    private val spanish = load("values-es")
+
+    /** Folder -> strings, for every language the app ships. */
+    private val translations = listOf("values-es", "values-b+es+419", "values-pt")
+        .associateWith { load(it) }
+
+    /** Every string in every language, keyed "folder:name" so failures say where. */
+    private val everything: Map<String, String> =
+        english + translations.flatMap { (folder, strings) ->
+            strings.map { (name, text) -> "$folder:$name" to text }
+        }
 
     private val banned = listOf(
         "mixmat.es", "upgrade", "paid", "plan", "subscription", "pricing", "free tier",
+        // Spanish
         "suscripción", "de pago", "premium", "precio", "gratis",
+        // Portuguese
+        "assinatura", "plano", "pago", "preço", "grátis",
     )
 
+    /**
+     * Whole words only, so "pago" does not fire on "apagar". (?U) makes word
+     * boundaries understand accented letters, or "preço" would never match.
+     */
+    private fun containsWord(text: String, word: String) =
+        Regex("(?U)\\b${Regex.escape(word)}\\b", RegexOption.IGNORE_CASE).containsMatchIn(text)
+
     @Test
-    fun `both files are found and complete`() {
+    fun `every file is found and complete`() {
         assertTrue(english.size >= 35)
-        assertEquals(english.keys, spanish.keys)
+        translations.forEach { (folder, strings) ->
+            assertEquals("keys in $folder", english.keys, strings.keys)
+        }
     }
 
     @Test
-    fun `no string names the website or talks about plans, in either language`() {
-        (english + spanish.mapKeys { "es:${it.key}" }).forEach { (name, text) ->
+    fun `no string names the website or talks about plans, in any language`() {
+        everything.forEach { (name, text) ->
             banned.forEach { word ->
-                assertFalse("$name contains \"$word\"", text.contains(word, ignoreCase = true))
+                assertFalse("$name contains \"$word\"", containsWord(text, word))
             }
         }
     }
 
     @Test
-    fun `no string has an em or en dash, in either language`() {
-        (english + spanish.mapKeys { "es:${it.key}" }).forEach { (name, text) ->
+    fun `no string has an em or en dash, in any language`() {
+        everything.forEach { (name, text) ->
             assertFalse("$name has an em dash", '—' in text)
             assertFalse("$name has an en dash", '–' in text)
         }
@@ -62,8 +83,10 @@ class GroupFlowCopyTest {
 
     @Test
     fun `placeholders survive translation`() {
-        english.forEach { (name, text) ->
-            assertEquals("$name placeholders", "%1\$s" in text, "%1\$s" in spanish.getValue(name))
+        translations.forEach { (folder, strings) ->
+            english.forEach { (name, text) ->
+                assertEquals("$name placeholders in $folder", "%1\$s" in text, "%1\$s" in strings.getValue(name))
+            }
         }
     }
 

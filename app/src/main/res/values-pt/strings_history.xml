@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- History list -->
+    <string name="history_title">Histórico</string>
+    <string name="history_back">Voltar</string>
+    <string name="history_retry">Tentar de novo</string>
+    <string name="history_empty">Nenhuma música ainda</string>
+    <string name="history_delete">Excluir</string>
+    <string name="history_load_failed">Não foi possível carregar o histórico</string>
+    <string name="history_remove_failed">Não foi possível excluir. Tente de novo</string>
+
+    <!-- History detail -->
+    <string name="history_detail_title">Detalhes da música</string>
+    <string name="history_shared_to">Compartilhada em</string>
+    <string name="history_share">Compartilhar</string>
+    <string name="history_detail_load_failed">Não foi possível carregar os detalhes</string>
+
+    <!-- Inbound shared link -->
+    <string name="share_title">Link compartilhado</string>
+    <string name="share_close">Fechar</string>
+    <string name="share_resolving">Buscando...</string>
+    <string name="share_share">Compartilhar</string>
+    <string name="share_done">Concluído</string>
+    <string name="share_track_fallback">Música</string>
+    <string name="share_no_links">Identificamos %1$s, mas não há links de streaming</string>
+    <string name="share_sign_in_first">Entre no MixMates Listener primeiro.</string>
+    <string name="share_no_supported_link">Nenhum link de música compatível encontrado. Compartilhe o link de uma música do Spotify, Tidal ou Apple Music.</string>
+    <string name="share_rate_limited">Limite atingido. Tente de novo em %1$d segundos.</string>
+    <string name="share_link_type_unsupported">Esse tipo de link não é compatível. Compartilhe o link direto de uma música.</string>
+    <string name="share_something_went_wrong">Algo deu errado. Confira sua conexão e tente de novo.</string>
+</resources>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    The share sheet: groups, start a group, invite and names. The start, invite
+    and name strings are agreed word for word with iOS; change both together.
+    GroupFlowCopyTest holds both languages to the copy rules.
+-->
+<resources>
+    <!-- Sheet -->
+    <string name="sharesheet_title">Compartir</string>
+    <string name="sharesheet_share_to_groups">Compartir en grupos</string>
+    <string name="sharesheet_share">Compartir</string>
+    <string name="sharesheet_try_again">Inténtalo de nuevo</string>
+    <string name="sharesheet_more_ways">Más formas de compartir…</string>
+    <string name="sharesheet_no_groups_title">Todavía no tienes grupos</string>
+    <string name="sharesheet_no_groups_body">Cuando estés en un grupo, podrás enviar aquí lo que encuentres.</string>
+    <string name="sharesheet_shared_to">Compartida en %1$s</string>
+    <string name="sharesheet_already_in">Ya está en %1$s</string>
+    <string name="sharesheet_share_somewhere_else">Compartir en otro lugar</string>
+
+    <!-- Groups and share errors -->
+    <string name="sharesheet_load_failed">No se pudieron cargar tus grupos</string>
+    <string name="sharesheet_listen_disabled">Listen no está activado en esta cuenta</string>
+    <string name="sharesheet_group_locked">Este grupo ya no acepta canciones nuevas</string>
+    <string name="sharesheet_not_a_member">Ya no estás en ese grupo</string>
+    <string name="sharesheet_share_failed">No se pudo compartir. Inténtalo de nuevo.</string>
+
+    <!-- Start a group -->
+    <string name="sharesheet_start_a_group">Crear un grupo</string>
+    <string name="sharesheet_start_hint">Crea un grupo y envía el enlace de invitación a tus amigos.</string>
+    <string name="sharesheet_name_your_group">Ponle nombre a tu grupo</string>
+    <string name="sharesheet_create">Crear</string>
+    <string name="sharesheet_cancel">Cancelar</string>
+
+    <!-- Created -->
+    <string name="sharesheet_group_ready">Tu grupo está listo</string>
+    <string name="sharesheet_invite_a_friend">Invitar a un amigo</string>
+    <string name="sharesheet_share_to_it">Compartir esta canción en el grupo</string>
+    <!-- Share sheet text after a create, followed by the invite link. -->
+    <string name="sharesheet_invite_message_new">Creé un grupo en MixMates. Únete:</string>
+    <!-- Share sheet text from a picker row; names the group, which may be a friend's. -->
+    <string name="sharesheet_invite_message">Únete a %1$s en MixMates:</string>
+    <!-- Accessibility label on a row's invite icon. -->
+    <string name="sharesheet_invite_to">Invitar a un amigo a %1$s</string>
+
+    <!-- Start errors -->
+    <string name="sharesheet_name_taken">Ese nombre ya está en uso. Intenta agregarle algo tuyo.</string>
+    <string name="sharesheet_already_has_group">Esta cuenta ya tiene un grupo.</string>
+    <string name="sharesheet_create_failed">No se pudo crear el grupo. Inténtalo de nuevo.</string>
+    <string name="sharesheet_too_many_tries">Demasiados intentos. Inténtalo más tarde.</string>
+
+    <!-- Names -->
+    <string name="sharesheet_choose_a_name">Elige el nombre que verán tus amigos.</string>
+    <string name="sharesheet_nickname_fine">Un apodo también sirve.</string>
+    <string name="sharesheet_your_name">Tu nombre</string>
+    <string name="sharesheet_save_and_share">Guardar y compartir</string>
+    <string name="sharesheet_save">Guardar</string>
+    <string name="sharesheet_not_now">Ahora no</string>
+    <string name="sharesheet_private_relay">Esa es una dirección privada de Apple. Elige el nombre que verán tus amigos.</string>
+    <string name="sharesheet_name_save_failed">No se pudo guardar tu nombre. Inténtalo de nuevo.</string>
+</resources>

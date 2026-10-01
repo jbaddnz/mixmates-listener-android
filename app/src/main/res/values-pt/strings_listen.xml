@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Listen screen -->
+    <string name="listen_title">Ouvir</string>
+    <string name="listen_history">Histórico</string>
+    <string name="listen_settings">Configurações</string>
+    <string name="listen_greeting">Oi, %1$s</string>
+    <string name="listen_identifying">Identificando...</string>
+    <string name="listen_no_match">Nenhuma música encontrada</string>
+    <string name="listen_no_match_hint">Tente de novo com um áudio mais claro</string>
+    <string name="listen_no_links">Identificamos %1$s, mas não há links de streaming</string>
+    <string name="listen_track_fallback">Música</string>
+    <string name="listen_reported">Obrigado por avisar!</string>
+    <string name="listen_reporting">Enviando…</string>
+    <string name="listen_wrong_match">Não é essa?</string>
+    <string name="listen_again">Ouvir de novo</string>
+    <string name="listen_listening">Ouvindo...</string>
+    <string name="listen_stop_early">Parar antes</string>
+    <string name="listen_saved_offline">Salvo offline. Será enviado quando a conexão voltar</string>
+    <string name="listen_mic_needed">É preciso acesso ao microfone para identificar músicas</string>
+    <string name="listen_open_settings">Abrir configurações</string>
+    <string name="listen_start_listening">Começar a ouvir</string>
+    <string name="listen_tap_to_listen">Toque para ouvir</string>
+    <string name="listen_mic_title">Acesso ao microfone</string>
+    <string name="listen_mic_body">O MixMates Listener usa seu microfone para gravar um trecho curto da música que está tocando por perto. O trecho é enviado a um serviço de reconhecimento para identificar a música e depois é descartado. Nenhum áudio fica guardado permanentemente.</string>
+    <string name="listen_allow">Permitir</string>
+    <string name="listen_not_now">Agora não</string>
+
+    <!-- Listen errors -->
+    <string name="listen_error_verify">Não foi possível verificar sua conta. Confira sua conexão.</string>
+    <string name="listen_error_mic">Não foi possível acessar o microfone</string>
+    <string name="listen_error_recording">A gravação falhou</string>
+    <string name="listen_error_rate_limit">Limite atingido. Tente de novo em %1$d segundos.</string>
+    <string name="listen_error_recognition">O reconhecimento falhou. Vamos tentar de novo.</string>
+    <string name="listen_error_report">Não foi possível enviar o aviso. Tente de novo.</string>
+
+    <!-- Track card and shared components -->
+    <string name="listen_album_art">Capa de %1$s</string>
+    <string name="listen_already_in_queue">Já está na sua fila!</string>
+    <string name="listen_share">Compartilhar</string>
+    <string name="listen_open_in_mixmates">Abrir no MixMates</string>
+</resources>
