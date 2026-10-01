@@ -107,11 +107,10 @@ fun SettingsScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
+            // Neutral on purpose: signing out is reversible. Red is kept for
+            // Delete account so the destructive one stands apart.
             OutlinedButton(
                 onClick = { showConfirmation = true },
-                colors = ButtonDefaults.outlinedButtonColors(
-                    contentColor = MaterialTheme.colorScheme.error,
-                ),
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Text("Sign out")
@@ -172,7 +171,7 @@ fun SettingsScreen(
                         onTokenCleared()
                     },
                 ) {
-                    Text("Sign out", color = MaterialTheme.colorScheme.error)
+                    Text("Sign out")
                 }
             },
             dismissButton = {
