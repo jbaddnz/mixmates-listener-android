@@ -48,11 +48,12 @@ fun LegalScreen(
                 .padding(padding)
                 .padding(16.dp),
         ) {
-            TextButton(onClick = { openUrl("https://mixmat.es/privacy") }) {
+            // The Listener's own pages, not the web product's /privacy and /terms.
+            TextButton(onClick = { openUrl("https://mixmat.es/privacy/listener") }) {
                 Text(stringResource(R.string.legal_privacy))
             }
 
-            TextButton(onClick = { openUrl("https://mixmat.es/terms") }) {
+            TextButton(onClick = { openUrl("https://mixmat.es/terms/listener") }) {
                 Text(stringResource(R.string.legal_terms))
             }
 
